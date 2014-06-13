@@ -1,9 +1,9 @@
 //
-//  MyScene.m
-//  EMA Stage
+//  ExampleScene.m
+//  Node Kitten Examples
 //
 //  Created by Leif Shackelford on 5/17/14.
-//  Copyright (c) 2014 EMA. All rights reserved.
+//  Copyright (c) 2014 Chroma. All rights reserved.
 //
 
 #import "ExampleScene.h"
