@@ -20,6 +20,28 @@
     
     return self;
 }
+
+-(instancetype)initWithDefaultProperties {
+    NKLightProperties p;
+    
+    p.isEnabled = true;
+    p.isLocal = true;
+    p.isSpot = false;
+    
+    p.ambient = V3Make(.4,.4,.4);
+    p.color = V3Make(1.,1.,1.);
+    p.coneDirection = V3Make(0, 0, -1);
+    p.halfVector = V3MakeF(0);
+    
+    p.spotCosCutoff = 10.;
+    p.spotExponent = 2;
+    p.constantAttenuation = 1.;
+    p.linearAttenuation = .05;
+    p.quadraticAttenuation = 0.;
+    
+    return [self initWithProperties:p];
+    
+}
 -(instancetype)initWithColor:(NKByteColor*)color {
     self = [super initWithSize:V3MakeF(.5)];
     

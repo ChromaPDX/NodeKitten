@@ -296,7 +296,7 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
             action.reset = false;
         }
         
-        [node setPosition3d:getTweenPoint(action.startPos, target.getGlobalPosition, completion )];
+        [node setPosition3d:getTweenPoint(action.startPos, V3Subtract(target.getGlobalPosition, node.scene.getGlobalPosition), completion )];
         
     };
     
@@ -314,7 +314,7 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
             action.reset = false;
         }
         
-        [node setPosition3d:target.getGlobalPosition];
+        [node setPosition3d:V3Subtract(target.getGlobalPosition, node.scene.getGlobalPosition)];
         //[node setPosition3d:getTweenPoint(action.startPos, target.getGlobalPosition, completion )];
     };
     
@@ -439,6 +439,26 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
 
 #pragma mark - GL LOOK AT
 
++ (NKAction*)enterOrbitForNode:(NKNode*)target atLongitude:(float)longitude latitude:(float)latitude radius:(float)radius duration:(F1t)sec {
+    
+    NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
+    
+    newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
+        
+        if (action.reset) {
+            action.reset = false;
+            action.startPos = [node position3d];
+            [node setOrbit:V3Make(longitude,latitude,radius)];
+        }
+        
+        [node setPosition3d:getTweenPoint(action.startPos, V3Add([node currentOrbit],V3Subtract(target.getGlobalPosition, node.scene.getGlobalPosition)), completion)];
+        
+    };
+    
+    return newAction;
+
+}
+
 + (NKAction *)enterOrbitAtLongitude:(float)longitude latitude:(float)latitude radius:(float)radius duration:(F1t)sec {
     return [NKAction enterOrbitAtLongitude:longitude latitude:latitude radius:radius offset:V3MakeF(0) duration:sec];
 }
@@ -454,11 +474,6 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
             action.startPos = [node position3d];
             [node setOrbit:V3Make(longitude,latitude,radius)];
             action.endPos = V3Add([node currentOrbit],offset);
-           
-//            if ([node.name isEqualToString:@"CAMERA"]) {
-//                NKLogV3(@"enter orbit from" , action.startPos);
-//                NKLogV3(@"enter orbit to" , action.endPos);
-//            }
         }
        
         [node setPosition3d:getTweenPoint(action.startPos, action.endPos, completion)];
@@ -486,6 +501,7 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
             
             [node setOrbit:action.endPos];
         }
+        
         [node setOrbit:getTweenPoint(action.startPos, action.endPos, completion)];
         [node setPosition3d:V3Add(offset, [node currentOrbit])];
     };
@@ -493,6 +509,24 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     return newAction;
 }
 
++ (NKAction*)maintainOrbitForNode:(NKNode *)target longitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius duration:(F1t)sec {
+    NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
+    
+    newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
+        
+        if (action.reset) {
+            action.reset = false;
+            
+            action.startPos = V3Make(node.longitude, node.latitude, node.radius);
+            action.endPos = V3Add(action.startPos, V3Make(deltaLongitude, deltaLatitude, deltaRadius));
+            [node setOrbit:action.endPos];
+        }
+        [node setOrbit:getTweenPoint(action.startPos, action.endPos, completion)];
+        [node setPosition3d:V3Add(V3Subtract(target.getGlobalPosition, node.scene.getGlobalPosition), [node currentOrbit])];
+    };
+    
+    return newAction;
+}
 + (NKAction*)panTolookAtNode:(NKNode*)target duration:(F1t)sec {
     
     NKAction * newAction = [[NKAction alloc] initWithDuration:sec];

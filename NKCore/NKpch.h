@@ -6,16 +6,7 @@
 //  Copyright (c) 2014 Chroma. All rights reserved.
 //
 
-
-
-#import <Foundation/Foundation.h>
-
-#if TARGET_OS_IPHONE
-
-#define NK_USE_GLES 1
-
-#endif
-
+#import "NKMacro.h"
 #import "NKMath.h"
 
 #define debugUI 0

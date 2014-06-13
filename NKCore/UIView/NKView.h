@@ -2,6 +2,8 @@
 //*  NODE KITTEN
 //*
 
+#include "NKPch.h"
+
 #if !TARGET_OS_IPHONE
 
 @class NKViewController;
@@ -12,8 +14,6 @@
 @class NKFrameBuffer;
 
 // Attribute index.
-
-
 
 #define USE_CV_DISPLAY_LINK 0
 
@@ -61,6 +61,7 @@
 @property (nonatomic, weak) NKViewController *controller;
 @property (nonatomic, strong) NKSceneNode *scene;
 @property (nonatomic) float mscale;
+@property (nonatomic, strong) NSMutableSet *events;
 
 -(void)startAnimation;
 -(void)stopAnimation;

@@ -22,7 +22,6 @@
         }
         
         self.alpha = 1.0f;
-        _colorBlendFactor = 1.;
         
         if (texture) {
             _textures = [@[texture] mutableCopy];
@@ -431,10 +430,6 @@
         _numTextures = 0;
     }
     [self chooseShader];
-}
-
--(C4t)glColor {
-    return [[self color] colorWithBlendFactor:_colorBlendFactor alpha:self.alpha];
 }
 
 -(int)lodForDistance {

@@ -58,7 +58,7 @@
 }
 
 -(void)draw {
-   
+    
     [self begin];
     
     [self pushStyle];
@@ -71,7 +71,6 @@
 }
 
 -(void)customDraw {
-    
     
     self.scene.activeShader = self.shader;
     
@@ -92,7 +91,7 @@
             self.scene.boundTexture = _textures[0];
         }
     }
-
+    
     [_mvpStack reset];
     [_mvStack reset];
     [_childColors reset];
@@ -111,9 +110,9 @@
         
         [_normalStack pushMatrix:M16GetInverseNormalMatrix(modelView)];
         [_mvpStack pushMatrix:mvp];
-
+        
         if (useColor) {
-            [_childColors pushVector:child.color.C4Color];
+            [_childColors pushVector:child.glColor];
         }
         spritesInBatch++;
         
@@ -128,8 +127,8 @@
             spritesInBatch = 0;
             
         }
+        
     }
-    
     //NSLog(@"%d children, %d batches", intChildren.count, intChildren.count/NK_BATCH_SIZE);
     
 }

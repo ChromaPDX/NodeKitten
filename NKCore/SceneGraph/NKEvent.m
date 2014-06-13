@@ -71,8 +71,8 @@
     return _worldLocation;
 }
 
--(P2t)glLocation {
-    return P2Multiply(self.screenLocation, _scale);
-}
+//-(P2t)glLocation {
+//    return P2Multiply(self.screenLocation, _scale);
+//}
 
 @end

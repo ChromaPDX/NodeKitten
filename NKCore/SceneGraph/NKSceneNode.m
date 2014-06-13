@@ -202,22 +202,9 @@
     //[self.activeShader setMatrix3:M9IdentityMake() forUniform:[nksf:@"u_%@",nks(NKS_M9_NORMAL)]];
 }
 
--(void)drawAxes {
-        if (!axes) {
-             axes = [NKVertexBuffer axes];
-        }
-        
-//        if (!sphere) {
-//            sphere = [NKVertexBuffer sphereWithStacks:20 slices:20 squash:2.];
-//        }
-        
-        [axes bind:^{
-            [self pushScale:V3MakeF(_camera.position3d.z)];
-            glLineWidth(2.0);
-            glDrawArrays(GL_LINES, 0, axes.numberOfElements);
-            [self popMatrix];
-        }];
-}
+//-(V3t)getGlobalPosition {
+//    return V3MakeF(0);
+//}
 
 //-(void)end {
 //    
@@ -357,7 +344,7 @@
         
         CallBack callBack = ^{
             NKByteColor *hc = [[NKByteColor alloc]init];
-            glReadPixels(event.glLocation.x, event.glLocation.y,
+            glReadPixels(event.screenLocation.x, event.screenLocation.y,
                          1, 1,
                          GL_RGBA, GL_UNSIGNED_BYTE, hc.bytes);
             NKNode *hit = [NKShaderManager nodeForColor:hc];

@@ -16,6 +16,7 @@
 }
 
 -(instancetype)initWithColor:(NKByteColor*)color;
+-(instancetype)initWithDefaultProperties;
 -(instancetype)initWithProperties:(NKLightProperties)properties;
 
 @property (nonatomic) NKLightProperties properties;

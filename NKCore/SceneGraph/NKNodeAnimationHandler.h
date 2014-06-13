@@ -176,15 +176,20 @@ typedef NS_ENUM(NSInteger, NKActionTimingMode) {
 +(NKAction*)scrollToPoint:(P2t)point duration:(F1t)sec;
 +(NKAction*)scrollToChild:(NKNode*)child duration:(F1t)sec;
 
-// GL UTILITY
+// LOOK
 
 + (NKAction*)panTolookAtNode:(NKNode*)target duration:(F1t)sec;
 + (NKAction*)snapLookToNode:(NKNode*)target forDuration:(F1t)sec;
 
+// ORBIT
+
 + (NKAction *)enterOrbitAtLongitude:(float)longitude latitude:(float)latitude radius:(float)radius offset:(V3t)offset duration:(F1t)sec;
 + (NKAction*)enterOrbitAtLongitude:(float)longitude latitude:(float)latitude radius:(float)radius duration:(F1t)sec;
++ (NKAction*)enterOrbitForNode:(NKNode*)target atLongitude:(float)longitude latitude:(float)latitude radius:(float)radius duration:(F1t)sec;
+
 + (NKAction *)maintainOrbitDeltaLongitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius offset:(V3t)offset duration:(F1t)sec;
 + (NKAction *)maintainOrbitDeltaLongitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius duration:(F1t)sec;
++ (NKAction*)maintainOrbitForNode:(NKNode *)target longitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius duration:(F1t)sec;
 
 @end
 

@@ -34,6 +34,7 @@
         _hidden = false;
         intAlpha = 1.;
         _alpha = 1.;
+        _colorBlendFactor = 1.;
         
         _blendMode = NKBlendModeAlpha;
         _cullFace = NKCullFaceFront;
@@ -1021,6 +1022,10 @@
 
 -(NKByteColor*)color {
     return _color;
+}
+
+-(C4t)glColor {
+    return [[self color] colorWithBlendFactor:_colorBlendFactor alpha:self.alpha];
 }
 
 #pragma mark - ACTIONS

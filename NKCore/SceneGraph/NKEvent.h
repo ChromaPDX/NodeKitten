@@ -45,7 +45,7 @@ typedef NS_ENUM(U1t, NKEventPhase) {
 -(P2t)screenLocation;
 -(void)setScreenLocation:(P2t)location;
 
--(P2t)glLocation;
+//-(P2t)glLocation;
 
 -(V3t)startingWorldLocation;
 -(void)setStartingWorldLocation:(P2t)location;

@@ -114,7 +114,7 @@ static inline btVector3 btv(V3t v){
     
     if (![_nodes containsObject:node]) {
         [_nodes addObject:node];
-        dynamicsWorld->addRigidBody((btRigidBody*)node.body.btBody);
+        dynamicsWorld->addRigidBody((btRigidBody*)node.body.btBody,node.body.collisionGroup,node.body.collisionMask);
     }
     
 }
@@ -365,6 +365,24 @@ static inline btVector3 btv(V3t v){
 
 -(void)forceAwake {
     body->setActivationState(true);
+}
+
+// COLLISION
+
+-(NKCollisionFilter)collisionGroup {
+    return _collisionGroup;
+}
+
+-(void)setCollisionGroup:(NKCollisionFilter)category {
+    _collisionGroup = category;
+}
+
+-(NKCollisionFilter)collisionMask {
+    return _collisionMask;
+}
+
+-(void)setCollisionMask:(NKCollisionFilter)category {
+    _collisionMask = category;
 }
 
 -(void)forceSleep {

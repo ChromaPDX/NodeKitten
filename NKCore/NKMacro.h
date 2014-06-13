@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 EMA. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+
 // USER MACROS
 
 //** FOR GL RELATED LOGS
@@ -13,7 +15,7 @@
 //**
 
 //** LOG / PRINT TIME METRICS
-#define NK_LOG_METRICS 1
+#define NK_LOG_METRICS 0
 //**
 
 // SCENE DEBUG

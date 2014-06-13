@@ -374,12 +374,8 @@
 		2970D886194A6DAF00EEAC2B /* NKImage+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D728194A6DAF00EEAC2B /* NKImage+Utils.m */; };
 		2970D887194A6DAF00EEAC2B /* NKImage+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D728194A6DAF00EEAC2B /* NKImage+Utils.m */; };
 		2970D888194A6DAF00EEAC2B /* NKUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D72B194A6DAF00EEAC2B /* NKUIView.m */; };
-		2970D889194A6DAF00EEAC2B /* NKUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D72B194A6DAF00EEAC2B /* NKUIView.m */; };
 		2970D88A194A6DAF00EEAC2B /* NKUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D72D194A6DAF00EEAC2B /* NKUIViewController.m */; };
-		2970D88B194A6DAF00EEAC2B /* NKUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D72D194A6DAF00EEAC2B /* NKUIViewController.m */; };
-		2970D88C194A6DAF00EEAC2B /* NKView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D72F194A6DAF00EEAC2B /* NKView.m */; };
 		2970D88D194A6DAF00EEAC2B /* NKView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D72F194A6DAF00EEAC2B /* NKView.m */; };
-		2970D88E194A6DAF00EEAC2B /* NKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D731194A6DAF00EEAC2B /* NKViewController.m */; };
 		2970D88F194A6DAF00EEAC2B /* NKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D731194A6DAF00EEAC2B /* NKViewController.m */; };
 		2970D890194A6DAF00EEAC2B /* ExampleScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D732194A6DAF00EEAC2B /* ExampleScene.m */; };
 		2970D891194A6DAF00EEAC2B /* ExampleScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D732194A6DAF00EEAC2B /* ExampleScene.m */; };
@@ -2003,7 +1999,6 @@
 				2970D78C194A6DAF00EEAC2B /* btCylinderShape.cpp in Sources */,
 				2970D878194A6DAF00EEAC2B /* NKTexture.m in Sources */,
 				2970D7B6194A6DAF00EEAC2B /* btGjkPairDetector.cpp in Sources */,
-				2970D88E194A6DAF00EEAC2B /* NKViewController.m in Sources */,
 				2970D7AC194A6DAF00EEAC2B /* btGImpactQuantizedBvh.cpp in Sources */,
 				2970D838194A6DAF00EEAC2B /* NKBulletWorld.mm in Sources */,
 				2970D79A194A6DAF00EEAC2B /* btEmptyCollisionAlgorithm.cpp in Sources */,
@@ -2044,7 +2039,6 @@
 				2970D7E4194A6DAF00EEAC2B /* btScaledBvhTriangleMeshShape.cpp in Sources */,
 				2970D854194A6DAF00EEAC2B /* NKNode.m in Sources */,
 				2970D7A8194A6DAF00EEAC2B /* btGImpactBvh.cpp in Sources */,
-				2970D88C194A6DAF00EEAC2B /* NKView.m in Sources */,
 				2970D7EC194A6DAF00EEAC2B /* btSimpleBroadphase.cpp in Sources */,
 				2970D820194A6DAF00EEAC2B /* btTriangleShapeEx.cpp in Sources */,
 				2970D7AE194A6DAF00EEAC2B /* btGImpactShape.cpp in Sources */,
@@ -2172,7 +2166,6 @@
 				2970D761194A6DAF00EEAC2B /* btCompoundShape.cpp in Sources */,
 				2970D743194A6DAF00EEAC2B /* btBox2dShape.cpp in Sources */,
 				2970D789194A6DAF00EEAC2B /* btConvexShape.cpp in Sources */,
-				2970D889194A6DAF00EEAC2B /* NKUIView.m in Sources */,
 				2970D7A3194A6DAF00EEAC2B /* btGenericPoolAllocator.cpp in Sources */,
 				2970D79D194A6DAF00EEAC2B /* btEmptyShape.cpp in Sources */,
 				2970D779194A6DAF00EEAC2B /* btConvexConvexAlgorithm.cpp in Sources */,
@@ -2247,7 +2240,6 @@
 				2970D573194A6D9A00EEAC2B /* AppDelegate.m in Sources */,
 				2970D737194A6DAF00EEAC2B /* bDNA.cpp in Sources */,
 				2970D855194A6DAF00EEAC2B /* NKNode.m in Sources */,
-				2970D88B194A6DAF00EEAC2B /* NKUIViewController.m in Sources */,
 				2970D81F194A6DAF00EEAC2B /* btTriangleMeshShape.cpp in Sources */,
 				2970D7AF194A6DAF00EEAC2B /* btGImpactShape.cpp in Sources */,
 				2970D793194A6DAF00EEAC2B /* btDefaultCollisionConfiguration.cpp in Sources */,

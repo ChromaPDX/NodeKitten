@@ -12,6 +12,19 @@
 @class NKNode;
 @class NKBulletShape;
 
+typedef NS_OPTIONS(uint32_t, NKCollisionFilter){
+
+        NKCollisionFilterNone = 0,
+        NKCollisionFilterDefault = 1 << 0,
+        NKCollisionFilterStatic = 1 << 1,
+        NKCollisionFilterKinematic = 1 << 2,
+        NKCollisionFilterDebris = 1 << 3,
+        NKCollisionFilterSensorTrigger = 1 << 4,
+        NKCollisionFilterCharacter = 1 << 5,
+        NKCollisionFilterWalls = 1 << 6,
+        NKCollisionFilterAllFilter = UINT32_MAX //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
+};
+
 typedef NS_ENUM(GLint, NKBulletShapes)
 {
     NKBulletShapeNone,
@@ -50,7 +63,10 @@ typedef NS_ENUM(GLint, NKBulletShapes)
 @end
 
 @interface NKBulletBody : NSObject
-
+{
+    NKCollisionFilter _collisionGroup;
+    NKCollisionFilter _collisionMask;
+}
 @property (nonatomic, strong) NKBulletShape *shape;
 
 -(void*)btBody;
@@ -77,6 +93,11 @@ typedef NS_ENUM(GLint, NKBulletShapes)
 -(void)applyCentralImpulse:(V3t)force;
 -(void)applyDamping:(F1t)timeStep;
 // COLLISION SYSTEM
+-(void)setCollisionGroup:(NKCollisionFilter)category;
+-(void)setCollisionMask:(NKCollisionFilter)category;
+-(NKCollisionFilter)collisionGroup;
+-(NKCollisionFilter)collisionMask;
+
 -(void)forceAwake;
 -(void)forceSleep;
 

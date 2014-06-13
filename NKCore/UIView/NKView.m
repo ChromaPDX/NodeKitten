@@ -7,7 +7,6 @@
 //
 
 #import "NodeKitten.h"
-//#import <SceneKit/SceneKit.h>
 
 #if !TARGET_OS_IPHONE
 
@@ -31,6 +30,7 @@
     _mscale = 1.;
     
     lastTime = CFAbsoluteTimeGetCurrent();
+    _events = [[NSMutableSet alloc]init];
     
     [self startAnimation];
 }
@@ -394,26 +394,43 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    [_scene dispatchTouchRequestForLocation:[self calibratedMousePoint:theEvent.locationInWindow] type:NKEventTypeBegin];
+    NKEvent *e = [[NKEvent alloc] initWithEvent:theEvent scale:P2MakeF(_mscale)];
+    e.startingScreenLocation = P2Make(theEvent.locationInWindow.x, theEvent.locationInWindow.y);
+    e.phase = NKEventPhaseBegin;
+    [_events addObject:e];
+    [_scene dispatchEvent:e];
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent
 {
+
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-     [_scene dispatchTouchRequestForLocation:[self calibratedMousePoint:theEvent.locationInWindow]  type:NKEventTypeMove];
+    if (_events.count) {
+        NKEvent *e = [_events anyObject];
+        e.phase = NKEventPhaseMove;
+        e.screenLocation = P2Make(theEvent.locationInWindow.x, theEvent.locationInWindow.y);
+        [e.node handleEvent:e];
+    }
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-    if (theEvent.clickCount == 2) {
-       [_scene dispatchTouchRequestForLocation:[self calibratedMousePoint:theEvent.locationInWindow] type:NKEventTypeDoubleTap];
+    if (_events.count) {
+        NKEvent *e = [_events anyObject];
+        if (theEvent.clickCount == 2) {
+            e.phase = NKEventPhaseDoubleTap;        }
+        else {
+            e.phase = NKEventPhaseEnd;
+        }
+        e.screenLocation = P2Make(theEvent.locationInWindow.x, theEvent.locationInWindow.y);
+        [e.node handleEvent:e];
+        [_events removeObject:e];
     }
-    else {
-        [_scene dispatchTouchRequestForLocation:[self calibratedMousePoint:theEvent.locationInWindow] type:NKEventTypeEnd];
-    }
+    
+
 }
 
 

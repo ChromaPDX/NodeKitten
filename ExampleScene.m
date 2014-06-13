@@ -142,21 +142,13 @@
             
             [_omni runAction:[NKAction move3dTo:V3MakeF(0) duration:2.] completion:^{
                 [_omni runAction:[NKAction delayFor:.4] completion:^{
-                    [_omni runAction:[NKAction enterOrbitAtLongitude:0 latitude:0 radius:10 duration:1.] completion:^{
-                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:11 radius:.01 duration:.3]];
+                    [_omni runAction:[NKAction enterOrbitForNode:self atLongitude:0 latitude:0 radius:10 duration:1.] completion:^{
+                        [_omni repeatAction:[NKAction maintainOrbitForNode:self longitude:30 latitude:11 radius:.01 duration:.3]];
                     }];
                 }];
             }];
             //
             self.drawLights = true;
-            
-            NKMeshNode *s = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveCube texture:tex color:NKWHITE size:V3MakeF(3.)];
-            
-            [self addChild:s];
-            
-            [s runAction:[NKAction rotateXByAngle:45 duration:2.] completion:^{
-                [s repeatAction:[NKAction rotateYByAngle:90 duration:2.]];
-            }];
             
             self.name = @"BATCH / LIGHTS TEST SCENE";
             NSLog(@"init MY SCENE");
@@ -202,7 +194,7 @@
                 else {
 #ifdef TEST_BATCH_DRAW
                     s = [[NKNode alloc] initWithSize:V3MakeF((arc4random() % 40 + 1)*.01)];
-                    s.color = NKRED;
+                    s.color = NKWHITE;
                     [emitter addChild:s];
 #else
                     s = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveLODSphere texture:tex color:NKWHITE size:V3MakeF((arc4random() % 40 + 1)*.01)];
@@ -232,23 +224,20 @@
                             
                             [_omni removeAllActions];
                             
-                            [s addChild:_omni];
                             //
-                            [_omni runAction:[NKAction enterOrbitAtLongitude:arc4random() % 360 latitude:0 radius:s.size.width + .5 duration:1.] completion:^{
-                                [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:28 latitude:2 radius:0 duration:.1]];
+                            [_omni runAction:[NKAction enterOrbitForNode:s atLongitude:arc4random() % 360 latitude:0 radius:s.size.width + .5 duration:1.] completion:^{
+                                [_omni repeatAction:[NKAction maintainOrbitForNode:s longitude:28 latitude:2 radius:0 duration:.1]];
                             }];
                             //
                             // [s repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:33 radius:0. duration:(arc4random() % 10)*.5]];
                             
                             [s runAction:[NKAction delayFor:15] completion:^{
                                 
-                                if ([s.children containsObject:_omni]) {
-                                    [_omni removeAllActions];
-                                    [self addChild:_omni];
-                                    [_omni runAction:[NKAction enterOrbitAtLongitude:arc4random() % 360 latitude:0 radius:10. duration:1.] completion:^{
-                                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:28 latitude:2 radius:0 duration:.5]];
-                                    }];
-                                }
+                                [_omni removeAllActions];
+                                [_omni runAction:[NKAction enterOrbitForNode:self atLongitude:arc4random() % 360 latitude:0 radius:10 duration:1.] completion:^{
+                                    [_omni repeatAction:[NKAction maintainOrbitForNode:self longitude:28 latitude:2 radius:0 duration:.1]];
+                                }];
+                                
                                 
                             }];
                         }
@@ -381,33 +370,8 @@
             
             [self.camera setPosition3d:V3Make(0, 10, 40)];
             
-            NKLightProperties p;
-            
-            p.isEnabled = true;
-            p.isLocal = true;
-            p.isSpot = false;
-            
-            p.ambient = V3Make(.2,.2,.4);
-            p.color = V3Make(1.,1.,1.);
-            p.coneDirection = V3Make(0, 0, -1);
-            p.halfVector = V3MakeF(0);
-            
-            p.spotCosCutoff = 10.;
-            p.spotExponent = 2;
-            p.constantAttenuation = 1.;
-            p.linearAttenuation = .01;
-            p.quadraticAttenuation = 0.;
-            
-            _omni = [[NKLightNode alloc] initWithProperties:p];
-            //self.drawLights = true;
-//            [_omni runAction:[NKAction move3dTo:V3MakeF(0) duration:.01] completion:^{
-//                [_omni runAction:[NKAction delayFor:.4] completion:^{
-//                    [_omni runAction:[NKAction enterOrbitAtLongitude:40 latitude:-40 radius:20 duration:1.] completion:^{
-//                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:10 latitude:0 radius:0 duration:.1]];
-//                    }];
-//                }];
-//            }];
-            
+            _omni = [[NKLightNode alloc] initWithDefaultProperties];
+
             [_omni setPosition3d:V3Make(0, 10, 20)];
             [self addChild:_omni];
             
@@ -441,20 +405,15 @@
                         break;
                 }
                 ground.body = [[NKBulletBody alloc] initWithType:NKBulletShapeBox Size:ground.size3d transform:ground.localTransformMatrix mass:0];
+                
+                [ground.body setCollisionGroup:NKCollisionFilterStatic];
+                [ground.body setCollisionMask: NKCollisionFilterCharacter | NKCollisionFilterWalls];
+                
                 [[NKBulletWorld sharedInstance] addNode:ground];
             }
             
-            //            NKMeshNode *sphere = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveSphere texture:[NKTexture textureWithImageNamed:@"ball_Texture.png"] color:NKWHITE size:V3MakeF(3)];
-            //            [self addChild:sphere];
-            //
-            //            sphere.body = [[NKBulletBody alloc] initWithType:NKBulletShapeSphere Size:sphere.size3d transform:sphere.localTransformMatrix mass:0.];
-            //            [[NKBulletWorld sharedInstance] addNode:sphere];
-            //
-            //
-            
             NKBatchNode *batch = [[NKBatchNode alloc]initWithPrimitive:NKPrimitiveCube texture:[NKTexture textureWithImageNamed:nil] color:NKWHITE size:V3MakeF(.5)];
             
-          //  NKBatchNode *batch = [[NKBatchNode alloc ]initWithObjNamed:@"trashbin" withSize:V3MakeF(1.) normalize:true anchor:true];
             [self addChild:batch];
             
 #if TARGET_OS_IPHONE
@@ -470,9 +429,12 @@
                 [batch addChild:s];
                 
                 s.body = [[NKBulletBody alloc] initWithType:NKBulletShapeBox Size:s.size3d transform:s.localTransformMatrix mass:1.];
+                
+                [s.body setCollisionGroup:NKCollisionFilterWalls];
+                [s.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls | NKCollisionFilterCharacter];
+                
                 [[NKBulletWorld sharedInstance] addNode:s];
                 
-                s.userInteractionEnabled = true;
 //                s.eventBlock = newEventBlock{
 //                    // NSLog(@"boing!");
 //                    [s.body forceAwake];
@@ -485,46 +447,6 @@
             [self addChild:batch2];
             
             [self addBallToNode:batch2];
-//            [self addBallToNode:batch2];
-//            [self addBallToNode:batch2];
-//            for (int i = 0; i < numSpheres/4; i++){
-//                NKNode *s = [[NKNode alloc]initWithSize:V3MakeF(1.5)];
-//                [s setPosition3d:V3Make(arc4random() % 100 * .1 - 5., arc4random() % 100 * .1 + 1, arc4random() % 200 * .1 + 8.)];
-//                s.color = NKWHITE;
-//                [batch2 addChild:s];
-//                
-//                s.body = [[NKBulletBody alloc] initWithType:NKBulletShapeSphere Size:s.size3d transform:s.localTransformMatrix mass:1.];
-//                [[NKBulletWorld sharedInstance] addNode:s];
-//                
-//                s.userInteractionEnabled = true;
-//                s.eventBlock = newEventBlock{
-//                    
-//                    [s.body forceAwake];
-//                    
-//                    // NSLog(@"boing!");
-//                    if (NKEventTypeBegin == eventType) {
-//                        [s.body setLinearVelocity:V3MakeF(0)];
-//                        [s.body setAngularVelocity:V3MakeF(0)];
-//                        s.positionRef = V3MultiplyM16(self.camera.viewMatrix, V3Make(location.x,0,-location.y));
-//                    }
-//                    else if (NKEventTypeMove == eventType){
-//                        if (!V3Equal(V3MakeF(0), s.positionRef)) {
-//                            V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(location.x,0,-location.y)), s.positionRef);
-//                            [s.body setLinearVelocity:V3Multiply(delta, V3MakeF(.25))];
-//                            //[s setPosition3d:s.position3d];
-//                            //[s setPosition3d:V3Add(s.position3d,V3Multiply(V3Make(delta.x, 0, delta.y), V3MakeF(.01)))];
-//                        }
-//                    }
-//                    
-//                    else if (NKEventTypeEnd == eventType){
-//                        if (!V3Equal(V3MakeF(0), s.positionRef)) {
-//                            V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(location.x,0,-location.y)), s.positionRef);
-//                            [s.body applyCentralImpulse:V3Negate(V3Multiply(delta, V3MakeF(50.)))];
-//                            s.positionRef = V3MakeF(0.);
-//                        }
-//                    }
-//                };
-//            }
             
         }
         
@@ -599,9 +521,6 @@
                                                                     color:NKWHITE size:V3MakeF(.1)];
             [self addChild:newMesh];
             [newMesh repeatAction:[NKAction rotateYByAngle:45. duration:1.]];
-//            NKMeshNode *s = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveCube texture:nil color:NKWHITE size:V3MakeF(.1)];
-//            
-//            [self addChild:s];
         }
         
     }
@@ -627,6 +546,11 @@
     [n addChild:s];
     
     s.body = [[NKBulletBody alloc] initWithType:NKBulletShapeSphere Size:s.size3d transform:s.localTransformMatrix mass:1.];
+    
+    
+    [s.body setCollisionGroup:NKCollisionFilterCharacter];
+    [s.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls];
+    
     [[NKBulletWorld sharedInstance] addNode:s];
     
     s.userInteractionEnabled = true;
@@ -644,8 +568,6 @@
             if (!V3Equal(V3MakeF(0), s.positionRef)) {
                 V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y)), s.positionRef);
                 [s.body setLinearVelocity:V3Multiply(delta, V3MakeF(.25))];
-                //[s setPosition3d:s.position3d];
-                //[s setPosition3d:V3Add(s.position3d,V3Multiply(V3Make(delta.x, 0, delta.y), V3MakeF(.01)))];
             }
         }
         
@@ -654,8 +576,13 @@
                 V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y)), s.positionRef);
                 [s.body applyCentralImpulse:V3Negate(V3Multiply(delta, V3MakeF(50.)))];
                 s.positionRef = V3MakeF(0.);
-                [self performSelector:@selector(addBallToNode:) withObject:n afterDelay:.5];
-                //[self addBallToNode:n];
+                [s runAction:[NKAction delayFor:.5] completion:^{
+                    [s runAction:[NKAction fadeAlphaTo:0 duration:1.] completion:^{
+                        [s removeFromParent];
+                        [self addBallToNode:n];
+                    }];
+                }];
+   
             }
             
             

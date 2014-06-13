@@ -21,7 +21,6 @@
     NSMutableArray *_textures;
     NSMutableArray *_materials;
     U1t _numTextures;
-    float _colorBlendFactor;
     bool _drawBoundingBox;
     NKPrimitive _primitiveType;
     GLenum _drawMode;
@@ -34,7 +33,6 @@
 -(instancetype)initWithPrimitive:(NKPrimitive)primitive texture:(NKTexture*)texture color:(NKByteColor *)color size:(V3t)size;
 -(instancetype)initWithVertexBuffer:(NKVertexBuffer*)buffer drawMode:(GLenum)drawMode texture:(NKTexture*)texture color:(NKByteColor *)color size:(V3t)size;
 
--(C4t)glColor;
 -(void)setTexture:(NKTexture *)texture;
 -(void)setDrawMode:(GLenum)drawMode;
 

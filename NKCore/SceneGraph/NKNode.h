@@ -97,7 +97,8 @@ typedef void (^CompletionBlock)(void);
     
     // CACHED PROPS
     F1t intAlpha;
-
+    F1t _colorBlendFactor;
+    
     EventBlock _eventBlock;
 }
 
@@ -128,6 +129,7 @@ typedef void (^CompletionBlock)(void);
 
 -(void)setColor:(NKByteColor*)color;
 -(NKByteColor*)color;
+-(C4t)glColor;
 
 @property (nonatomic) NKBlendMode blendMode;
 @property (nonatomic) NKCullFaceMode cullFace;

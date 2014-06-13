@@ -238,13 +238,11 @@
         event.startingScreenLocation = [self uiPointToNodePoint:[t locationInView:self]];
         
         [_events addObject:event];
-        
         [_scene dispatchEvent:event];
     }
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    
     for (UITouch *t in touches) {
         for (NKEvent *e in _events) {
             if (e.touch == t) {
@@ -254,21 +252,20 @@
             }
         }
     }
-    
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    
     for (UITouch *t in touches) {
         for (NKEvent *e in _events) {
             if (e.touch == t) {
                 e.phase = NKEventPhaseEnd;
                 e.screenLocation = [self uiPointToNodePoint:[t locationInView:self]];
                 [e.node handleEvent:e];
+                
+                [_events removeObject:e];
             }
         }
     }
-    
 }
 
 -(void)doubleTap:(UITapGestureRecognizer*)recognizer {
