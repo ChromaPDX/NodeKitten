@@ -458,24 +458,24 @@
 
 #pragma mark - Touch Handling
 
--(void)handleEventWithType:(NKEventType)event forLocation:(P2t)location {
+-(void)handleEventWithType:(NKEvent*)event {
 
     if (_eventBlock) {
-        _eventBlock(event, location);
+        _eventBlock(event);
     }
     
     if (_parent && [_parent isKindOfClass:[NKScrollNode class]]) {
-        [_parent handleEventWithType:event forLocation:location];
+        [_parent handleEvent:event];
         return;
     }
     
-    if (NKEventTypeBegin == event) {
+    if (NKEventPhaseBegin == event.phase) {
         
         if (_scrollingEnabled) {
                 _scrollPhase = ScrollPhaseBegan;
                 
-                xOrigin = location.x;
-                yOrigin = location.y;
+                xOrigin = event.screenLocation.x;
+                yOrigin = event.screenLocation.y;
                 
                 counterVel = 0;
                 scrollVel = 0;
@@ -486,26 +486,26 @@
         }
         
     }
-    else if (NKEventTypeMove == event) {
+    else if (NKEventPhaseMove == event.phase) {
         
         int sDt;
         int cDt;
         P2t dt = P2Make(0,0);
         
         if (_scrollDirectionVertical) {
-            sDt = (location.y - yOrigin);
-            cDt = (location.x - xOrigin);
+            sDt = (event.screenLocation.y - yOrigin);
+            cDt = (event.screenLocation.x - xOrigin);
             dt.y = sDt;
             
         }
         else {
-            sDt = (location.x - xOrigin);
-            cDt = (location.y - yOrigin);
+            sDt = (event.screenLocation.x - xOrigin);
+            cDt = (event.screenLocation.y - yOrigin);
             dt.x = sDt;
         }
         
-        xOrigin = location.x;
-        yOrigin = location.y;
+        xOrigin = event.screenLocation.x;
+        yOrigin = event.screenLocation.y;
         
         scrollVel += sDt;
         counterVel += cDt;
@@ -553,7 +553,7 @@
 //            }
         }
     }
-    else if (NKEventTypeEnd == event){
+    else if (NKEventPhaseEnd == event.phase){
         if (_scrollPhase == ScrollPhaseFailed || _scrollPhase == ScrollPhaseBegan || _scrollPhase == ScrollPhaseNil) {
 //            for (NKNode *child in intChildren) {
 //                if ([child touchUp:location id:touchId ] > 0){

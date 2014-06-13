@@ -186,8 +186,8 @@
     
 }
 
--(void)handleEventWithType:(NKEventType)event forLocation:(P2t)location {
-    if (NKEventTypeEnd == event) {
+-(void)handleEventWithType:(NKEvent*)event {
+    if (NKEventPhaseEnd == event.phase) {
         if (self.scrollPhase == ScrollPhaseNil) {
             if (self.selectedChild) {
                 [self.delegate cellWasSelected:self.selectedChild];
@@ -195,7 +195,7 @@
         }
     }
     else {
-        [super handleEventWithType:event forLocation:location];
+        [super handleEvent:event];
     }
 }
 

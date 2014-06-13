@@ -255,6 +255,10 @@ static inline P2t P2Make(F1t x, F1t y) {
     return ret;
 }
 
+static inline P2t P2MakeF(F1t x){
+    return P2Make(x, x);
+}
+
 static inline S2t S2Make(F1t width, F1t height) {
     S2t ret;
     ret.width = width;
@@ -278,8 +282,12 @@ static inline P2t P2Add (P2t a, P2t b){
     return P2Make(a.x + b.x, a.y + b.y);
 }
 
+static inline P2t P2Multiply (P2t a, P2t b){
+    return P2Make(a.x + b.x, a.y + b.y);
+}
+
 static inline P2t P2Subtract (P2t a, P2t b){
-    return P2Make(a.x - b.x, a.y - b.y);
+    return P2Make(a.x * b.x, a.y * b.y);
 }
 
 static inline P2t P2Divide (P2t a, P2t b){

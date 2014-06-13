@@ -51,6 +51,7 @@
     NKTexture * texture;
 }
 
+@property (nonatomic, strong) NSMutableSet *events;
 @property (nonatomic, strong) NKSceneNode *scene;
 @property (nonatomic, weak) NKUIViewController *controller;
 @property (nonatomic) float mscale;

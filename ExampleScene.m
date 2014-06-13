@@ -80,7 +80,7 @@
                 //sc.name =
                 
                 sc.eventBlock = newEventBlock{
-                    if (NKEventTypeEnd == eventType) {
+                    if (NKEventPhaseEnd == event.phase) {
                         [sc.scene unload];
                         self.nkView.scene = [[ExampleScene alloc]initWithSize:self.size sceneChoice:[sc.name intValue]];
                     }
@@ -223,7 +223,7 @@
                 }];
                 
                 s.eventBlock = newEventBlock{
-                    if (eventType == NKEventTypeBegin) {
+                    if (event.phase == NKEventPhaseBegin) {
                         
                         if (![s.children containsObject:_omni]) {
                             //[s removeAllActions];
@@ -280,7 +280,7 @@
                 [self addChild:s];
                 //s.blendMode = NKBlendModeAdd;
                 s.eventBlock = newEventBlock{
-                    if (eventType == NKEventTypeBegin) {
+                    if (event.phase == NKEventPhaseBegin) {
                         s.userInteractionEnabled = false;
                         [s removeAllActions];
                         s.drawMode = GL_TRIANGLE_STRIP;
@@ -610,10 +610,10 @@
     return self;
 }
 
--(void)handleEventWithType:(NKEventType)event forLocation:(P2t)location {
-    [super handleEventWithType:event forLocation:location];
-    
-    if (NKEventTypeDoubleTap == event) {
+-(void)handleEvent:(NKEvent *)event {
+    [super handleEvent:event];
+
+    if (NKEventPhaseDoubleTap == event.phase) {
         [self unload];
         self.nkView.scene = [[ExampleScene alloc]initWithSize:self.size sceneChoice:0];
     }
@@ -635,23 +635,23 @@
         [s.body forceAwake];
         
         // NSLog(@"boing!");
-        if (NKEventTypeBegin == eventType) {
+        if (NKEventPhaseBegin == event.phase) {
             [s.body setLinearVelocity:V3MakeF(0)];
             [s.body setAngularVelocity:V3MakeF(0)];
-            s.positionRef = V3MultiplyM16(self.camera.viewMatrix, V3Make(location.x,0,-location.y));
+            s.positionRef = V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y));
         }
-        else if (NKEventTypeMove == eventType){
+        else if (NKEventPhaseMove == event.phase){
             if (!V3Equal(V3MakeF(0), s.positionRef)) {
-                V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(location.x,0,-location.y)), s.positionRef);
+                V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y)), s.positionRef);
                 [s.body setLinearVelocity:V3Multiply(delta, V3MakeF(.25))];
                 //[s setPosition3d:s.position3d];
                 //[s setPosition3d:V3Add(s.position3d,V3Multiply(V3Make(delta.x, 0, delta.y), V3MakeF(.01)))];
             }
         }
         
-        else if (NKEventTypeEnd == eventType){
+        else if (NKEventPhaseEnd == event.phase){
             if (!V3Equal(V3MakeF(0), s.positionRef)) {
-                V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(location.x,0,-location.y)), s.positionRef);
+                V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y)), s.positionRef);
                 [s.body applyCentralImpulse:V3Negate(V3Multiply(delta, V3MakeF(50.)))];
                 s.positionRef = V3MakeF(0.);
                 [self performSelector:@selector(addBallToNode:) withObject:n afterDelay:.5];

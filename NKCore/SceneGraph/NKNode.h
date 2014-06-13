@@ -42,15 +42,6 @@ typedef NS_ENUM(U1t, NKTouchState) {
     NKTouchIsFirstResponder
 } NS_ENUM_AVAILABLE(10_9, 7_0);
 
-typedef NS_ENUM(U1t, NKEventType) {
-    NKEventTypeNone,
-    NKEventTypeBegin,
-    NKEventTypeMove,
-    NKEventTypeEnd,
-    NKEventTypeDrag,
-    NKEventTypeDoubleTap
-} NS_ENUM_AVAILABLE(10_9, 7_0);
-
 typedef NS_ENUM(U1t, NKBlendMode) {
     NKBlendModeNone,
     NKBlendModeAlpha,
@@ -68,11 +59,12 @@ typedef NS_ENUM(U1t, NKCullFaceMode) {
 } NS_ENUM_AVAILABLE(10_9, 7_0);
 
 @class NKNode;
+@class NKEvent;
 
 typedef void (^ActionBlock)(NKAction *action, NKNode* node, F1t completion);
 #define newActionBlock (ActionBlock)^(NKAction *action, NKNode* node, F1t completion)
-typedef void (^EventBlock)(NKEventType eventType, P2t location);
-#define newEventBlock (EventBlock)^(NKEventType eventType, P2t location)
+typedef void (^EventBlock)(NKEvent* event);
+#define newEventBlock (EventBlock)^(NKEvent* event)
 typedef void (^CompletionBlock)(void);
 
 @interface NKNode : NSObject
@@ -303,7 +295,7 @@ typedef void (^CompletionBlock)(void);
 
 -(void)setEventBlock:(EventBlock)eventBlock;
 
--(void)handleEventWithType:(NKEventType)event forLocation:(P2t)location;
+-(void)handleEvent:(NKEvent*)event;
 
 //-(NKTouchState) touchDown:(P2t)location id:(int) touchId;
 //-(NKTouchState) touchMoved:(P2t)location id:(int) touchId;

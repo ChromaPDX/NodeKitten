@@ -1035,9 +1035,9 @@
     _eventBlock = eventBlock;
 }
 
--(void)handleEventWithType:(NKEventType)event forLocation:(P2t)location {
+-(void)handleEvent:(NKEvent*)event {
     if (_eventBlock) {
-        _eventBlock(event, location);
+        _eventBlock(event);
     }
 }
 

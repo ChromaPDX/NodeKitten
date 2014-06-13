@@ -72,7 +72,9 @@
 
 #import "NKSoundManager.h"
 
-// UIKIT EXTENSIONS
+// UIKIT
+
+#import "NKEvent.h"
 
 #if TARGET_OS_IPHONE
 #import "NKUIViewController.h"
@@ -82,6 +84,8 @@
 #import "NKView.h"
 #endif
 #import "NKFrameBuffer.h"
+
+// UIKIT EXTENSIONS
 
 #import "NKImage+Utils.h"
 #import "NKFont+CoreText.h"

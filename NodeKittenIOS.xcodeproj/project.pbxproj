@@ -447,6 +447,8 @@
 		2970D8FB194A705C00EEAC2B /* trashbin.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 2970D8BC194A705C00EEAC2B /* trashbin.mtl */; };
 		2970D8FC194A705C00EEAC2B /* trashbin.obj in Resources */ = {isa = PBXBuildFile; fileRef = 2970D8BD194A705C00EEAC2B /* trashbin.obj */; };
 		2970D8FD194A705C00EEAC2B /* trashbin.obj in Resources */ = {isa = PBXBuildFile; fileRef = 2970D8BD194A705C00EEAC2B /* trashbin.obj */; };
+		29DACA5C194B42E000F382E4 /* NKEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 29DACA5B194B42E000F382E4 /* NKEvent.m */; };
+		29DACA5D194B42E000F382E4 /* NKEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 29DACA5B194B42E000F382E4 /* NKEvent.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -949,6 +951,8 @@
 		2970D8BC194A705C00EEAC2B /* trashbin.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = trashbin.mtl; sourceTree = "<group>"; };
 		2970D8BD194A705C00EEAC2B /* trashbin.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = trashbin.obj; sourceTree = "<group>"; };
 		29DACA59194B403300F382E4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		29DACA5A194B42E000F382E4 /* NKEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKEvent.h; sourceTree = "<group>"; };
+		29DACA5B194B42E000F382E4 /* NKEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKEvent.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1540,6 +1544,8 @@
 				2970D705194A6DAF00EEAC2B /* NKScrollNode.m */,
 				2970D706194A6DAF00EEAC2B /* NKSoundManager.h */,
 				2970D707194A6DAF00EEAC2B /* NKSoundManager.m */,
+				29DACA5A194B42E000F382E4 /* NKEvent.h */,
+				29DACA5B194B42E000F382E4 /* NKEvent.m */,
 				2970D708194A6DAF00EEAC2B /* NKSpriteNode.h */,
 				2970D709194A6DAF00EEAC2B /* NKSpriteNode.m */,
 			);
@@ -2094,6 +2100,7 @@
 				2970D824194A6DAF00EEAC2B /* btUniformScalingShape.cpp in Sources */,
 				2970D7BC194A6DAF00EEAC2B /* btHingeConstraint.cpp in Sources */,
 				2970D74C194A6DAF00EEAC2B /* btBulletFile.cpp in Sources */,
+				29DACA5C194B42E000F382E4 /* NKEvent.m in Sources */,
 				2970D786194A6DAF00EEAC2B /* btConvexPolyhedron.cpp in Sources */,
 				2970D79C194A6DAF00EEAC2B /* btEmptyShape.cpp in Sources */,
 				2970D7EA194A6DAF00EEAC2B /* btShapeHull.cpp in Sources */,
@@ -2183,6 +2190,7 @@
 				2970D819194A6DAF00EEAC2B /* btTriangleIndexVertexArray.cpp in Sources */,
 				2970D805194A6DAF00EEAC2B /* btSphereBoxCollisionAlgorithm.cpp in Sources */,
 				2970D815194A6DAF00EEAC2B /* btTriangleBuffer.cpp in Sources */,
+				29DACA5D194B42E000F382E4 /* NKEvent.m in Sources */,
 				2970D7E3194A6DAF00EEAC2B /* btRigidBody.cpp in Sources */,
 				2970D7EB194A6DAF00EEAC2B /* btShapeHull.cpp in Sources */,
 				2970D84D194A6DAF00EEAC2B /* NKEmitterNode.m in Sources */,

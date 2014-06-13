@@ -383,11 +383,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 //	[[view openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
 //}
 
--(P2t)calibratedMousePoint:(NSPoint)mouseIn {
- 
-    return P2Make(mouseIn.x * _mscale * wMult, mouseIn.y * _mscale * hMult);
-    
-}
+
 
 -(void)keyDown:(NSEvent *)theEvent {
     //if (theEvent.keyCode == NSUpArrowFunctionKey){

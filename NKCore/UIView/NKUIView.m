@@ -105,6 +105,7 @@
     [dt setNumberOfTapsRequired:2];
     [self addGestureRecognizer:dt];
     
+    _events = [[NSMutableSet alloc]init];
 }
 
 -(void)layoutSubviews
@@ -162,12 +163,6 @@
 }
 
 // Stop animating and release resources when they are no longer needed.
-
-
--(P2t)uiPointToNodePoint:(CGPoint)p {
-    P2t size = self.scene.size;
-    return P2Make(p.x*_mscale, size.height - (p.y*_mscale));
-}
 
 
 - (void)startAnimation
@@ -231,16 +226,33 @@
 	context = nil;
 }
 
+-(P2t)uiPointToNodePoint:(CGPoint)p {
+    P2t size = self.scene.size;
+    return P2Make(p.x*_mscale, size.height - (p.y*_mscale));
+}
+
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *t in touches) {
-           [_scene dispatchTouchRequestForLocation:[self uiPointToNodePoint:[t locationInView:self]]  type:NKEventTypeBegin];
+        NKEvent* event = [[NKEvent alloc]initWithTouch:t];
+        event.phase = NKEventPhaseBegin;
+        event.startingScreenLocation = [self uiPointToNodePoint:[t locationInView:self]];
+        
+        [_events addObject:event];
+        
+        [_scene dispatchEvent:event];
     }
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     
     for (UITouch *t in touches) {
-        [_scene dispatchTouchRequestForLocation:[self uiPointToNodePoint:[t locationInView:self]]  type:NKEventTypeMove];
+        for (NKEvent *e in _events) {
+            if (e.touch == t) {
+                e.phase = NKEventPhaseMove;
+                e.screenLocation = [self uiPointToNodePoint:[t locationInView:self]];
+                [e.node handleEvent:e];
+            }
+        }
     }
     
 }
@@ -248,13 +260,22 @@
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
     for (UITouch *t in touches) {
-        [_scene dispatchTouchRequestForLocation:[self uiPointToNodePoint:[t locationInView:self]] type:NKEventTypeEnd];
+        for (NKEvent *e in _events) {
+            if (e.touch == t) {
+                e.phase = NKEventPhaseEnd;
+                e.screenLocation = [self uiPointToNodePoint:[t locationInView:self]];
+                [e.node handleEvent:e];
+            }
+        }
     }
     
 }
 
 -(void)doubleTap:(UITapGestureRecognizer*)recognizer {
-    [_scene dispatchTouchRequestForLocation:[self uiPointToNodePoint:[recognizer locationInView:self]] type:NKEventTypeDoubleTap];
+    NKEvent* event = [[NKEvent alloc]initWithTouch:nil];
+    event.startingScreenLocation = P2MakeCG([recognizer locationInView:self]);
+    event.phase = NKEventPhaseDoubleTap;
+    [_scene dispatchEvent:event];
 }
 
 

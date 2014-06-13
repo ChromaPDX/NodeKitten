@@ -61,8 +61,15 @@ typedef void (^CallBack)();
 #endif
 }
 
-@property (nonatomic, strong) NSMutableArray *hitQueue;
-@property (nonatomic) void *view;
+-(instancetype) initWithSize:(S2t)size;
+
+// NODE HIERARCHY
+#if TARGET_OS_IPHONE
+@property (nonatomic, weak)   NKUIView *nkView;
+#else
+@property (nonatomic, weak)   NKView *nkView;
+#endif
+//@property (nonatomic) void *view;
 
 @property (nonatomic) BOOL shouldRasterize;
 @property (nonatomic) NKByteColor *backgroundColor;
@@ -75,23 +82,28 @@ typedef void (^CallBack)();
 @property (nonatomic) BOOL drawLights;
 @property (nonatomic, strong) NSMutableArray *lights;
 
-#if TARGET_OS_IPHONE
-@property (nonatomic, weak)   NKUIView *nkView;
-#else
-@property (nonatomic, weak)   NKView *nkView;
-#endif
-@property (nonatomic, weak) NKShaderProgram *activeShader;
 
+// HIT DETECTION
+
+-(void)dispatchEvent:(NKEvent*)event;
+
+// COLOR BASED HIT DETECTION
+@property (nonatomic) bool useColorDetection;
 @property (nonatomic, strong) NKShaderProgram *hitDetectShader;
-
 @property (nonatomic, strong) NKFrameBuffer *hitDetectBuffer;
+@property (nonatomic, strong) NSMutableArray *hitQueue;
 
+// PHYSICS HIT DETECTION
+
+@property (nonatomic) bool useBulletDetection;
+
+// GL STATE MACHINE CONTROL
 @property (nonatomic) bool depthTest;
-
--(instancetype) initWithSize:(S2t)size;
-
-
-
+@property (nonatomic, weak) NKShaderProgram *activeShader;
+@property (nonatomic, weak) NKVertexBuffer *boundVertexBuffer;
+@property (nonatomic, weak) NKTexture *boundTexture;
+@property (nonatomic) NKBlendMode blendModeState;
+@property (nonatomic) bool fill;
 
 - (void)draw;
 // encompasses 3 states
@@ -112,14 +124,7 @@ typedef void (^CallBack)();
 -(void)processHitBuffer;
 -(void)drawHitBuffer;
 
--(void)dispatchTouchRequestForLocation:(P2t)location type:(NKEventType)eventType;
 -(void)keyPressed:(NSUInteger)key;
-
-// DRAW STATE SHADOWING
-@property (nonatomic, weak) NKVertexBuffer *boundVertexBuffer;
-@property (nonatomic, weak) NKTexture *boundTexture;
-@property (nonatomic) NKBlendMode blendModeState;
-@property (nonatomic) bool fill;
 
 @end
 

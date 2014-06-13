@@ -61,8 +61,8 @@
         
         _stack = [[NKMatrixStack alloc]init];
         
+        self.useColorDetection = true;
         _hitDetectBuffer = [[NKFrameBuffer alloc] initWithWidth:self.size.width height:self.size.height];
-            
         _hitDetectShader = [NKShaderProgram newShaderNamed:@"hitShaderSingle" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:0 numLights:0 withBatchSize:0];
 #if NK_LOG_METRICS
         metricsTimer = [NSTimer timerWithTimeInterval:1. target:self selector:@selector(logMetricsPerSecond) userInfo:nil repeats:YES];
@@ -350,41 +350,34 @@
             break;
     }
 }
--(void)dispatchTouchRequestForLocation:(P2t)location type:(NKEventType)eventType{
+-(void)dispatchEvent:(NKEvent*)event {
     
     //NSLog(@"dispatch event for location %f %f",location.x, location.y);
-    
-    CallBack callBack = ^{
-        NKByteColor *hc = [[NKByteColor alloc]init];
-        glReadPixels(location.x, location.y,
-                     1, 1,
-                     GL_RGBA, GL_UNSIGNED_BYTE, hc.bytes);
-        NKNode *hit = [NKShaderManager nodeForColor:hc];
-
-        if (!hit){
-            hit = self;
-        }
+    if (_useColorDetection) {
         
-        [hit handleEventWithType:eventType forLocation:location];
-//        switch (eventType) {
-//            case NKEventTypeBegin:
-//                [hit touchDown:location id:0];
-//                break;
-//                
-//            case NKEventTypeMove:
-//                [hit touchMoved:location id:0];
-//                break;
-//                
-//            case NKEventTypeEnd:
-//                [hit touchUp:location id:0];
-//                break;
-//                
-//            default:
-//                break;
-//        }
-    };
+        CallBack callBack = ^{
+            NKByteColor *hc = [[NKByteColor alloc]init];
+            glReadPixels(event.glLocation.x, event.glLocation.y,
+                         1, 1,
+                         GL_RGBA, GL_UNSIGNED_BYTE, hc.bytes);
+            NKNode *hit = [NKShaderManager nodeForColor:hc];
+            
+            if (!hit){
+                hit = self;
+            }
+            
+            event.node = hit;
+            
+            [hit handleEvent:event];
+            
+        };
+        
+        [_hitQueue addObject:callBack];
+    }
     
-    [_hitQueue addObject:callBack];
+    else if (_useBulletDetection) {
+        // IMPLEMENT THIS
+    }
 
 }
 
