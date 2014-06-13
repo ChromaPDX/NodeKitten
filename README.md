@@ -18,7 +18,13 @@ Some math functions from OPEN FRAMEWORKS
 
 TO USE:
 
-1. Build Demo App
-2. To include in your project simple add NKCore folder, put an NKView or NKUIView in an XIB file, subclass NKSceneNode as ‘MyScene’ etc. set view’s scene property to your scene.
+Confirm demo app works on your platform
 
-Most other API flow resembles Apple’s SpriteKit / Scene Kit with a few variations. Most animation / event handling done with ^blocks.
+1. add NKCore folder to your project
+2. put an NKView or NKUIView in an XIB file, 
+3. make a subclass NKSceneNode as ‘MyScene’ etc. 
+4. in app delegate or elsewhere, set your view’s scene property to ‘MyScene’.
+
+IN USE:
+
+Most of the API flow resembles Apple’s SpriteKit / Scene Kit with a few variations. Most animation / event handling done with ^blocks.

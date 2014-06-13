@@ -948,6 +948,7 @@
 		2970D8BB194A705C00EEAC2B /* rustbin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = rustbin.jpg; sourceTree = "<group>"; };
 		2970D8BC194A705C00EEAC2B /* trashbin.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = trashbin.mtl; sourceTree = "<group>"; };
 		2970D8BD194A705C00EEAC2B /* trashbin.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = trashbin.obj; sourceTree = "<group>"; };
+		29DACA59194B403300F382E4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -994,6 +995,7 @@
 		2970D516194A6D8C00EEAC2B = {
 			isa = PBXGroup;
 			children = (
+				29DACA59194B403300F382E4 /* README.md */,
 				2970D590194A6DAD00EEAC2B /* NKCore */,
 				2970D733194A6DAF00EEAC2B /* ExampleScene.h */,
 				2970D732194A6DAF00EEAC2B /* ExampleScene.m */,
@@ -2620,6 +2622,7 @@
 				2970D556194A6D8C00EEAC2B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2970D557194A6D8C00EEAC2B /* Build configuration list for PBXNativeTarget "NodeKittenIOSTests" */ = {
 			isa = XCConfigurationList;
@@ -2628,6 +2631,7 @@
 				2970D559194A6D8C00EEAC2B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2970D58A194A6D9A00EEAC2B /* Build configuration list for PBXNativeTarget "NodeKittenDesktop" */ = {
 			isa = XCConfigurationList;
@@ -2636,6 +2640,7 @@
 				2970D58C194A6D9A00EEAC2B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2970D58D194A6D9A00EEAC2B /* Build configuration list for PBXNativeTarget "NodeKittenDesktopTests" */ = {
 			isa = XCConfigurationList;
@@ -2644,6 +2649,7 @@
 				2970D58F194A6D9A00EEAC2B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
