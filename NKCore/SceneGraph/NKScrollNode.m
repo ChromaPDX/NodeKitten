@@ -67,7 +67,7 @@
         size = S2Make(parent.size.width*autoSizePct,parent.size.height);
     }
     
-    self = [super initWithColor:NKCLEAR size:size];
+    self = [super initWithColor:nil size:size];
     
     if (self) {
         

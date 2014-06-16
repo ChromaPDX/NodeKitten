@@ -84,6 +84,21 @@
     
 }
 
+- (void)insertChild:(NKNode *)child atIndex:(NSInteger)index {
+    if (!intChildren) {
+        intChildren = [[NSMutableArray alloc]init];
+    }
+    
+    NSMutableArray *temp = [intChildren mutableCopy];
+    
+    if (![temp containsObject:child]) {
+        [temp insertObject:child atIndex:0];
+        [child setParent:self];
+    }
+    
+    intChildren = temp;
+}
+
 -(NKSceneNode*)scene {
     
     if (!_scene) { // CACHE POINTER
@@ -259,14 +274,6 @@
     }
     
     return rect;
-}
-
-
-- (void)insertChild:(NKNode *)child atIndex:(NSInteger)index{
-    if (!intChildren) {
-        intChildren = [[NSMutableArray alloc]init];
-    }
-    [intChildren insertObject:child atIndex:index];
 }
 
 - (void)removeChildrenInArray:(NSArray *)nodes{
@@ -553,8 +560,22 @@
     
     [self customDraw];
     
+    NSMutableSet *transparentChildren;
+    
     for (NKNode *child in intChildren) {
-        [child draw];
+        if (child.alpha == 1.) {
+              [child draw];
+        }
+        else {
+            if (!transparentChildren) {
+                transparentChildren = [[NSMutableSet alloc] init];
+            }
+            [transparentChildren addObject:child];
+        }
+    }
+    
+    for (NKNode *tc in transparentChildren){
+        [tc draw];
     }
     
     [self end];

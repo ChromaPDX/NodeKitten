@@ -26,7 +26,7 @@
         NKTexture *newTex = [[NKTexture alloc] initWithImageNamed:name];
         
         if (newTex){
-            NSLog(@"adding tex to atlas named:%@", name);
+            //NSLog(@"adding tex to atlas named:%@", name);
             [[NKTextureManager imageCache] setObject:newTex forKey:name];
         }
         else {
@@ -42,7 +42,7 @@
     
     if (![[NKTextureManager imageCache] objectForKey:name]) {
         [[NKTextureManager imageCache] setObject:[[NKTexture alloc] initWithPVRFile:name width:size.width height:size.height]forKey:name];
-        NSLog(@"add tex to atlas named: %@", name);
+        //NSLog(@"add tex to atlas named: %@", name);
     }
     
     return [[NKTextureManager imageCache] objectForKey:name];
@@ -61,7 +61,7 @@
     
     if (![[NKTextureManager labelCache] objectForKey:string]) {
         [[NKTextureManager labelCache] setObject:[self textureWithString:string fontNamed:node.fontName color:node.fontColor Size:node.size fontSize:node.fontSize completion:nil] forKey:string];
-        NSLog(@"add tex to atlas for label node named: %@", string);
+        //NSLog(@"add tex to atlas for label node named: %@", string);
     }
     return [[NKTextureManager labelCache] objectForKey:string];
 }
@@ -69,7 +69,7 @@
 +(instancetype) textureWithString:(NSString *)string ForLabelNode:(NKLabelNode *)node inBackGroundWithCompletionBlock:(void (^)())block {
     if (![[NKTextureManager labelCache] objectForKey:string]) {
         [[NKTextureManager labelCache] setObject:[self textureWithString:string fontNamed:node.fontName color:node.fontColor Size:node.size fontSize:node.fontSize completion:^{block();}] forKey:string];
-        NSLog(@"add tex to atlas for label node named: %@", string);
+        //NSLog(@"add tex to atlas for label node named: %@", string);
     }
     else {
         block();
@@ -158,7 +158,7 @@
         
         //NKTexture *texture = [[NKTexture alloc] initWithTexture:[NKTexture texFromImage:UIGraphicsGetImageFromCurrentImageContext()]];
         
-        NSLog(@"Creating texture with font %@, font named %@", font, name);
+        //NSLog(@"Creating texture with font %@, font named %@", font, name);
         
         
         
@@ -196,7 +196,7 @@
         glBindTexture(GL_TEXTURE_2D, 0);
         
         if (!texture) {
-            NSLog(@"failed to allocate GLES texture ID");
+            //NSLog(@"failed to allocate GLES texture ID");
             return nil;
         }
 #else
@@ -226,7 +226,7 @@
         
         if (!request) {
             request = [NKImage imageNamed:@"chromeKittenSmall.png"];
-            NSLog(@"can't load tex, , using default");
+            //NSLog(@"can't load tex, , using default");
         }
         
         NSAssert(request != nil, @"MISSING DEFAULT TEX IMAGE OR SOMETHING ELSE BROKE !!");
@@ -410,7 +410,7 @@
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char *)CGBitmapContextGetData(context));
         glBindTexture(GL_TEXTURE_2D, 0);
         if (!texture) {
-            NSLog(@"failed to allocate GLES texture ID");
+            //NSLog(@"failed to allocate GLES texture ID");
         }
 #else
         
@@ -436,7 +436,7 @@
         // Create mipmaps for this texture for better image quality
         glGenerateMipmap(GL_TEXTURE_2D);
         
-        //NSLog(@"GL init tex: %d,%d, loc %d", w,h,texture[0]);
+        ////NSLog(@"GL init tex: %d,%d, loc %d", w,h,texture[0]);
         
 #endif
     

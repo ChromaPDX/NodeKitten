@@ -32,7 +32,7 @@
 
 - (instancetype)initWithSize:(S2t)size FontNamed:(NSString *)fontName{
     
-    self = [super initWithColor:NKCLEAR size:size];
+    self = [super initWithColor:nil size:size];
     
     if (self){
         
