@@ -514,25 +514,37 @@
         
         else if (sceneChoice == 5) { // ASSIMP
 
-            self.camera.position3d = V3Make(0, 2, 4);
+            self.camera.position3d = V3Make(0, 20, 40);
             
-            [self repeatAction:[NKAction rotateYByAngle:90 duration:1.]];
+            [self repeatAction:[NKAction rotateYByAngle:90 duration:8.]];
             
-            _omni = [[NKLightNode alloc] initWithDefaultProperties];
+//            _omni = [[NKLightNode alloc] initWithDefaultProperties];
+//            
+//            
+//            [_omni runAction:[NKAction move3dTo:V3MakeF(0) duration:2.] completion:^{
+//                [_omni runAction:[NKAction delayFor:.4] completion:^{
+//                    [_omni runAction:[NKAction enterOrbitAtLongitude:0 latitude:0 radius:30 duration:1.] completion:^{
+//                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:11 radius:0 duration:.3]];
+//                    }];
+//                }];
+//            }];
+
             
-            [_omni setPosition3d:V3Make(0, 0, 10)];
-            [self addChild:_omni];
+//            [self addChild:_omni];
             
-            self.drawLights = true;
+  //          self.drawLights = true;
             
-            AIScene* scene = [[AIScene alloc]initFromFile:@"pyramob.3DS"];
+            AIScene* scene = [[AIScene alloc]initFromFile:@"jeep1a.fbx"];
             
-            [self addChild:scene.meshes[0]];
-//            for (int i = 0; i <scene.meshes.count; i++){
-//                NKMeshNode *node = scene.meshes[i];
-//                [self addChild:node];
-//                [node setScale:1];
-//            }
+            //[self addChild:scene.meshes[0]];
+            
+            for (int i = 0; i <scene.meshes.count; i++){
+                NKMeshNode *node = scene.meshes[i];
+                [self addChild:node];
+                if (i < 4) {
+                    [node repeatAction:[NKAction rotateXByAngle:30 duration:1.]];
+                }
+            }
             
         }
         
