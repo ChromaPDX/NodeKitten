@@ -29,6 +29,10 @@
 #define NK_BATCH_SIZE 64
 #endif
 
+// MODULES
+
+#define NK_USE_ASSIMP 0
+
 // SYSTEM MACROS
 
 
