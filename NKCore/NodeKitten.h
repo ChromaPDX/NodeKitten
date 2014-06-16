@@ -35,6 +35,7 @@
 #import "NKMeshNode.h"
 #import "NKCamera.h"
 #import "NKLightNode.h"
+#import "NKVideoNode.h"
 
 // MESH NODE SUBS
 #import "NKSpriteNode.h"
@@ -55,7 +56,6 @@
 
 #import "NKTextureManager.h"
 #import "NKTexture.h"
-#import "NKMaterial.h"
 #import "NKColor.h"
 
 // SHADERS
@@ -68,6 +68,10 @@
 
 #import "NKNodeAnimationHandler.h"
 
+// 3D MODELS
+
+#import "NKAssimpLoader.h"
+
 // SOUND
 
 #import "NKSoundManager.h"
@@ -75,6 +79,7 @@
 // UIKIT
 
 #import "NKEvent.h"
+#import "NKGLManager.h"
 
 #if TARGET_OS_IPHONE
 #import "NKUIViewController.h"

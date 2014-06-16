@@ -39,7 +39,7 @@
 
             for (int i = 0; i < numScenes; i++) {
                 
-                NKScrollNode *sc = [[NKScrollNode alloc] initWithParent:table autoSizePct:.2];
+                NKScrollNode *sc = [[NKScrollNode alloc] initWithParent:table autoSizePct:.15];
                 [table addChild:sc];
                 
                 if (i % 2 == 0){
@@ -66,10 +66,10 @@
                         sc.name =  [NSString stringWithFormat:@"%d - PHYSICS", i];
                         break;
                     case 5:
-                        sc.name =  [NSString stringWithFormat:@"%d - OBJ", i];
+                        sc.name =  [NSString stringWithFormat:@"%d - 3D MODELS", i];
                         break;
                     case 6:
-                        sc.name =  [NSString stringWithFormat:@"%d - PRIMITIVES", i];
+                        sc.name =  [NSString stringWithFormat:@"%d - VIDEO", i];
                         break;
                         
                     default:
@@ -450,84 +450,151 @@
             
         }
         
-#pragma mark - 5 - OBJ
-        else if (sceneChoice == 5) { // OBJ
+//#pragma mark - 5 - OBJ
+//        else if (sceneChoice == 5) { // OBJ
+//            
+//            //[self.scene repeatAction:[NKAction rotateYByAngle:45 duration:2.]];
+//            
+//            [self.camera setPosition3d:V3Make(0, 10, 20)];
+//            
+//            NKLightProperties p;
+//            
+//            p.isEnabled = true;
+//            p.isLocal = true;
+//            p.isSpot = false;
+//            
+//            p.ambient = V3Make(.2,.2,.4);
+//            p.color = V3Make(1.,1.,1.);
+//            p.coneDirection = V3Make(0, 0, -1);
+//            p.halfVector = V3MakeF(0);
+//            
+//            p.spotCosCutoff = 10.;
+//            p.spotExponent = 2;
+//            p.constantAttenuation = 1.;
+//            p.linearAttenuation = .1;
+//            p.quadraticAttenuation = 0.;
+//            
+//            _omni = [[NKLightNode alloc] initWithProperties:p];
+//            
+//            [self addChild:_omni];
+//
+//            [_omni runAction:[NKAction move3dTo:V3MakeF(0) duration:2.] completion:^{
+//                [_omni runAction:[NKAction delayFor:.4] completion:^{
+//                    [_omni runAction:[NKAction enterOrbitAtLongitude:0 latitude:0 radius:10 duration:1.] completion:^{
+//                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:11 radius:.01 duration:.3]];
+//                    }];
+//                }];
+//            }];
+//
+//            NKMeshNode* newMesh;
+//            
+//            newMesh = [[NKMeshNode alloc]initWithObjNamed:@"teapot" withSize:V3MakeF(5.) normalize:true anchor:true];
+//            [self addChild:newMesh];
+//            [newMesh setPosition3d:V3Make(0,0,0)];
+//            [newMesh repeatAction:[NKAction rotateXByAngle:90 duration:1.]];
+//            
+//            newMesh = [[NKMeshNode alloc]initWithObjNamed:@"trashbin" withSize:V3MakeF(5.) normalize:true anchor:true];
+//            newMesh.color = NKRED;
+//            
+//            [self addChild:newMesh];
+//            [newMesh setPosition3d:V3Make(0,10,0)];
+//            [newMesh repeatAction:[NKAction rotateXByAngle:90 duration:1.]];
+//            
+//            newMesh = [[NKMeshNode alloc]initWithObjNamed:@"mushrooms" withSize:V3MakeF(5.) normalize:true anchor:true];
+//            newMesh.texture = [NKTexture textureWithImageNamed:@"shroom.tif"];
+//            [self addChild:newMesh];
+//            
+//            [newMesh setPosition3d:V3Make(0,-10,0)];
+//            [newMesh repeatAction:[NKAction rotateXByAngle:90 duration:1.]];
+//
+//            
+//        }
+        
+#pragma mark - 5 - ASSIMP
+        
+        else if (sceneChoice == 5) { // ASSIMP
+
+            self.camera.position3d = V3Make(0, 2, 4);
             
-            //[self.scene repeatAction:[NKAction rotateYByAngle:45 duration:2.]];
+            [self repeatAction:[NKAction rotateYByAngle:90 duration:1.]];
             
-            [self.camera setPosition3d:V3Make(0, 10, 20)];
+            _omni = [[NKLightNode alloc] initWithDefaultProperties];
             
-            NKLightProperties p;
-            
-            p.isEnabled = true;
-            p.isLocal = true;
-            p.isSpot = false;
-            
-            p.ambient = V3Make(.2,.2,.4);
-            p.color = V3Make(1.,1.,1.);
-            p.coneDirection = V3Make(0, 0, -1);
-            p.halfVector = V3MakeF(0);
-            
-            p.spotCosCutoff = 10.;
-            p.spotExponent = 2;
-            p.constantAttenuation = 1.;
-            p.linearAttenuation = .1;
-            p.quadraticAttenuation = 0.;
-            
-            _omni = [[NKLightNode alloc] initWithProperties:p];
-            
+            [_omni setPosition3d:V3Make(0, 0, 10)];
             [self addChild:_omni];
-
-            [_omni runAction:[NKAction move3dTo:V3MakeF(0) duration:2.] completion:^{
-                [_omni runAction:[NKAction delayFor:.4] completion:^{
-                    [_omni runAction:[NKAction enterOrbitAtLongitude:0 latitude:0 radius:10 duration:1.] completion:^{
-                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:11 radius:.01 duration:.3]];
-                    }];
-                }];
-            }];
             
-            NKMeshNode* newMesh;
+            self.drawLights = true;
             
-            newMesh = [[NKMeshNode alloc]initWithObjNamed:@"teapot" withSize:V3MakeF(5.) normalize:true anchor:true];
-            [self addChild:newMesh];
-            [newMesh setPosition3d:V3Make(0,0,0)];
-            [newMesh repeatAction:[NKAction rotateXByAngle:90 duration:1.]];
+            AIScene* scene = [[AIScene alloc]initFromFile:@"pyramob.3DS"];
             
-            newMesh = [[NKMeshNode alloc]initWithObjNamed:@"trashbin" withSize:V3MakeF(5.) normalize:true anchor:true];
-            newMesh.color = NKRED;
-            
-            [self addChild:newMesh];
-            [newMesh setPosition3d:V3Make(0,10,0)];
-            [newMesh repeatAction:[NKAction rotateXByAngle:90 duration:1.]];
-            
-            newMesh = [[NKMeshNode alloc]initWithObjNamed:@"mushrooms" withSize:V3MakeF(5.) normalize:true anchor:true];
-            newMesh.texture = [NKTexture textureWithImageNamed:@"shroom.tif"];
-            [self addChild:newMesh];
-            
-            [newMesh setPosition3d:V3Make(0,-10,0)];
-            [newMesh repeatAction:[NKAction rotateXByAngle:90 duration:1.]];
-
+            [self addChild:scene.meshes[0]];
+//            for (int i = 0; i <scene.meshes.count; i++){
+//                NKMeshNode *node = scene.meshes[i];
+//                [self addChild:node];
+//                [node setScale:1];
+//            }
             
         }
         
-#pragma mark - 6 - primitive generation
+#pragma mark - 6 - VIDEO NODE
         
-        else if (sceneChoice == 6) { // PRIMITIVES
+        else if (sceneChoice == 6) {
             
-            NKVertexBuffer *newCube = [NKVertexBuffer cubeWithWidthSections:10 height:10 depth:10];
-            NKMeshNode* newMesh = [[NKMeshNode alloc]initWithVertexBuffer:newCube
-                                                                 drawMode:GL_LINES
-                                                                  texture:nil
-                                                                    color:NKWHITE size:V3MakeF(.1)];
-            [self addChild:newMesh];
-            [newMesh repeatAction:[NKAction rotateYByAngle:45. duration:1.]];
+            self.camera.position3d = V3Make(0, 0, 20);
+            
+            //[self repeatAction:[NKAction rotateYByAngle:90 duration:1.]];
+            
+//            _omni = [[NKLightNode alloc] initWithDefaultProperties];
+//            
+//            [_omni runAction:[NKAction move3dTo:V3MakeF(0) duration:2.] completion:^{
+//                [_omni runAction:[NKAction delayFor:.4] completion:^{
+//                    [_omni runAction:[NKAction enterOrbitAtLongitude:0 latitude:0 radius:10 duration:1.] completion:^{
+//                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:11 radius:.01 duration:.3]];
+//                    }];
+//                }];
+//            }];
+//
+//            self.drawLights = true;
+//            
+//            [self addChild:_omni];
+            
+            NKVideoNode *videoNode = [[NKVideoNode alloc]initWithVideoNamed:@"slitscan-fall-640-360.mov" size:V3Make(12., 8., 1.)];
+            
+            videoNode.cullFace = NKCullFaceNone;
+            
+            [videoNode setPosition3d:V3Make(0, 8, 0)];
+            
+            [videoNode repeatAction:[NKAction rotate3dByAngle:V3Make(13, 12, 20) duration:1.]];
+
+            [self addChild:videoNode];
+    
+            
+            NKVideoNode *videoNode2 = [[NKVideoNode alloc]initWithVideoNamed:@"carousel_360-640.mov" size:V3Make(12., 8., 1.)];
+            
+            [videoNode2 setPosition3d:V3Make(0, -8, 0)];
+            
+            [videoNode2 repeatAction:[NKAction rotate3dByAngle:V3Make(30, 12, 20) duration:1.]];
+            
+            videoNode2.cullFace = NKCullFaceNone;
+            
+            [self addChild:videoNode2];
+            
+            
+            NKVideoNode *videoNode3 = [[NKVideoNode alloc]initWithVideoNamed:@"carousel1_640-360.mov" size:V3Make(12., 8., 1.)];
+            
+            [videoNode3 setPosition3d:V3Make(0, 0, 0)];
+            
+            
+            [self addChild:videoNode3];
         }
         
     }
     
-    
+
     return self;
 }
+
+
 
 -(void)handleEvent:(NKEvent *)event {
     [super handleEvent:event];

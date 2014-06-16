@@ -9,7 +9,5 @@
 #import "NKMacro.h"
 #import "NKMath.h"
 
-#define debugUI 0
-
 
 

@@ -24,7 +24,7 @@ typedef NS_OPTIONS(UInt8, NKTextureMapStyle) {
 
 @interface NKTexture : NSObject
 {
-    GLuint		texture[1];
+    GLuint		texture;
 }
 
 @property (nonatomic) S2t size;
@@ -52,7 +52,6 @@ typedef NS_OPTIONS(UInt8, NKTextureMapStyle) {
 -(void)unbind;
 
 +(NKTexture*)blankTexture;
-
 
 -(GLuint)glTexLocation;
 -(void)setGlTexLocation:(GLuint)loc;

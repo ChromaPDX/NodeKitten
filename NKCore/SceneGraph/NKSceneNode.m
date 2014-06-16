@@ -87,6 +87,8 @@
 
     [NKSoundManager updateWithTimeSinceLast:dt];
     
+    [NKGLManager updateWithTimeSinceLast:dt];
+    
     [[NKBulletWorld sharedInstance] updateWithTimeSinceLast:dt];
 
     [_camera updateWithTimeSinceLast:dt];
@@ -141,6 +143,11 @@
         [_activeShader use];
         
         // prep globals
+        
+        if  ([_activeShader uniformNamed:NKS_S2D_TEXTURE]){
+            [[_activeShader uniformNamed:NKS_S2D_TEXTURE] bindI1:0];
+               // glUniform1i([[_activeShader uniformNamed:NKS_S2D_TEXTURE] glLocation], 0);
+        }
         
         if ([_activeShader uniformNamed:NKS_LIGHT]){
             [[_activeShader uniformNamed:NKS_I1_NUM_LIGHTS] bindI1:(int)_lights.count];
@@ -371,18 +378,16 @@
 -(void)unload {
     [self.nkView stopAnimation];
     
+#if NK_LOG_METRICS
+    [metricsTimer invalidate];
+#endif
+    
     [self clear];
     
     for (NKNode* c in self.allChildren) {
         [[NKBulletWorld sharedInstance]removeNode:c];
         [c removeFromParent];
     }
-    
-#if NK_LOG_METRICS
-    [metricsTimer invalidate];
-#endif
-    
-    [self setActiveShader:nil];
     
     [_hitDetectBuffer unload];
     

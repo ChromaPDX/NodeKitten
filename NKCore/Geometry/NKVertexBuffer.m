@@ -18,51 +18,16 @@
 }
 
 - (id)initWithSize:(GLsizeiptr)size
+  numberOfElements:(GLuint)numElements
               data:(const GLvoid *)data
-             setup:(void(^)())geometrySetupBlock
-{
+             setup:(GeometrySetupBlock)geometrySetupBlock{
+    
     self = [super init];
     if ( self )
     {
+        _numberOfElements = numElements;
+        [self loadVertexDataWithSize:size data:data setup:geometrySetupBlock];
         
-        _numberOfElements = size / sizeof(NKVertexArray);
-        NSLog(@"init vertex buffer with: %ld vertices", _numberOfElements);
-        
-        //glEnable(GL_DEPTH_TEST);
-#if NK_USE_GLES
-        glGenVertexArraysOES(1, &_vertexArray);
-        glBindVertexArrayOES(_vertexArray);
-#else
-#ifdef NK_USE_ARB_EXT
-        glGenVertexArraysAPPLE(1, &_vertexArray);
-        glBindVertexArrayAPPLE(_vertexArray);
-#else
-        glGenVertexArrays(1, &_vertexArray);
-        glBindVertexArray(_vertexArray);
-#endif
-#endif
-        
-        glGenBuffers(1, &_vertexBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-        
-        glBufferData(GL_ARRAY_BUFFER,
-                     size,
-                     data,
-                     GL_STATIC_DRAW);
-        
-        geometrySetupBlock();
-        
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        
-#if NK_USE_GLES
-        glBindVertexArrayOES(0);
-#else
-#ifdef NK_USE_ARB_EXT
-        glBindVertexArrayAPPLE(0);
-#else
-        glBindVertexArray(0);
-#endif
-#endif
     }
     return self;
 }
@@ -78,7 +43,7 @@
         0.0f, 0.0f, 1.0f,       0.5f, 0.5f, 1.0f, 1.0f
     };
     
-    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(gCubeVertexData) data:gCubeVertexData setup:^{
+    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(gCubeVertexData) numberOfElements:sizeof(gCubeVertexData) / (sizeof(F1t)*7.) data:gCubeVertexData setup:newGeometrySetupBlock{
         glEnableVertexAttribArray(NKS_V4_POSITION);
         glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
                               sizeof(F1t)*7, BUFFER_OFFSET(0));
@@ -88,7 +53,6 @@
                               sizeof(F1t)*7, BUFFER_OFFSET(12));
     }];
     
-    buf.numberOfElements = sizeof(gCubeVertexData) / (sizeof(F1t)*7.);
     
     return buf;
 }
@@ -105,7 +69,7 @@
         0.5f, -0.5f, 0.0f,         1.0f, 0.0f, 0.0f,        1.0f, 0.0f,
     };
     
-    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(gCubeVertexData) data:gCubeVertexData setup:^{
+    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(gCubeVertexData) numberOfElements:sizeof(gCubeVertexData) / (sizeof(F1t)*8.) data:gCubeVertexData setup:newGeometrySetupBlock{
         glEnableVertexAttribArray(NKS_V4_POSITION);
         glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
                               sizeof(F1t)*8, BUFFER_OFFSET(0));
@@ -120,7 +84,6 @@
         
     }];
     
-    buf.numberOfElements = sizeof(gCubeVertexData) / (sizeof(F1t)*8.);
     return buf;
 }
 
@@ -236,7 +199,7 @@
         
     }
     
-    NKVertexArray *elements = (NKVertexArray*)calloc(numElements, sizeof(NKVertexArray));
+    NKPrimitiveArray *elements = (NKPrimitiveArray*)calloc(numElements, sizeof(NKPrimitiveArray));
     
     for (int i = 0; i < numElements; i++) {
         memcpy(&elements[i].vertex, &vertices[i], sizeof(V3t));
@@ -251,28 +214,11 @@
     free(vertexColors);
     
     NSLog(@"V2t: %lu V3t: %lu V4t: %lu ", sizeof(V2t), sizeof(V3t), sizeof(V4t));
-    NSLog(@"NKVertexArraySize: %lu", sizeof(NKVertexArray));
+    NSLog(@"NKPrimitiveArraySize: %lu", sizeof(NKPrimitiveArray));
     
-    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(NKVertexArray)*numElements data:elements setup:^{
-        glEnableVertexAttribArray(NKS_V4_POSITION);
-        glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(0));
-        
-        glEnableVertexAttribArray(NKS_V3_NORMAL);
-        glVertexAttribPointer(NKS_V3_NORMAL, 3, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)));
-        
-        glEnableVertexAttribArray(NKS_V2_TEXCOORD);
-        glVertexAttribPointer(NKS_V2_TEXCOORD, 2, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)*2));
-        
-        glEnableVertexAttribArray(NKS_V4_COLOR);
-        glVertexAttribPointer(NKS_V4_COLOR, 4, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)*2+sizeof(V2t)));
-    }];
-    
+    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(NKPrimitiveArray)*numElements numberOfElements:numElements data:elements setup:[NKVertexBuffer primitiveSetupBlock]];
+                           
     buf.boundingBoxSize = V3MakeF(1.);
-    buf.numberOfElements = numElements;
     
     
     //buf.drawMode = GL_LINES;
@@ -312,7 +258,7 @@
     
    // NSLog(@"init vert %d total elements", totalCount);
     
-    NKVertexArray *elements = (NKVertexArray*)calloc(totalCount, sizeof(NKVertexArray));
+    NKPrimitiveArray *elements = (NKPrimitiveArray*)calloc(totalCount, sizeof(NKPrimitiveArray));
     
     for (int i = 0; i < numLevels; i++) {
         
@@ -445,7 +391,7 @@
         free(textureCoords);
         free(vertexColors);
         
-        // NSLog(@"add to NKVertexArraySize: %lu", numElements * sizeof(NKVertexArray));
+        // NSLog(@"add to NKPrimitiveArraySize: %lu", numElements * sizeof(NKPrimitiveArray));
         
         currentOffset += numElements;
     }
@@ -453,26 +399,8 @@
     //NSLog(@"V2t: %lu V3t: %lu V4t: %lu ", sizeof(V2t), sizeof(V3t), sizeof(V4t));
    
     
-    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(NKVertexArray)*totalCount data:elements setup:^{
-        glEnableVertexAttribArray(NKS_V4_POSITION);
-        glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(0));
-        
-        glEnableVertexAttribArray(NKS_V3_NORMAL);
-        glVertexAttribPointer(NKS_V3_NORMAL, 3, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)));
-        
-        glEnableVertexAttribArray(NKS_V2_TEXCOORD);
-        glVertexAttribPointer(NKS_V2_TEXCOORD, 2, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)*2));
-        
-        glEnableVertexAttribArray(NKS_V4_COLOR);
-        glVertexAttribPointer(NKS_V4_COLOR, 4, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)*2+sizeof(V2t)));
-    }];
+    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(NKPrimitiveArray)*totalCount numberOfElements:numLevels data:elements setup:[NKVertexBuffer primitiveSetupBlock]];
     
-    
-    buf.numberOfElements = numLevels;
     buf.elementOffset = offsets;
     buf.elementSize = sizes;
     
@@ -485,13 +413,11 @@
 
 +(instancetype)pointSprite {
     GLfloat point[3] = {0,0,0};
-    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(point) data:point setup:^{
+    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(point) numberOfElements:1 data:point setup:newGeometrySetupBlock{
         glEnableVertexAttribArray(NKS_V4_POSITION);
         glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
                               24, BUFFER_OFFSET(0));
     }];
-    
-    buf.numberOfElements = 1;
     
     return buf;
 }
@@ -544,7 +470,7 @@
         -1.f, 1.f, -1.f,        0.0f, 0.0f, -1.0f
     };
     
-    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(gCubeVertexData) data:gCubeVertexData setup:^{
+    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(gCubeVertexData) numberOfElements:sizeof(gCubeVertexData) / 6 data:gCubeVertexData setup:newGeometrySetupBlock{
         glEnableVertexAttribArray(NKS_V4_POSITION);
         glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
                               24, BUFFER_OFFSET(0));
@@ -554,7 +480,6 @@
                               24, BUFFER_OFFSET(12));
     }];
     
-    buf.numberOfElements = sizeof(gCubeVertexData) / 6;
     
     return buf;
 }
@@ -641,7 +566,7 @@
     numElements = elementCounter;
     
     NSLog(@"cube with %d vertices", numElements);
-    NKVertexArray *elements = (NKVertexArray*)calloc(numElements, sizeof(NKVertexArray));
+    NKPrimitiveArray *elements = (NKPrimitiveArray*)calloc(numElements, sizeof(NKPrimitiveArray));
     
     for (int i = 0; i < numElements; i++) {
         memcpy(&elements[i].vertex, &vertices[i], sizeof(V3t));
@@ -656,26 +581,9 @@
     free(colors);
     
 //    NSLog(@"V2t: %lu V3t: %lu V4t: %lu ", sizeof(V2t), sizeof(V3t), sizeof(V4t));
-//    NSLog(@"NKVertexArraySize: %lu", sizeof(NKVertexArray));
+//    NSLog(@"NKPrimitiveArraySize: %lu", sizeof(NKPrimitiveArray));
     
-    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(NKVertexArray)*numElements data:elements setup:^{
-        glEnableVertexAttribArray(NKS_V4_POSITION);
-        glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(0));
-        
-        glEnableVertexAttribArray(NKS_V3_NORMAL);
-        glVertexAttribPointer(NKS_V3_NORMAL, 3, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)));
-        
-        glEnableVertexAttribArray(NKS_V2_TEXCOORD);
-        glVertexAttribPointer(NKS_V2_TEXCOORD, 2, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)*2));
-        
-        glEnableVertexAttribArray(NKS_V4_COLOR);
-        glVertexAttribPointer(NKS_V4_COLOR, 4, GL_FLOAT, GL_FALSE,
-                              sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)*2+sizeof(V2t)));
-    }];
-    
+    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(NKPrimitiveArray)*numElements numberOfElements:numElements data:elements setup:[NKVertexBuffer primitiveSetupBlock]];
     
     //buf.drawMode = GL_LINES;
     
@@ -685,11 +593,101 @@
     
 }
 
++(GeometrySetupBlock)primitiveSetupBlock {
+    return newGeometrySetupBlock {
+            glEnableVertexAttribArray(NKS_V4_POSITION);
+            glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
+                                  sizeof(NKPrimitiveArray), BUFFER_OFFSET(0));
+            
+            glEnableVertexAttribArray(NKS_V3_NORMAL);
+            glVertexAttribPointer(NKS_V3_NORMAL, 3, GL_FLOAT, GL_FALSE,
+                                  sizeof(NKPrimitiveArray), BUFFER_OFFSET(sizeof(V3t)));
+            
+            glEnableVertexAttribArray(NKS_V2_TEXCOORD);
+            glVertexAttribPointer(NKS_V2_TEXCOORD, 2, GL_FLOAT, GL_FALSE,
+                                  sizeof(NKPrimitiveArray), BUFFER_OFFSET(sizeof(V3t)*2));
+            
+            glEnableVertexAttribArray(NKS_V4_COLOR);
+            glVertexAttribPointer(NKS_V4_COLOR, 4, GL_FLOAT, GL_FALSE,
+                                  sizeof(NKPrimitiveArray), BUFFER_OFFSET(sizeof(V3t)*2+sizeof(V2t)));
+        };
+}
 
++(GeometrySetupBlock)riggedMeshSetupBlock {
+    return newGeometrySetupBlock {
+        glEnableVertexAttribArray(NKS_V4_POSITION);
+        glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
+                              sizeof(NKRiggedStuct), BUFFER_OFFSET(0));
+        
+        glEnableVertexAttribArray(NKS_V3_NORMAL);
+        glVertexAttribPointer(NKS_V3_NORMAL, 3, GL_FLOAT, GL_FALSE,
+                              sizeof(NKRiggedStuct), BUFFER_OFFSET(sizeof(V3t)));
+        
+        glEnableVertexAttribArray(NKS_V2_TEXCOORD);
+        glVertexAttribPointer(NKS_V2_TEXCOORD, 3, GL_FLOAT, GL_FALSE,
+                              sizeof(NKRiggedStuct), BUFFER_OFFSET(sizeof(V3t)*2));
+        
+        glEnableVertexAttribArray(NKS_V3_TANGENT);
+        glVertexAttribPointer(NKS_V3_TANGENT, 3, GL_FLOAT, GL_FALSE,
+                              sizeof(NKRiggedStuct), BUFFER_OFFSET(sizeof(V3t)*3));
+        
+        glEnableVertexAttribArray(NKS_V3_BINORMAL);
+        glVertexAttribPointer(NKS_V3_BINORMAL, 3, GL_FLOAT, GL_FALSE,
+                              sizeof(NKRiggedStuct), BUFFER_OFFSET(sizeof(V3t)*4));
+        
+        glEnableVertexAttribArray(NKS_F1_BONE_WEIGHT);
+        glVertexAttribPointer(NKS_F1_BONE_WEIGHT, 1, GL_FLOAT, GL_FALSE,
+                              sizeof(NKRiggedStuct), BUFFER_OFFSET(sizeof(V3t)*5));
+    };
+}
 
--(instancetype)initWithVertexData:(const GLvoid *)data ofSize:(GLsizeiptr)size {
+-(void)loadVertexDataWithSize:(GLsizeiptr)size
+                         data:(const GLvoid *)data
+                        setup:(void(^)())geometrySetupBlock {
     
-    return [self initWithSize:size data:data setup:^{
+    NSLog(@"load vertex buffer with: %ld vertices", _numberOfElements);
+    
+    //glEnable(GL_DEPTH_TEST);
+#if NK_USE_GLES
+    glGenVertexArraysOES(1, &_vertexArray);
+    glBindVertexArrayOES(_vertexArray);
+#else
+#ifdef NK_USE_ARB_EXT
+    glGenVertexArraysAPPLE(1, &_vertexArray);
+    glBindVertexArrayAPPLE(_vertexArray);
+#else
+    glGenVertexArrays(1, &_vertexArray);
+    glBindVertexArray(_vertexArray);
+#endif
+#endif
+    
+    glGenBuffers(1, &_vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+    
+    glBufferData(GL_ARRAY_BUFFER,
+                 size,
+                 data,
+                 GL_STATIC_DRAW);
+    
+    geometrySetupBlock();
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+#if NK_USE_GLES
+    glBindVertexArrayOES(0);
+#else
+#ifdef NK_USE_ARB_EXT
+    glBindVertexArrayAPPLE(0);
+#else
+    glBindVertexArray(0);
+#endif
+#endif
+    
+}
+
+-(instancetype)initWithVertexData:(const GLvoid *)data numberOfElements:(GLuint)numElements ofSize:(GLsizeiptr)size {
+    
+    return [self initWithSize:size numberOfElements:numElements data:data setup:newGeometrySetupBlock{
         glEnableVertexAttribArray(NKS_V4_POSITION);
         glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
                               sizeof(V3t), BUFFER_OFFSET(0));
@@ -749,7 +747,7 @@
 @end
 
 
-@implementation NKVertexElementBuffer
+@implementation NKIndexBuffer
 {
     GLuint _elementBuffer;
 }

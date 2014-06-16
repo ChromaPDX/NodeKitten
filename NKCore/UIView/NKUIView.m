@@ -63,8 +63,12 @@
                                     [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
     
 
+#if NK_USE_GL3
+    context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
+#else
     context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-
+#endif
+    [[NKGLManager sharedInstance] setContext:context];
     
     if(!context){
         NSLog(@"failed to create EAGL context");
@@ -256,15 +260,19 @@
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *t in touches) {
+        NSMutableSet *rem = [[NSMutableSet alloc]init];
         for (NKEvent *e in _events) {
             if (e.touch == t) {
                 e.phase = NKEventPhaseEnd;
                 e.screenLocation = [self uiPointToNodePoint:[t locationInView:self]];
                 [e.node handleEvent:e];
                 
-                [_events removeObject:e];
+                [rem addObject:e];
+              
             }
         }
+        
+        [_events minusSet:rem];
     }
 }
 

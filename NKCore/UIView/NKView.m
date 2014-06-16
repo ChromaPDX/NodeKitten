@@ -103,13 +103,16 @@
           NSOpenGLPFADepthSize, 24,NSOpenGLPFAOpenGLProfile,
           NSOpenGLProfileVersion3_2Core, 0 );
     
+
     NSOpenGLPixelFormatAttribute attrs[] =
 	{
         NSOpenGLPFADoubleBuffer,
 		NSOpenGLPFADepthSize, 24,
 		// Must specify the 3.2 Core Profile to use OpenGL 3.2
+#ifdef NK_USE_GL3
 		NSOpenGLPFAOpenGLProfile,
 		NSOpenGLProfileVersion3_2Core,
+#endif
 		0
 	};
 	
@@ -121,9 +124,10 @@
 	}
     
 
-
+    
     
     NSOpenGLContext* context = [[NSOpenGLContext alloc] initWithFormat:pf shareContext:nil];
+    
     
 #ifdef NK_GL_DEBUG
 	// When we're using a CoreProfile context, crash if we call a legacy OpenGL function
@@ -138,6 +142,8 @@
     
     [self setOpenGLContext:context];
     
+    [[NKGLManager sharedInstance]setContext:context];
+    [[NKGLManager sharedInstance]setPixelFormat:pf];
 #if SUPPORT_RETINA_RESOLUTION
     // Opt-In to Retina resolution
     [self setWantsBestResolutionOpenGLSurface:YES];

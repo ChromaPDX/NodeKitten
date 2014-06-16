@@ -228,7 +228,7 @@
                 
                 numElements = [expandedVertices count];
                 
-                NKVertexArray *buffer = malloc(sizeof(NKVertexArray)*numElements);
+                NKPrimitiveArray *buffer = malloc(sizeof(NKPrimitiveArray)*numElements);
                 
                 float minx = 1000000., maxx = -1000000.;
                 float miny = 1000000., maxy = -1000000.;
@@ -342,23 +342,7 @@
                     buffer[p].color.a = 1.0;
                 }
                 
-                buf = [[NKVertexBuffer alloc] initWithSize:sizeof(NKVertexArray)*numElements data:buffer setup:^{
-                    glEnableVertexAttribArray(NKS_V4_POSITION);
-                    glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
-                                          sizeof(NKVertexArray), BUFFER_OFFSET(0));
-                    
-                    glEnableVertexAttribArray(NKS_V3_NORMAL);
-                    glVertexAttribPointer(NKS_V3_NORMAL, 3, GL_FLOAT, GL_FALSE,
-                                          sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)));
-                    
-                    glEnableVertexAttribArray(NKS_V2_TEXCOORD);
-                    glVertexAttribPointer(NKS_V2_TEXCOORD, 2, GL_FLOAT, GL_FALSE,
-                                          sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)*2));
-                    
-                    glEnableVertexAttribArray(NKS_V4_COLOR);
-                    glVertexAttribPointer(NKS_V4_COLOR, 4, GL_FLOAT, GL_FALSE,
-                                          sizeof(NKVertexArray), BUFFER_OFFSET(sizeof(V3t)*2+sizeof(V2t)));
-                }];
+                buf = [[NKVertexBuffer alloc] initWithSize:sizeof(NKPrimitiveArray)*numElements numberOfElements:numElements data:buffer setup:[NKVertexBuffer primitiveSetupBlock]];
                 
                 buf.boundingBoxSize = finalModelSize;
                 
@@ -390,7 +374,6 @@
     return nil;
     
 }
-
 
 -(void)chooseShader {
     if (_numTextures) {
@@ -478,9 +461,11 @@
         }
         
         if ([self.scene.activeShader uniformNamed:NKS_S2D_TEXTURE]) {
-            if (self.scene.boundTexture != _textures[0]) {
-                [_textures[0] bind];
-                self.scene.boundTexture = _textures[0];
+            if (_numTextures) {
+                if (self.scene.boundTexture != _textures[0]) {
+                    [_textures[0] bind];
+                    self.scene.boundTexture = _textures[0];
+                }
             }
         }
         
@@ -491,11 +476,17 @@
         
         if (_primitiveType == NKPrimitiveLODSphere) {
             int lod = [self lodForDistance];
-            glDrawArrays(_drawMode, _vertexBuffer.elementOffset[lod], _vertexBuffer.elementSize[lod] );
-            
+            glDrawArrays(_drawMode, _vertexBuffer.elementOffset[lod], _vertexBuffer.elementSize[lod]);
         }
         else {
-            glDrawArrays(_drawMode, 0, _vertexBuffer.numberOfElements);
+            if (_vertexBuffer.indexBuffer){
+                [_vertexBuffer.indexBuffer bind];
+                //NSLog(@"draw indexed");
+                glDrawElements(_drawMode, _vertexBuffer.numberOfElements, GL_UNSIGNED_INT, 0);
+                [_vertexBuffer.indexBuffer unbind];
+            }
+            else
+                glDrawArrays(_drawMode, 0, _vertexBuffer.numberOfElements);
         }
         
         if (_drawBoundingBox) {

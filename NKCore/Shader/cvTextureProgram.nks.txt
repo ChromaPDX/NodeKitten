@@ -1,0 +1,10 @@
+@frag
+
+    float texX = (v_texCoord0.x) * 640.;
+    float texY = (v_texCoord0.y) * 360.;
+    vec2 texc = vec2(texX, texY);
+
+    texColor = texture(u_textureRect,texc);
+    if (texColor.a < .1) discard;
+
+@frag

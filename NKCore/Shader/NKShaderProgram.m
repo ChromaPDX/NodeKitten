@@ -8,6 +8,7 @@
 
 #import "NodeKitten.h"
 
+
 @implementation NKShaderProgram
 {
     NSString *_vertShaderPath;
@@ -86,7 +87,7 @@
         
         _fragmentSource = [self fragmentStringFromShaderDictionary:shaderDict];
         
-#ifdef NK_GL_DEBUG
+#if NK_LOG_GL
         NSLog(@"%@",_vertexSource);
         NSLog(@"%@",_fragmentSource);
 #endif
@@ -198,11 +199,17 @@
         
     }
     
-    if (numTex) {
+    if (numTex == -1){ // quick vid fix
+        [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_2D_RECT, NKS_S2D_TEXTURE_RECT)];
+        [shaderDict[NKS_VARYINGS] addObject: nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_V2_TEXCOORD)];
+        [shaderDict[NKS_FRAG_INLINE] addObject:nksi(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_V4_TEX_COLOR)];
+    }
+    else if (numTex) {
         [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_2D, NKS_S2D_TEXTURE)];
         [shaderDict[NKS_VARYINGS] addObject: nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_V2_TEXCOORD)];
         [shaderDict[NKS_FRAG_INLINE] addObject:nksi(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_V4_TEX_COLOR)];
     }
+
     
     // VERTEX main()
     
@@ -223,7 +230,7 @@
             [shaderDict[NKS_VERTEX_MAIN] addObject:shaderLineWithArray(@[[shaderDict varyingNamed:NKS_V4_COLOR],@"=",[shaderDict attributeNamed:NKS_V4_COLOR]])];
     }
     
-    if ([shaderDict uniformNamed:NKS_S2D_TEXTURE]) {
+    if ([shaderDict uniformNamed:NKS_S2D_TEXTURE] || [shaderDict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
         [shaderDict[NKS_VERTEX_MAIN] addObject:shaderLineWithArray(@[[shaderDict varyingNamed:NKS_V2_TEXCOORD],@"=",[shaderDict attributeNamed:NKS_V2_TEXCOORD]])];
     }
     
@@ -392,9 +399,16 @@
         [shader appendNewLine:[v declarationStringForSection:NKS_FRAGMENT_SHADER]];
     }
     if ([dict uniformNamed:NKS_S2D_TEXTURE]) {
-        [shader appendString:textureFragmentFunction(dict)];
-        [shader appendString:shaderLineWithArray(@[@" if (",[dict fragVarNamed:NKS_V4_TEX_COLOR], @".a < .1) discard;"])];
+        #if NK_USE_GLES
+        [shader appendString:shaderStringWithDirective(@"textureProgram", @"@fragES")];
+        #else
+        [shader appendString:shaderStringWithDirective(@"textureProgram", @"@frag")];
+        #endif
     }
+    else if ([dict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
+        [shader appendString:shaderStringWithDirective(@"cvTextureProgram", @"@frag")];
+    }
+    
     for (NSString*s in dict[NKS_PROGRAMS]) {
         [shader appendString:shaderStringWithDirective(s, @"@frag")];
     }
@@ -408,7 +422,7 @@
     if ([dict varyingNamed:NKS_V4_COLOR]) {
         [colorMults addObject:[dict varyingNamed:NKS_V4_COLOR]];
     }
-    if ([dict uniformNamed:NKS_S2D_TEXTURE]) {
+    if ([dict uniformNamed:NKS_S2D_TEXTURE] || [dict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
         [colorMults addObject:[dict fragVarNamed:NKS_V4_TEX_COLOR]];
     }
     if ([dict uniformNamed:NKS_LIGHT]) {
@@ -435,18 +449,22 @@
     // Create and compile vertex shader.
     if ( ![self compileShader:&vertShader type:GL_VERTEX_SHADER shaderSource:_vertexSource] )
     {
+#if NK_LOG_GL
         NSLog(@"%@",_vertexSource);
+#endif
         NSAssert(0,@"Failed to compile VERTEX shader: %@", self.name);
-        NSLog(@"Failed to compile VERTEX shader: %@", self.name);
+        //NSLog(@"Failed to compile VERTEX shader: %@", self.name);
         return NO;
     }
     
     // Create and compile fragment shader.
     if ( ![self compileShader:&fragShader type:GL_FRAGMENT_SHADER shaderSource:_fragmentSource] )
     {
+        #if NK_LOG_GL
         NSLog(@"%@",_fragmentSource);
+#endif
         NSAssert(0,@"Failed to compile FRAGMENT shader: %@", self.name);
-        NSLog(@"Failed to compile FRAGMENT shader: %@", self.name);
+        //NSLog(@"Failed to compile FRAGMENT shader: %@", self.name);
         return NO;
     }
     
@@ -503,8 +521,9 @@
         v.glLocation = glGetAttribLocation(self.glPointer, [v.nameString UTF8String]);
         glEnableVertexAttribArray(v.glLocation);
         
+        #if NK_LOG_GL
         NSLog(@"Attribute location %d, string %@",v.glLocation, v.nameString);
-
+#endif
     }
     
     for (NKShaderVariable *v in uniforms) {

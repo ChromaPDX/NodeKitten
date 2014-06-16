@@ -11,7 +11,7 @@
 // USER MACROS
 
 //** FOR GL RELATED LOGS
-#define NK_GL_DEBUG 0
+#define NK_LOG_GL 0
 //**
 
 //** LOG / PRINT TIME METRICS
@@ -31,6 +31,7 @@
 
 // SYSTEM MACROS
 
+
 #if TARGET_OS_IPHONE
 
 #define NK_USE_GLES 1
@@ -41,6 +42,7 @@
 
 #import <UIKit/UIKit.h>
 
+
 #define NKColor UIColor
 #define NKImage UIImage
 #define NKFont  UIFont
@@ -50,8 +52,6 @@
 #else // TARGET DESKTOP
 
 #import <AppKit/AppKit.h>
-
-#define NK_USE_GL3
 
 #define NKColor NSColor
 #define NKImage NSImage
@@ -75,6 +75,8 @@
 #endif
 
 #else
+
+#define NK_USE_GL3 1
 
 #import <OpenGL/OpenGL.h>
 #ifdef NK_USE_GL3

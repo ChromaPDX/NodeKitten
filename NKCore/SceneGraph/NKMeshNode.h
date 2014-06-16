@@ -20,11 +20,17 @@
     NKVertexBuffer *_vertexBuffer;
     NSMutableArray *_textures;
     NSMutableArray *_materials;
+    M16t *boneOffsets;
+    
     U1t _numTextures;
     bool _drawBoundingBox;
     NKPrimitive _primitiveType;
     GLenum _drawMode;
+    
+    U1t _numTris;
 }
+
+@property (nonatomic, strong) NSDictionary *animations;
 
 -(instancetype)initWithObjNamed:(NSString *)name;
 -(instancetype)initWithObjNamed:(NSString *)name withSize:(V3t)size normalize:(bool)normalize;

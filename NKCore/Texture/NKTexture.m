@@ -26,7 +26,7 @@
         NKTexture *newTex = [[NKTexture alloc] initWithImageNamed:name];
         
         if (newTex){
-            NSLog(@"adding tex to atlas named: %@", name);
+            NSLog(@"adding tex to atlas named:%@", name);
             [[NKTextureManager imageCache] setObject:newTex forKey:name];
         }
         else {
@@ -182,8 +182,8 @@
         
 #if NK_USE_GLES
         glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1, (GLuint *)&texture[0]);
-        glBindTexture(GL_TEXTURE_2D, texture[0]);
+        glGenTextures(1, (GLuint *)&texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // This is necessary for non-power-of-two textures
@@ -191,17 +191,17 @@
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glBindTexture(GL_TEXTURE_2D, 0);
         
-        glBindTexture(GL_TEXTURE_2D, texture[0]);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
         
-        if (!texture[0]) {
+        if (!texture) {
             NSLog(@"failed to allocate GLES texture ID");
             return nil;
         }
 #else
-        glGenTextures(1, (GLuint *)&texture[0]);
-        glBindTexture(GL_TEXTURE_2D, texture[0]);
+        glGenTextures(1, (GLuint *)&texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -223,8 +223,10 @@
         self.textureMapStyle = NKTextureMapStyleRepeat;
         
         NKImage* request = [NKImage imageNamed:name];
+        
         if (!request) {
             request = [NKImage imageNamed:@"chromeKittenSmall.png"];
+            NSLog(@"can't load tex, , using default");
         }
         
         NSAssert(request != nil, @"MISSING DEFAULT TEX IMAGE OR SOMETHING ELSE BROKE !!");
@@ -252,8 +254,8 @@
         glEnable(GL_TEXTURE_2D);
         
        // glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-        glGenTextures(1, &texture[0]);
-        glBindTexture(GL_TEXTURE_2D, texture[0]);
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -395,8 +397,8 @@
     
 #if NK_USE_GLES
         glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1, (GLuint *)&texture[0]);
-        glBindTexture(GL_TEXTURE_2D, texture[0]);
+        glGenTextures(1, (GLuint *)&texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // This is necessary for non-power-of-two textures
@@ -404,17 +406,17 @@
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glBindTexture(GL_TEXTURE_2D, 0);
         
-        glBindTexture(GL_TEXTURE_2D, texture[0]);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char *)CGBitmapContextGetData(context));
         glBindTexture(GL_TEXTURE_2D, 0);
-        if (!texture[0]) {
+        if (!texture) {
             NSLog(@"failed to allocate GLES texture ID");
         }
 #else
         
         // Create a texture object to apply to model
-        glGenTextures(1, &texture[0]);
-        glBindTexture(GL_TEXTURE_2D, texture[0]);
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
         
         // Set up filter and wrap modes for this texture object
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -442,11 +444,11 @@
 }
 
 -(GLuint)glTexLocation {
-    return texture[0];
+    return texture;
 }
 
 -(void)setGlTexLocation:(GLuint)loc {
-    texture[0] = loc;
+    texture = loc;
 }
 
 //-(void)loadTexFromCGContext:(CGContextRef)context size:(S2t)size {
@@ -489,34 +491,32 @@
 }
 
 -(void)bind { // GL 1
-
+    glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
-
+    glBindTexture(GL_TEXTURE_2D, texture);
 }
 
 -(void)unbind { // GL 1
     glBindTexture(GL_TEXTURE_2D, 0);
 //    glDisable(GL_TEXTURE_2D);
-
 }
 
 - (void)enableAndBind:(int)textureLoc
 {
     glActiveTexture(GL_TEXTURE0+textureLoc);
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    glBindTexture(GL_TEXTURE_2D, texture);
 }
 
 - (void)bindToUniform:(GLuint)uniform {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(uniform, 0);
 }
 
 - (void)enableAndBindToUniform:(GLuint)uniformSamplerLocation
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(uniformSamplerLocation, 0);
 }
 
@@ -524,13 +524,13 @@
 {
     assert(GL_TEXTURE1 == GL_TEXTURE0 + 1);
     glActiveTexture(GL_TEXTURE0 + textureNum);
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(uniformSamplerLocation, textureNum);
 }
 
 -(void)dealloc {
 
-    glDeleteTextures(1, &texture[0]);
+    glDeleteTextures(1, &texture);
     
 }
 

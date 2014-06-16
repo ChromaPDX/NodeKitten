@@ -58,6 +58,9 @@ typedef NS_ENUM(GLuint, NKS_ENUM)
     NKS_V3_NORMAL,
     NKS_V2_TEXCOORD,
     NKS_V4_COLOR,
+    NKS_V3_TANGENT,
+    NKS_V3_BINORMAL,
+    NKS_F1_BONE_WEIGHT,
     
     // GL_EXTENSIONS
     NKS_EXT_GPU_SHADER,
@@ -91,6 +94,7 @@ typedef NS_ENUM(GLuint, NKS_ENUM)
     NKS_TYPE_INT,
     NKS_TYPE_BOOL,
     NKS_TYPE_SAMPLER_2D,
+    NKS_TYPE_SAMPLER_2D_RECT,
 
     NKS_STRUCT_LIGHT,
     NKS_STRUCT_MATERIAL,
@@ -111,6 +115,7 @@ typedef NS_ENUM(GLuint, NKS_ENUM)
     
     // SAMPLER
     NKS_S2D_TEXTURE,
+    NKS_S2D_TEXTURE_RECT,
     
     // LIGHT
     NKS_LIGHT,
@@ -159,7 +164,7 @@ NSString* shaderStringWithDirective(NSString* name, NSString* directive);
 NSString* nksString(NKS_ENUM string);
 NSString* shaderStringWithArray(NSArray *array);
 NSString* shaderLineWithArray(NSArray* array);
-NSString* operatorString(NSArray* variables, NSString *operator);
+NSString* operatorString(NSArray* variables, NSString *op);
 
 #define nksl(a) shaderLineWithArray(a)
 
