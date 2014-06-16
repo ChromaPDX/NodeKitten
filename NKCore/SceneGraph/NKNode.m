@@ -175,6 +175,10 @@
     }
 }
 
+-(NKNode*)parent {
+    return _parent;
+}
+
 -(S2t)size {
     return S2Make(_size3d.x, _size3d.y);
 }

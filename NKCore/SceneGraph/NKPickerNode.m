@@ -199,9 +199,4 @@
     }
 }
 
-//-(NKTouchState)touchUp:(P2t)location id:(int)touchId {
-//
-//    return false;
-//}
-
 @end

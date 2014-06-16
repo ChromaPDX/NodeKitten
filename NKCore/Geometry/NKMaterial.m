@@ -7,7 +7,7 @@
 //  Copyright 2008 Jeff LaMarche. All rights reserved.
 //
 
-#import "NodeKitten.h"
+#import "NKMaterial.h"
 
 @implementation NKMaterial
 
@@ -125,9 +125,9 @@
 						textureFilename = texName;
 					// TODO: Look for PVRT file
                     
-                    NKTexture *theTex = [NKTexture textureWithPVRNamed:textureFilename size:S2Make(width, height)];
+                   // NKTexture *theTex = [NKTexture textureWithPVRNamed:textureFilename size:S2Make(width, height)];
 			
-					material.texture = theTex;
+					//material.texture = theTex;
 				}
                 
 			}

@@ -266,9 +266,7 @@
                 e.phase = NKEventPhaseEnd;
                 e.screenLocation = [self uiPointToNodePoint:[t locationInView:self]];
                 [e.node handleEvent:e];
-                
                 [rem addObject:e];
-              
             }
         }
         
@@ -278,7 +276,7 @@
 
 -(void)doubleTap:(UITapGestureRecognizer*)recognizer {
     NKEvent* event = [[NKEvent alloc]initWithTouch:nil];
-    event.startingScreenLocation = P2MakeCG([recognizer locationInView:self]);
+    event.startingScreenLocation = [self uiPointToNodePoint:[recognizer locationInView:self]];
     event.phase = NKEventPhaseDoubleTap;
     [_scene dispatchEvent:event];
 }

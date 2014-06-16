@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Chroma. All rights reserved.
 //
 
-#import "NKAlertSprite.h"
+#import "NodeKitten.h"
 
 @implementation NKAlertSprite
 
@@ -20,9 +20,11 @@
     
 }
 
--(NKTouchState)touchUp:(P2t)location id:(int)touchId {
-     [_delegate alertDidCancel];
-    return false;
+-(void)handleEvent:(NKEvent *)event {
+    
+    if (NKEventPhaseEnd == event.phase) {
+        [_delegate alertDidCancel];
+    }
 }
 
 @end

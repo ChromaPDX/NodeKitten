@@ -36,11 +36,11 @@
 @class NKByteColor;
 @class NKBulletBody;
 
-typedef NS_ENUM(U1t, NKTouchState) {
-    NKTouchNone,
-    NKTouchContainsFirstResponder,
-    NKTouchIsFirstResponder
-} NS_ENUM_AVAILABLE(10_9, 7_0);
+//typedef NS_ENUM(U1t, NKTouchState) {
+//    NKTouchNone,
+//    NKTouchContainsFirstResponder,
+//    NKTouchIsFirstResponder
+//} NS_ENUM_AVAILABLE(10_9, 7_0);
 
 typedef NS_ENUM(U1t, NKBlendMode) {
     NKBlendModeNone,
@@ -166,6 +166,7 @@ typedef void (^CompletionBlock)(void);
 - (NKNode *)randomChild;
 -(NKNode*)randomLeaf;
 - (void)enumerateChildNodesWithName:(NSString *)name usingBlock:(void (^)(NKNode *node, BOOL *stop))block;
+- (NKNode*)parent;
 - (void)setParent:(NKNode *)parent;
 - (BOOL)inParentHierarchy:(NKNode *)parent;
 

@@ -30,6 +30,10 @@
         
         _color = color;
         
+        if (!color && _numTextures) {
+            _color = NKWHITE;
+        }
+        
         _primitiveType = primitive;
         
         self.cullFace = NKCullFaceFront;
@@ -457,7 +461,11 @@
         [[self.scene.activeShader uniformNamed:NKS_M16_MVP] bindM16:mvp];
         
         if ([self.scene.activeShader uniformNamed:NKS_V4_COLOR]){
-            [[self.scene.activeShader uniformNamed:NKS_V4_COLOR] bindV4:[self glColor]];
+            if (!_color) {
+                [[self.scene.activeShader uniformNamed:NKS_V4_COLOR] bindV4:[NKCLEAR C4Color]];
+            }else {
+                [[self.scene.activeShader uniformNamed:NKS_V4_COLOR] bindV4:[self glColor]];
+            }
         }
         
         if ([self.scene.activeShader uniformNamed:NKS_S2D_TEXTURE]) {
