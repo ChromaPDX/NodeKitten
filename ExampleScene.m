@@ -513,20 +513,20 @@
 #pragma mark - 5 - ASSIMP
         
         else if (sceneChoice == 5) { // ASSIMP
-
-            self.camera.position3d = V3Make(0, 20, 40);
-            
-            [self repeatAction:[NKAction rotateYByAngle:90 duration:8.]];
-            
-            AIScene* scene = [[AIScene alloc]initFromFile:@"jeep1a.fbx"];
-            
-            for (int i = 0; i <scene.meshes.count; i++){
-                NKMeshNode *node = scene.meshes[i];
-                [self addChild:node];
-                if (i < 4) {
-                    [node repeatAction:[NKAction rotateXByAngle:30 duration:1.]];
-                }
-            }
+//
+//            self.camera.position3d = V3Make(0, 20, 40);
+//            
+//            [self repeatAction:[NKAction rotateYByAngle:90 duration:8.]];
+//            
+//            AIScene* scene = [[AIScene alloc]initFromFile:@"jeep1a.fbx"];
+//            
+//            for (int i = 0; i <scene.meshes.count; i++){
+//                NKMeshNode *node = scene.meshes[i];
+//                [self addChild:node];
+//                if (i < 4) {
+//                    [node repeatAction:[NKAction rotateXByAngle:30 duration:1.]];
+//                }
+//            }
             
         }
         
@@ -605,7 +605,6 @@
     [n addChild:s];
     
     s.body = [[NKBulletBody alloc] initWithType:NKBulletShapeSphere Size:s.size3d transform:s.localTransformMatrix mass:1.];
-    
     
     [s.body setCollisionGroup:NKCollisionFilterCharacter];
     [s.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls];
