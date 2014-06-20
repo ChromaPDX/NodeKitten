@@ -313,14 +313,14 @@
 }
 
 -(void)unload {
-
+    
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
     if (_frameBuffer) {
-    glDeleteFramebuffers(1, &_frameBuffer);
+        glDeleteFramebuffers(1, &_frameBuffer);
     }
     if (_renderBuffer) {
-    glDeleteRenderbuffers(1, &_renderBuffer);
+        glDeleteRenderbuffers(1, &_renderBuffer);
     }
     if(_depthBuffer)
     {
@@ -328,6 +328,7 @@
         _depthBuffer = 0;
     }
 }
+
 -(void)dealloc {
     [self unload];
 }

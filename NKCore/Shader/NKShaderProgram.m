@@ -171,8 +171,8 @@
     if (numLights) {
         
         [shaderDict[NKS_UNIFORMS] addObjectsFromArray:@[nksu(NKS_PRECISION_NONE, NKS_TYPE_INT, NKS_I1_NUM_LIGHTS),
-                                                        nksu(NKS_PRECISION_NONE, NKS_STRUCT_LIGHT, NKS_LIGHT),
-                                                        nksu(NKS_PRECISION_MEDIUM, NKS_TYPE_V3, NKS_V3_EYE_DIRECTION)]];
+                                                        nksu(NKS_PRECISION_NONE, NKS_STRUCT_LIGHT, NKS_LIGHT)
+                                                        ]];
         
         if (batchSize) {
             [shaderDict[NKS_UNIFORMS] addObject:nksua(NKS_PRECISION_HIGH, NKS_TYPE_M16, NKS_M16_MV, batchSize)];
@@ -185,6 +185,9 @@
         if (![shaderDict varyingNamed:NKS_V3_NORMAL]) {
             [shaderDict[NKS_VARYINGS] addObject:nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V3, NKS_V3_NORMAL)];
         }
+        
+        [shaderDict[NKS_VARYINGS] addObject:nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V3, NKS_V3_EYE_DIRECTION)];
+        
         if (![shaderDict varyingNamed:NKS_V4_POSITION]) {
             [shaderDict[NKS_VARYINGS] addObject:nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V4, NKS_V4_POSITION)];
         }
@@ -195,7 +198,11 @@
         
         [shaderDict[NKS_FRAG_INLINE] addObject:nksi(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_V4_LIGHT_COLOR)];
         
+#if NK_USE_GLES
         [shaderDict[NKS_PROGRAMS] addObject:@"lqLightProgram"];
+#else
+        [shaderDict[NKS_PROGRAMS] addObject:@"hqLightProgram"];
+#endif
         
     }
     

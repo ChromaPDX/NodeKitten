@@ -60,7 +60,7 @@
 +(instancetype) textureWithString:(NSString *)string ForLabelNode:(NKLabelNode*)node {
     
     if (![[NKTextureManager labelCache] objectForKey:string]) {
-        [[NKTextureManager labelCache] setObject:[self textureWithString:string fontNamed:node.fontName color:node.fontColor Size:node.size fontSize:node.fontSize completion:nil] forKey:string];
+        [[NKTextureManager labelCache] setObject:[self textureWithString:string fontNamed:node.fontName color:node.fontColor Size:node.size2d fontSize:node.fontSize completion:nil] forKey:string];
         //NSLog(@"add tex to atlas for label node named: %@", string);
     }
     return [[NKTextureManager labelCache] objectForKey:string];
@@ -68,7 +68,7 @@
 
 +(instancetype) textureWithString:(NSString *)string ForLabelNode:(NKLabelNode *)node inBackGroundWithCompletionBlock:(void (^)())block {
     if (![[NKTextureManager labelCache] objectForKey:string]) {
-        [[NKTextureManager labelCache] setObject:[self textureWithString:string fontNamed:node.fontName color:node.fontColor Size:node.size fontSize:node.fontSize completion:^{block();}] forKey:string];
+        [[NKTextureManager labelCache] setObject:[self textureWithString:string fontNamed:node.fontName color:node.fontColor Size:node.size2d fontSize:node.fontSize completion:^{block();}] forKey:string];
         //NSLog(@"add tex to atlas for label node named: %@", string);
     }
     else {

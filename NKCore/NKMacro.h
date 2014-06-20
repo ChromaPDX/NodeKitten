@@ -10,12 +10,14 @@
 
 // USER MACROS
 
+#define NK_SUPPRESS_LOGS 0
+
 //** FOR GL RELATED LOGS
 #define NK_LOG_GL 0
 //**
 
 //** LOG / PRINT TIME METRICS
-#define NK_LOG_METRICS 0
+#define NK_LOG_METRICS 1
 //**
 
 // SCENE DEBUG
@@ -35,6 +37,9 @@
 
 // SYSTEM MACROS
 
+#if NK_SUPPRESS_LOGS
+#define NSLog //Don'tlog
+#endif
 
 #if TARGET_OS_IPHONE
 

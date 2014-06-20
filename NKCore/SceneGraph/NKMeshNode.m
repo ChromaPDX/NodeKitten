@@ -15,10 +15,10 @@
     
     self = [super initWithSize:size];
     if (self) {
-        self.size3d = size;
+        self.size = size;
         
-        if (self.size3d.z == 0) {
-            [self setSize3d:V3Make(self.size.x, self.size.y, 1.)];
+        if (self.size.z == 0) {
+            [self setSize:V3Make(self.size.x, self.size.y, 1.)];
         }
         
         self.alpha = 1.0f;
@@ -115,10 +115,10 @@
     
     self = [super initWithSize:size];
     if (self) {
-        self.size3d = size;
+        self.size = size;
         
-        if (self.size3d.z == 0) {
-            [self setSize3d:V3Make(self.size.x, self.size.y, 1.)];
+        if (self.size.z == 0) {
+            [self setSize:V3Make(self.size.x, self.size.y, 1.)];
         }
         
         self.alpha = 1.0f;
@@ -388,8 +388,9 @@
     }
 }
 
--(void)setParent:(NKNode *)parent {
-    [super setParent:parent];
+-(void)setScene:(NKSceneNode *)scene {
+    [super setScene:scene];
+    
     if (!self.shader) {
         //NSLog(@"choose shader");
         [self chooseShader];
@@ -404,6 +405,10 @@
 
 -(void)setDrawMode:(GLenum)drawMode {
     _drawMode = drawMode;
+}
+
+-(NKVertexBuffer*)vertexBuffer {
+    return _vertexBuffer;
 }
 
 -(void)setTexture:(NKTexture *)texture {
@@ -421,7 +426,7 @@
 
 -(int)lodForDistance {
     
-    float distance = V3Distance(self.scene.camera.getGlobalPosition, self.getGlobalPosition) * .125;
+    float distance = V3Distance(self.scene.camera.globalPosition, self.globalPosition) * .125;
     
     float size = self.size.width;
     
@@ -437,6 +442,23 @@
     return lod;
 }
 
+-(void)setupViewMatrix {
+    
+    M16t modelView = M16Multiply(self.scene.camera.viewMatrix,M16ScaleWithV3(self.globalTransform, _size));
+    
+    if([self.scene.activeShader uniformNamed:NKS_M16_MV] ){
+        [[self.scene.activeShader uniformNamed:NKS_M16_MV] bindM16:modelView];
+    }
+    
+    if ([self.scene.activeShader uniformNamed:NKS_M9_NORMAL]){
+        [[self.scene.activeShader uniformNamed:NKS_M9_NORMAL] bindM9:M16GetInverseNormalMatrix(modelView)];
+    }
+    
+    M16t mvp = M16Multiply(self.scene.camera.projectionMatrix,modelView);
+    
+    [[self.scene.activeShader uniformNamed:NKS_M16_MVP] bindM16:mvp];
+    
+}
 
 -(void)customDraw {
     
@@ -446,19 +468,7 @@
             self.scene.activeShader = self.shader;
         }
         
-        M16t modelView = M16Multiply(self.scene.camera.viewMatrix,M16ScaleWithV3(self.scene.stack.currentMatrix, _size3d));
-        
-        if([self.scene.activeShader uniformNamed:NKS_M16_MV] ){
-            [[self.scene.activeShader uniformNamed:NKS_M16_MV] bindM16:modelView];
-        }
-        
-        if ([self.scene.activeShader uniformNamed:NKS_M9_NORMAL]){
-            [[self.scene.activeShader uniformNamed:NKS_M9_NORMAL] bindM9:M16GetInverseNormalMatrix(modelView)];
-        }
-        
-        M16t mvp = M16Multiply(self.scene.camera.projectionMatrix,modelView);
-        
-        [[self.scene.activeShader uniformNamed:NKS_M16_MVP] bindM16:mvp];
+        [self setupViewMatrix];
         
         if ([self.scene.activeShader uniformNamed:NKS_V4_COLOR]){
             if (!_color) {
@@ -509,7 +519,8 @@
 
 -(void)customdrawWithHitShader {
     
-    [[self.scene.activeShader uniformNamed:NKS_M16_MVP] bindM16:M16Multiply(self.scene.camera.viewProjectionMatrix, M16ScaleWithV3(self.scene.stack.currentMatrix, _size3d))];
+    [self setupViewMatrix];
+//    [[self.scene.activeShader uniformNamed:NKS_M16_MVP] bindM16:M16Multiply(self.scene.camera.viewProjectionMatrix, M16ScaleWithV3(self.scene.stack.currentMatrix, _size))];
     
     [[self.scene.activeShader uniformNamed:NKS_V4_COLOR] bindV4:self.uidColor.C4Color];
     

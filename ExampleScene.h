@@ -10,6 +10,9 @@
 
 @class NKLightNode;
 
+float steering;
+float acceleration;
+
 @interface ExampleScene : NKSceneNode <NKTableCellDelegate>
 
 @property (nonatomic, strong) NKLightNode *omni;

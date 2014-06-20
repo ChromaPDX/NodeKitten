@@ -14,13 +14,14 @@
     self = [super init];
     if (self) {
         self.scene = scene;
-        self.position3d = V3Make(scene.position3d.x, scene.position3d.y, scene.position3d.z - 1);
+        self.position = V3Make(scene.position.x, scene.position.y, scene.position.z - 1);
         self.name = @"CAMERA";
-         pDirty = true;
+        
+        pDirty = true;
         
         self.aspect = self.scene.size.width / self.scene.size.height; // Use screen bounds as default
         _nearZ = .01f;
-        _farZ = 1000.0f;
+        _farZ = 10000.0f;
         _fovVertRadians = DEGREES_TO_RADIANS(54);
         
         self.upVector = V3Make(0, 1, 0);
@@ -63,14 +64,18 @@
 
 - (M16t)viewMatrix {
     if (vDirty) {
-        localTransformMatrix = viewMatrix = [self getLookMatrix:_target.getGlobalPosition];
-        M16SetV3Translation(&localTransformMatrix, position);
+        _localTransform = viewMatrix = M16MakeLookAt(self.globalPosition, _target.globalPosition, [self upVector]);
+        M16Invert(&_localTransform);
+        //NKLogV3(@"view matrix trans", V3GetM16Translation(_localTransform));
         vDirty = false;
         return viewMatrix;
     }
     return viewMatrix;
 }
 
+-(M16t)globalTransform {
+    return _localTransform;
+}
 
 -(M16t)projectionMatrix {
     if (pDirty) {
@@ -83,6 +88,10 @@
     return projectionMatrix;
 }
 
+-(M16t)orthographicMatrix {
+    return M16MakeOrtho(-self.scene.size.width*.5, self.scene.size.width*.5, -self.scene.size.height*.5, self.scene.size.height*.5, self.nearZ, self.farZ);
+}
+
 -(void)initGL {
     glEnable(GL_BLEND);
     [self.scene setDepthTest:true];
@@ -90,28 +99,8 @@
     glGetError(); // Clear error codes
 }
 
--(void)begin {
-   // [self.scene pushMultiplyMatrix:self.viewMatrix];
-}
-
--(void)end {
-   // [self.scene popMatrix];
-}
-
--(void)draw {
-    // TO DO: if draw camera, also draw children if parented?
-}
-
 
 #pragma mark UTIL
-
--(V3t)eyeDirection {
-    V3t eye = V3MultiplyM16(self.viewMatrix,V3Subtract(self.getGlobalPosition,_target.position3d));
-    //V3t eye = V3Subtract(self.getGlobalPosition,_target.getGlobalPosition);
-    //V3t eye = V3Make(0, 0, -1);
-    //NSLog(@"eye vec: %f, %f, %f", eye.x, eye.y, eye.z);
-    return eye;
-}
 
 ////convert from screen to camera
 //-(V3t)s2w:(P2t)ScreenXY {
@@ -119,7 +108,7 @@
 //    
 //    CameraXYZ.x = ((ScreenXY.x * 2.) / self.scene.size.width) - 1.;
 //    CameraXYZ.y = ((ScreenXY.y * 2.) / self.scene.size.height)- 1.;
-//    CameraXYZ.z = self.position3d.z;
+//    CameraXYZ.z = self.position.z;
 //    
 //    //CameraXYZ.z = ScreenXYZ.z;
 //    NSLog(@"noralized screen coords %f %f %f", CameraXYZ.x, CameraXYZ.y, CameraXYZ.z);
@@ -152,7 +141,7 @@
 //    //CameraXYZ.z = ScreenXYZ.z;
 //    
 //    //get inverse camera matrix
-//    M16t inverseCamera = M16InvertColumnMajor([node getGlobalTransformMatrix], NULL);
+//    M16t inverseCamera = M16InvertColumnMajor([node globalTransform], NULL);
 //    
 //    //convert camera to world
 //    
@@ -166,9 +155,13 @@
 //    
 //}
 
--(void)updateWithTimeSinceLast:(F1t)dt {
-    [_target updateWithTimeSinceLast:dt];
+-(void)updateCameraWithTimeSinceLast:(F1t)dt {
     [super updateWithTimeSinceLast:dt];
+    [_target updateWithTimeSinceLast:dt];
+    //  NKLogV3(@"camera pos", self.globalPosition);
+}
+-(void)updateWithTimeSinceLast:(F1t)dt {
+
 }
 
 @end

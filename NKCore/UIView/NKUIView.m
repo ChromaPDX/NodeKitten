@@ -231,7 +231,7 @@
 }
 
 -(P2t)uiPointToNodePoint:(CGPoint)p {
-    P2t size = self.scene.size;
+    P2t size = self.scene.size.point;
     return P2Make(p.x*_mscale, size.height - (p.y*_mscale));
 }
 

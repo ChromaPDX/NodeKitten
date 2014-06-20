@@ -59,15 +59,12 @@
 
 -(void)draw {
     
-    [self begin];
     
     [self pushStyle];
     
     [self customDraw];
     
-    //NSLog(@"shader: %@",self.scene.activeShader.name);
     
-    [self end];
 }
 
 -(void)customDraw {
@@ -103,7 +100,7 @@
         
         NKNode *child = intChildren[i];
         
-        M16t modelView = M16Multiply(self.scene.camera.viewMatrix,M16Multiply(self.scene.stack.currentMatrix,M16ScaleWithV3(child.localTransformMatrix, child.size3d)));
+        M16t modelView = M16Multiply(self.scene.camera.viewMatrix,M16ScaleWithV3(child.globalTransform, child.size));
         M16t mvp = M16Multiply(self.scene.camera.projectionMatrix,modelView);
         
         [_mvStack pushMatrix:modelView];
@@ -153,7 +150,7 @@
     for (int i = 0; i < intChildren.count; i++) {
         NKNode *child = intChildren[i];
         
-        [_mvpStack pushMatrix:M16Multiply(self.scene.camera.viewProjectionMatrix, M16Multiply(self.scene.stack.currentMatrix,M16ScaleWithV3(child.localTransformMatrix, child.size3d)))];
+        [_mvpStack pushMatrix:M16Multiply(self.scene.camera.viewProjectionMatrix, M16ScaleWithV3(child.globalTransform, child.size))];
         [_childColors pushVector:child.uidColor.C4Color];
         
         spritesInBatch++;

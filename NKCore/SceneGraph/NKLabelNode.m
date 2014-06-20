@@ -36,7 +36,7 @@
     
     if (self){
         
-        [self setSize:size];
+        [self setSize:V3Make(size.width, size.height, 1)];
         
         if (!fontName) {
             _fontName = @"Arial Black.ttf";

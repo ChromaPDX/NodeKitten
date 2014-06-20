@@ -26,7 +26,7 @@
             
             V3t sceneCoords = V3Make(0,0,0);
             V3t camCoords = V3Make(sceneCoords.x + 0 ,sceneCoords.y + 0 , sceneCoords.z + 800);
-            [self.camera setPosition3d:camCoords];
+            [self.camera setPosition:camCoords];
             
             NKScrollNode *table = [[NKScrollNode alloc] initWithColor:NKCLEAR size:P2Make(400, 600)];
             [self addChild:table];
@@ -60,7 +60,7 @@
                         sc.name =  [NSString stringWithFormat:@"%d - WIREFRAME", i];
                         break;
                     case 3:
-                        sc.name =  [NSString stringWithFormat:@"%d - BIG CUBE", i];
+                        sc.name =  [NSString stringWithFormat:@"%d - LIGHT TEST", i];
                         break;
                     case 4:
                         sc.name =  [NSString stringWithFormat:@"%d - PHYSICS", i];
@@ -82,11 +82,11 @@
                 sc.eventBlock = newEventBlock{
                     if (NKEventPhaseEnd == event.phase) {
                         [sc.scene unload];
-                        self.nkView.scene = [[ExampleScene alloc]initWithSize:self.size sceneChoice:[sc.name intValue]];
+                        self.nkView.scene = [[ExampleScene alloc]initWithSize:self.size2d sceneChoice:[sc.name intValue]];
                     }
                 };
                 
-                NKLabelNode* label = [[NKLabelNode alloc] initWithSize:sc.size FontNamed:@"Helvetica"];
+                NKLabelNode* label = [[NKLabelNode alloc] initWithSize:sc.size2d FontNamed:@"Helvetica"];
                 label.fontColor = NKWHITE;
                 label.text = sc.name;
                 [sc addChild:label];
@@ -104,14 +104,16 @@
             
             V3t sceneCoords = V3Make(0,0,-30);
             
-            [self setPosition3d:sceneCoords];
+            [self setPosition:sceneCoords];
             
             V3t camCoords = V3Make(sceneCoords.x,sceneCoords.y, sceneCoords.z + 20);
             
-            [self.camera setPosition3d:camCoords];
+            [self.camera setPosition:camCoords];
             
-            self.camera.target.position3d = self.position3d;
+            //self.camera.target.position = self.position;
             self.camera.target = self;
+            
+            [self repeatAction:[NKAction rotateYByAngle:30 duration:1.]];
             
             [self.camera runAction:[NKAction enterOrbitAtLongitude:170 latitude:70 radius:20. offset:camCoords duration:5.] completion:^{
                 [self.camera repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:30 radius:0.0 offset:camCoords duration:1.]];
@@ -138,9 +140,9 @@
             
             [self addChild:_omni];
             
-            [_omni setPosition3d:V3Make(0, 20, 0)];
+            [_omni setPosition:V3Make(0, 20, 0)];
             
-            [_omni runAction:[NKAction move3dTo:V3MakeF(0) duration:2.] completion:^{
+            [_omni runAction:[NKAction moveTo:V3MakeF(0) duration:2.] completion:^{
                 [_omni runAction:[NKAction delayFor:.4] completion:^{
                     [_omni runAction:[NKAction enterOrbitForNode:self atLongitude:0 latitude:0 radius:10 duration:1.] completion:^{
                         [_omni repeatAction:[NKAction maintainOrbitForNode:self longitude:30 latitude:11 radius:.01 duration:.3]];
@@ -205,7 +207,7 @@
                 
                 [s runAction:[NKAction enterOrbitAtLongitude:arc4random() % 360 latitude:arc4random() % 360 radius:(arc4random() % 80)*.1 + 4. duration:4.] completion:^{
                     if (arc4random() % 100 > 50) {
-                        //[s runAction:[NKAction resize3d:V3MakeF(.5) duration:4.]];
+                        //[s runAction:[NKAction resize:V3MakeF(.5) duration:4.]];
                         [s repeatAction:[NKAction rotateXByAngle:90 duration:.5]];
                     }
                     else {
@@ -251,13 +253,13 @@
         #pragma mark - 2 - WIRE FRAME
         
         else if (sceneChoice == 2){
-            [self.camera setPosition3d:V3Make(10, 20, 10)];
+            [self.camera setPosition:V3Make(10, 20, 10)];
             //[self.camera repeatAction:[NKAction move3dBy:V3Make(0, 1, 0) duration:.1]];
             NSLog(@"init MY SCENE");
             
             NKSpriteNode *n = [[NKSpriteNode alloc] initWithTexture:[NKTexture textureWithImageNamed:@"kitty"] color:NKWHITE size:S2Make(4, 4)];
             [self addChild:n];
-            [n repeatAction:[NKAction rotate3dByAngle:V3Make(0, 90, 0) duration:.1]];
+            [n repeatAction:[NKAction rotateByAngles:V3Make(0, 90, 0) duration:.1]];
             
             //[n repeatAction:[NKAction rotateYByAngle:90 duration:2.]];
             
@@ -289,92 +291,99 @@
             
             NKMeshNode *ax = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveAxes texture:nil color:NKCLEAR size:V3MakeF(10)];
             [self addChild:ax];
-            // [ax setPosition3d:V3MakeF(20)];
+            // [ax setPosition:V3MakeF(20)];
             
-            [self repeatAction:[NKAction rotate3dByAngle:V3Make(0, 50, 0) duration:4.]];
+            [self repeatAction:[NKAction rotateByAngles:V3Make(0, 50, 0) duration:4.]];
             
             
         }
         
-        #pragma mark - 3 - LIGHT CUBE
+        #pragma mark - 3 - LIGHT TEST
         
         else if (sceneChoice == 3){
-            // NKTexture * tex = [NKTexture textureWithImageNamed:@"earthmap.png"];
-            NKTexture*tex;
+            self.camera.position = V3Make(0, 2, 2.5);
             
-            V3t sceneCoords = V3Make(100,-100,30);
+            [self repeatAction:[NKAction rotateYByAngle:90 duration:8.]];
             
-            [self setPosition3d:sceneCoords];
+            //[self runAction:[NKAction move3dBy:V3Make(50, 50, 50) duration:3]];
             
-            V3t camCoords = V3Make(sceneCoords.x+15,sceneCoords.y+20, sceneCoords.z - 50);
+            _omni = [[NKLightNode alloc] initWithDefaultProperties];
             
-            [self.camera setPosition3d:camCoords];
+            _omni.scale = V3MakeF(.1);
             
-            self.camera.target.position3d = self.position3d;
-            self.camera.target = self;
-            
-            //            [self.camera runAction:[NKAction enterOrbitAtLongitude:170 latitude:70 radius:40. offset:camCoords duration:5.] completion:^{
-            //                [self.camera repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:30 radius:0.0 offset:camCoords duration:1.]];
-            //            }];
-            
-            NKLightProperties p;
-            
-            p.isEnabled = true;
-            p.isLocal = true;
-            p.isSpot = false;
-            
-            p.ambient = V3Make(.5,.5,.4);
-            p.color = V3Make(1.,1.,1.);
-            p.coneDirection = V3Make(0, 0, -1);
-            p.halfVector = V3MakeF(10);
-            
-            p.spotCosCutoff = 10.;
-            p.spotExponent = 2;
-            p.constantAttenuation = 0.;
-            p.linearAttenuation = .0;
-            p.quadraticAttenuation = .05;
-            
-            _omni = [[NKLightNode alloc] initWithProperties:p];
-            
+            self.drawLights = true;
+            //            [_omni setPosition:V3Make(0, 10, 20)];
             [self addChild:_omni];
             
-            [_omni setPosition3d:V3Make(0, 20, 0)];
-            [_omni runAction:[NKAction move3dTo:V3MakeF(0) duration:2.] completion:^{
+            [self.camera runAction:[NKAction enterOrbitAtLongitude:170 latitude:70 radius:3. offset:V3Make(0, 2, 2.5) duration:5.] completion:^{
+                [self.camera repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:30 radius:0.0 offset:V3Make(0, 2, 2.5) duration:1.]];
+            }];
+            
+            [_omni setPosition:V3Make(0, 1, 2)];
+            
+            [_omni runAction:[NKAction moveTo:V3MakeF(0) duration:2.] completion:^{
                 [_omni runAction:[NKAction delayFor:.4] completion:^{
-                    [_omni runAction:[NKAction enterOrbitAtLongitude:0 latitude:0 radius:15 duration:1.] completion:^{
-                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:11 radius:.01 duration:.3]];
+                    [_omni runAction:[NKAction enterOrbitAtLongitude:0 latitude:30 radius:1 duration:1.] completion:^{
+                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:11 radius:.0 duration:.3]];
                     }];
                 }];
             }];
             
-            self.drawLights = true;
+            NKMeshNode *ax = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveAxes texture:nil color:NKCLEAR size:V3MakeF(100)];
+            [self addChild:ax];
+            ax.shader = [NKShaderProgram newShaderNamed:@"vertexColor" colorMode:NKS_COLOR_MODE_VERTEX numTextures:0 numLights:0 withBatchSize:0];
             
-            NKMeshNode *s = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveCube texture:nil color:NKWHITE size:V3MakeF(10.)];
+            ax.userInteractionEnabled = false;
             
-            [self addChild:s];
+            AIScene* scene = [[AIScene alloc]initWithFile:@"duck.dae" normalize:.5] ;
             
-            [s runAction:[NKAction rotateXByAngle:45 duration:2.] completion:^{
-                [s repeatAction:[NKAction rotateYByAngle:90 duration:2.]];
-            }];
+            NKMeshNode *ground = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveCube texture:nil color:[NKByteColor colorWithRed:50 green:50 blue:50 alpha:255] size:V3Make(100, .01, 100)];
+            // [self addChild:ground];
             
-            self.name = @"BATCH / LIGHTS TEST SCENE";
-            NSLog(@"init MY SCENE");
+            ground.body = [[NKBulletBody alloc] initWithType:NKBulletShapeBox Size:ground.size transform:ground.localTransform mass:0];
+            
+            [ground.body setCollisionGroup:NKCollisionFilterStatic];
+            [ground.body setCollisionMask: NKCollisionFilterCharacter | NKCollisionFilterWalls];
+            
+            [[NKBulletWorld sharedInstance] addNode:ground];
+            
+            [ground runAction:[NKAction rotateXByAngle:-30 duration:3.]];
+            
+            for (int i = 0; i <scene.meshes.count; i++){
+                
+                NKMeshNode *node = scene.meshes[i];
+                
+                [node setPosition:V3Add(node.position, V3Make(0, 0, 0))];
+                
+                [self addChild:node];
+                if (i < 4) {
+                    //if (i == 0 || i == 1 || i == 3) [node removeFromParent];
+                    //[node repeatAction:[NKAction rotateYByAngle:-60 duration:1.]];
+                    
+                    //                    node.body = [[NKBulletBody alloc]initWithType:NKBulletShapeBox Size:node.size transform:node.globalTransform mass:1.];
+                    //                    [node.body setCollisionGroup:NKCollisionFilterCharacter];
+                    //                    [node.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls];
+                    //
+                    //                    [[NKBulletWorld sharedInstance] addNode:node];
+                    
+                }
+            }
+
         }
         
         #pragma mark - 4 - PHYSICS
         
         else if (sceneChoice == 4) { // BULLET TEST
             
-            //[self.scene repeatAction:[NKAction rotateYByAngle:45 duration:4.]];
-            
-            
-            [self.camera setPosition3d:V3Make(0, 10, 40)];
+            [self.camera setPosition:V3Make(0, 10, 40)];
             
             _omni = [[NKLightNode alloc] initWithDefaultProperties];
 
-            [_omni setPosition3d:V3Make(0, 10, 20)];
-            [self addChild:_omni];
+            _omni.pointer->linearAttenuation = .01;
             
+            [_omni setPosition:V3Make(0, 10, 20)];
+            [self addChild:_omni];
+//
             
             for (int i = 0; i < 5; i++) {
                 NKMeshNode *ground = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveCube texture:nil color:NKWHITE size:V3Make(100, .01, 100)];
@@ -386,25 +395,25 @@
                         break;
                     case 1:
                         [ground setOrientationEuler:V3Make(60,0,0)];
-                        [ground setPosition3d:V3Make(0, 0, -20)];
+                        [ground setPosition:V3Make(0, 0, -20)];
                         break;
                     case 2:
                         [ground setOrientationEuler:V3Make(0,0,-10)];
                         break;
                     case 3:
-                        ground.size3d = V3Make(30, .01, 3);
-                        ground.position3d = V3Make(0, 2., 0);
+                        ground.size = V3Make(30, .01, 3);
+                        ground.position = V3Make(0, 2., 0);
                         //[ground setOrientationEuler:V3Make(0,0,0)];
                         break;
                     case 4:
                         [ground setOrientationEuler:V3Make(-20,0,0)];
-                        ground.position3d = V3Make(0, 0, 30);
+                        ground.position = V3Make(0, 0, 30);
                         break;
                         
                     default:
                         break;
                 }
-                ground.body = [[NKBulletBody alloc] initWithType:NKBulletShapeBox Size:ground.size3d transform:ground.localTransformMatrix mass:0];
+                ground.body = [[NKBulletBody alloc] initWithType:NKBulletShapeBox Size:ground.size transform:ground.localTransform mass:0];
                 
                 [ground.body setCollisionGroup:NKCollisionFilterStatic];
                 [ground.body setCollisionMask: NKCollisionFilterCharacter | NKCollisionFilterWalls];
@@ -425,10 +434,10 @@
             for (int i = 0; i < numSpheres*2; i++){
                 NKNode *s = [[NKNode alloc]initWithSize:V3Make(1.,1.5,1.)];
                 s.color = NKCOLOR_RANDOM;
-                [s setPosition3d:V3Make((i % 8) * s.size.width * 2.25 - (s.size.width*8), (i/8) * s.size.height * 2.1 + 2.2, 0)];
+                [s setPosition:V3Make((i % 8) * s.size.width * 2.25 - (s.size.width*8), (i/8) * s.size.height * 2.1 + 2.2, 0)];
                 [batch addChild:s];
                 
-                s.body = [[NKBulletBody alloc] initWithType:NKBulletShapeBox Size:s.size3d transform:s.localTransformMatrix mass:1.];
+                s.body = [[NKBulletBody alloc] initWithType:NKBulletShapeBox Size:s.size transform:s.localTransform mass:1.];
                 
                 [s.body setCollisionGroup:NKCollisionFilterWalls];
                 [s.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls | NKCollisionFilterCharacter];
@@ -455,7 +464,7 @@
 //            
 //            //[self.scene repeatAction:[NKAction rotateYByAngle:45 duration:2.]];
 //            
-//            [self.camera setPosition3d:V3Make(0, 10, 20)];
+//            [self.camera setPosition:V3Make(0, 10, 20)];
 //            
 //            NKLightProperties p;
 //            
@@ -478,7 +487,7 @@
 //            
 //            [self addChild:_omni];
 //
-//            [_omni runAction:[NKAction move3dTo:V3MakeF(0) duration:2.] completion:^{
+//            [_omni runAction:[NKAction moveTo:V3MakeF(0) duration:2.] completion:^{
 //                [_omni runAction:[NKAction delayFor:.4] completion:^{
 //                    [_omni runAction:[NKAction enterOrbitAtLongitude:0 latitude:0 radius:10 duration:1.] completion:^{
 //                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:11 radius:.01 duration:.3]];
@@ -490,21 +499,21 @@
 //            
 //            newMesh = [[NKMeshNode alloc]initWithObjNamed:@"teapot" withSize:V3MakeF(5.) normalize:true anchor:true];
 //            [self addChild:newMesh];
-//            [newMesh setPosition3d:V3Make(0,0,0)];
+//            [newMesh setPosition:V3Make(0,0,0)];
 //            [newMesh repeatAction:[NKAction rotateXByAngle:90 duration:1.]];
 //            
 //            newMesh = [[NKMeshNode alloc]initWithObjNamed:@"trashbin" withSize:V3MakeF(5.) normalize:true anchor:true];
 //            newMesh.color = NKRED;
 //            
 //            [self addChild:newMesh];
-//            [newMesh setPosition3d:V3Make(0,10,0)];
+//            [newMesh setPosition:V3Make(0,10,0)];
 //            [newMesh repeatAction:[NKAction rotateXByAngle:90 duration:1.]];
 //            
 //            newMesh = [[NKMeshNode alloc]initWithObjNamed:@"mushrooms" withSize:V3MakeF(5.) normalize:true anchor:true];
 //            newMesh.texture = [NKTexture textureWithImageNamed:@"shroom.tif"];
 //            [self addChild:newMesh];
 //            
-//            [newMesh setPosition3d:V3Make(0,-10,0)];
+//            [newMesh setPosition:V3Make(0,-10,0)];
 //            [newMesh repeatAction:[NKAction rotateXByAngle:90 duration:1.]];
 //
 //            
@@ -514,19 +523,112 @@
         
         else if (sceneChoice == 5) { // ASSIMP
 
-            self.camera.position3d = V3Make(0, 20, 40);
+            self.camera.position = V3Make(0, 1.5, 4);
             
-            [self repeatAction:[NKAction rotateYByAngle:90 duration:8.]];
+            //[self repeatAction:[NKAction rotateByAngle:90 duration:1.]];
             
-            AIScene* scene = [[AIScene alloc]initFromFile:@"jeep1a.fbx"];
+            NKMeshNode *ax = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveAxes texture:nil color:NKCLEAR size:V3MakeF(100)];
+            [self addChild:ax];
+            ax.shader = [NKShaderProgram newShaderNamed:@"vertexColor" colorMode:NKS_COLOR_MODE_VERTEX numTextures:0 numLights:0 withBatchSize:0];
             
-            for (int i = 0; i <scene.meshes.count; i++){
+            ax.userInteractionEnabled = false;
+            
+            AIScene* scene = [[AIScene alloc]initWithFile:@"jeep1a.fbx" normalize:1.] ;
+
+            NKMeshNode *ground = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveCube texture:[NKTexture textureWithImageNamed:@"earthmap.png"] color:[NKByteColor colorWithRed:50 green:50 blue:50 alpha:255] size:V3Make(100, .01, 100)];
+            [ground setPosition:V3Make(0, -.5, 0)];
+            [self addChild:ground];
+            
+            ground.body = [[NKBulletBody alloc] initWithType:NKBulletShapeBox Size:ground.size transform:ground.localTransform mass:0];
+            
+            [ground.body setCollisionGroup:NKCollisionFilterStatic];
+            [ground.body setCollisionMask: NKCollisionFilterCharacter | NKCollisionFilterWalls];
+            
+            [[NKBulletWorld sharedInstance] addNode:ground];
+            
+            
+            for (int i = 0; i < scene.meshes.count; i++){
+                
                 NKMeshNode *node = scene.meshes[i];
+                
+                [node setPosition:V3Add(node.position, V3Make(0, 1, 0))];
+                                          
                 [self addChild:node];
-                if (i < 4) {
-                    [node repeatAction:[NKAction rotateXByAngle:30 duration:1.]];
+                
+                if (i < 4){
+                    node.body = [[NKBulletBody alloc]initWithType:NKBulletShapeXCylinder Size:node.size transform:node.globalTransform mass:5.];
+                    [node.body setCollisionGroup:NKCollisionFilterCharacter];
+                    [node.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls];
+                    
+                    [[NKBulletWorld sharedInstance] addNode:node];
                 }
+                
+                if (i == 6) {
+                    node.name = @"BODY";
+                    node.body = [[NKBulletBody alloc]initWithType:NKBulletShapeBox Size:node.size transform:node.globalTransform mass:50.];
+                    [node.body setCollisionGroup:NKCollisionFilterCharacter];
+                    [node.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls];
+                    [[NKBulletWorld sharedInstance] addNode:node];
+                    
+                    [self.camera setParent:node];
+                    [self.camera setTarget:node];
+                    
+                    _omni = [[NKLightNode alloc] initWithDefaultProperties];
+                    
+                    _omni.pointer->linearAttenuation = .001;
+                    
+                    [_omni setPosition:V3Make(0, 3, 3)];
+                    
+                    for (int i = 0; i < 4; i++) {
+                        NKNode* wheel = scene.meshes[i];
+                        
+                        [wheel.body setFriction:.9];
+                        [wheel.body setDamping:0.3 angular:.95];
+                        
+                        if (i == 0 || i == 2) { //
+                            // make steering joint
+                            
+                            NKMeshNode *steering = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveCube texture:nil color:nil size:V3MakeF(.15)];
+                            [steering setPosition:wheel.globalPosition];
+                            [self addChild:steering];
+                            
+                            wheel.name = @"FL";
+                            steering.name = @"FLS";
+                            if (i == 0) {
+                                wheel.name = @"FR";
+                                steering.name = @"FRS";
+                            }
+           
+                            
+                            steering.body = [[NKBulletBody alloc]initWithType:NKBulletShapeBox Size:steering.size transform:steering.globalTransform mass:2.];
+                            [steering.body setDamping:.98 angular:.98];
+                            [steering.body setCollisionGroup:NKCollisionFilterCharacter];
+                            [[NKBulletWorld sharedInstance] addNode:steering];
+                            // attach steering
+                            [node.body addWheelConstraintAtPosition:V3Subtract(steering.globalPosition,node.globalPosition) toNode:steering atPosition:V3MakeF(0) limits:V6Make(0, -1., 0 ,0 ,1., 0)];
+                            
+                            // attach wheel
+                            [steering.body addWheelConstraintAtPosition:V3MakeF(0) toNode:wheel atPosition:V3MakeF(0) limits:V6Make(1, 0, 0, 0 ,0, 0)];
+                        }
+                        else {
+                           // [wheel removeFromParent];
+                            [node.body addWheelConstraintAtPosition:V3Subtract(wheel.position,node.position) toNode:wheel atPosition:V3MakeF(0) limits:V6Make(1, 0, 0, 0 ,0, 0)];
+                        }
+                      
+                    
+                    }
+                    for (int p = 4; p < 6; p++){
+                        NKNode *wheel = scene.meshes[p];
+                        //[wheel setParent:node];
+                        //[wheel runAction:[NKAction move3dBy:V3Make(0,500,0) duration:10.]];
+                       // [self.camera setTarget:wheel];
+                    }
+                }
+
             }
+            
+            //[ground runAction:[NKAction rotateXByAngle:-30 duration:3.]];
+            //[self.camera runAction:[NKAction move3dByX:0 Y:100 Z:-100 duration:10.]];
             
         }
         
@@ -534,13 +636,13 @@
         
         else if (sceneChoice == 6) {
             
-            self.camera.position3d = V3Make(0, 0, 20);
+            self.camera.position = V3Make(0, 0, 20);
             
             //[self repeatAction:[NKAction rotateYByAngle:90 duration:1.]];
             
 //            _omni = [[NKLightNode alloc] initWithDefaultProperties];
 //            
-//            [_omni runAction:[NKAction move3dTo:V3MakeF(0) duration:2.] completion:^{
+//            [_omni runAction:[NKAction moveTo:V3MakeF(0) duration:2.] completion:^{
 //                [_omni runAction:[NKAction delayFor:.4] completion:^{
 //                    [_omni runAction:[NKAction enterOrbitAtLongitude:0 latitude:0 radius:10 duration:1.] completion:^{
 //                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:11 radius:.01 duration:.3]];
@@ -556,18 +658,18 @@
             
             videoNode.cullFace = NKCullFaceNone;
             
-            [videoNode setPosition3d:V3Make(0, 8, 0)];
+            [videoNode setPosition:V3Make(0, 8, 0)];
             
-            [videoNode repeatAction:[NKAction rotate3dByAngle:V3Make(13, 12, 20) duration:1.]];
+            [videoNode repeatAction:[NKAction rotateByAngles:V3Make(13, 12, 20) duration:1.]];
 
             [self addChild:videoNode];
     
             
             NKVideoNode *videoNode2 = [[NKVideoNode alloc]initWithVideoNamed:@"carousel_360-640.mov" size:V3Make(12., 8., 1.)];
             
-            [videoNode2 setPosition3d:V3Make(0, -8, 0)];
+            [videoNode2 setPosition:V3Make(0, -8, 0)];
             
-            [videoNode2 repeatAction:[NKAction rotate3dByAngle:V3Make(30, 12, 20) duration:1.]];
+            [videoNode2 repeatAction:[NKAction rotateByAngles:V3Make(30, 12, 20) duration:1.]];
             
             videoNode2.cullFace = NKCullFaceNone;
             
@@ -576,7 +678,7 @@
             
             NKVideoNode *videoNode3 = [[NKVideoNode alloc]initWithVideoNamed:@"carousel1_640-360.mov" size:V3Make(12., 8., 1.)];
             
-            [videoNode3 setPosition3d:V3Make(0, 0, 0)];
+            [videoNode3 setPosition:V3Make(0, 0, 0)];
             
             
             [self addChild:videoNode3];
@@ -588,23 +690,101 @@
     return self;
 }
 
+-(void)updateWithTimeSinceLast:(F1t)dt {
+    [super updateWithTimeSinceLast:dt];
+    
+    if (acceleration > 0) {
+        [[[self childNodeWithName:@"FL"] body] applyTorqueImpulse:V3Make(-2,0,0)];
+        [[[self childNodeWithName:@"FR"] body] applyTorqueImpulse:V3Make(-2,0,0)];
+    }
+    else if (acceleration < 0) {
+        [[[self childNodeWithName:@"FL"] body] applyCentralImpulse:V3MultiplyM16([[self childNodeWithName:@"FLS"] globalTransform], V3Make(2., 0, 0))];
+        [[[self childNodeWithName:@"FR"] body] applyTorqueImpulse:V3MultiplyM16([[self childNodeWithName:@"FRS"] globalTransform], V3Make(2., 0, 0))];
+    }
+    if (steering < 0) { // left
+        [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,.1,0)];
+        [[[self childNodeWithName:@"FRS"] body] applyTorqueImpulse:V3Make(0,.1,0)];
+    }
+    else if (steering > 0){
+        [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,-.1,0)];
+        [[[self childNodeWithName:@"FRS"] body] applyTorqueImpulse:V3Make(0,-.1,0)];
+    }
+    else {
+        
+        V3t steerForward = [[self childNodeWithName:@"FLS"] globalTransform].column3.xyz;
+        V3t vehicleForward = [[self childNodeWithName:@"BODY"] globalTransform].column3.xyz;
+        
+        F1t steeringAngle = V3DotProduct(steerForward, vehicleForward);
+        
+        if (steeringAngle > .9) {
+            [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,-.1,0)];
+        }
+        else if (steeringAngle < .9) {
+            [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,.1,0)];
+        }
+    }
+//    NKLogV3(@"cam pos", self.camera.globalPosition);
+//    NKLogV3(@"cam target", self.camera.target.globalPosition);
+    //NKLogM16(@"view matrix", self.camera.viewMatrix);
+    
+}
+-(void)keyDown:(NSUInteger)key {
+    
+    NSLog(@"key down %lu", (unsigned long)key);
+    
+    if (key == 126) { // UP
+        acceleration = 1;
+    }
+    else if (key == 125) { // DOWN
+        acceleration = -1;
+    }
+    else if (key == 123) { // LEFT
+        steering = -1;
+    }
+    else if (key == 124) { // RIGHT
+        steering = 1;
+    }
+}
+
+-(void)keyUp:(NSUInteger)key {
+    
+    NSLog(@"key up %lu", (unsigned long)key);
+    
+    if (key == 126) { // UP
+        if (acceleration == 1)
+        acceleration = 0;
+    }
+    else if (key == 125) { // DOWN
+        if (acceleration == -1)
+        acceleration = 0;
+    }
+    else if (key == 123) { // LEFT
+        if (steering == -1)
+              steering = 0;
+    }
+    else if (key == 124) { // RIGHT
+        if (steering == 1)
+            steering = 0;
+    }
+
+}
 -(void)handleEvent:(NKEvent *)event {
     [super handleEvent:event];
 
     if (NKEventPhaseDoubleTap == event.phase) {
         [self unload];
-        self.nkView.scene = [[ExampleScene alloc]initWithSize:self.size sceneChoice:0];
+        self.nkView.scene = [[ExampleScene alloc]initWithSize:self.size2d sceneChoice:0];
     }
 }
 
 -(void)addBallToNode:(NKNode*)n {
     NKNode *s = [[NKNode alloc]initWithSize:V3MakeF(1.5)];
-    [s setPosition3d:V3Make(0, 2, 25)];
+    [s setPosition:V3Make(0, 2, 25)];
     s.color = NKWHITE;
     
     [n addChild:s];
     
-    s.body = [[NKBulletBody alloc] initWithType:NKBulletShapeSphere Size:s.size3d transform:s.localTransformMatrix mass:1.];
+    s.body = [[NKBulletBody alloc] initWithType:NKBulletShapeSphere Size:s.size transform:s.localTransform mass:1.];
     
     
     [s.body setCollisionGroup:NKCollisionFilterCharacter];

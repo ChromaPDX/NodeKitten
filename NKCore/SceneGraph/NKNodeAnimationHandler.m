@@ -154,30 +154,24 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
 
 + (NKAction *)moveByX:(CGFloat)deltaX y:(CGFloat)deltaY duration:(F1t)sec {
     
-    return [NKAction move3dByX:deltaX Y:deltaY Z:0 duration:sec];
+    return [NKAction moveByX:deltaX Y:deltaY Z:0 duration:sec];
     
 }
 
-+ (NKAction *)moveBy:(CGVector)delta duration:(F1t)sec {
++ (NKAction *)moveBy:(V3t)delta duration:(F1t)sec {
     
-    return [NKAction moveByX:delta.dx y:delta.dy duration:sec];
-    
-}
-
-+ (NKAction *)move3dBy:(V3t)delta duration:(F1t)sec {
-    
-    return [NKAction move3dByX:delta.x Y:delta.y Z:delta.z duration:sec];
+    return [NKAction moveByX:delta.x Y:delta.y Z:delta.z duration:sec];
     
 }
 
-+ (NKAction *)move3dByX:(CGFloat)x Y:(CGFloat)y Z:(CGFloat)z duration:(F1t)sec {
++ (NKAction *)moveByX:(CGFloat)x Y:(CGFloat)y Z:(CGFloat)z duration:(F1t)sec {
     
     NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
     
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         
         if (action.reset) {
-            action.startPos = node.position3d;
+            action.startPos = node.position;
             V3t p = action.startPos;
             action.endPos = V3Make(p.x + x, p.y+y, p.z + z);
             action.reset = false;
@@ -186,7 +180,7 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
 
         V3t np = getTweenPoint(action.startPos, action.endPos, completion );
        // NSLog(@"action dst %f %f %f, comp: %f",np.x,np.y,np.z, completion);
-        [node setPosition3d:np];
+        [node setPosition:np];
         
     };
     
@@ -196,19 +190,19 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
 
 #pragma mark - MOVE TO
 
-+ (NKAction *)move3dTo:(V3t)location duration:(F1t)sec {
++ (NKAction *)moveTo:(V3t)location duration:(F1t)sec {
     
     NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
     
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         
         if (action.reset) {
-            action.startPos = node.position3d;
+            action.startPos = node.position;
             action.endPos = V3Make(location.x, location.y, location.z);
             action.reset = false;
         }
         
-         [node setPosition3d:getTweenPoint(action.startPos, action.endPos, completion )];
+         [node setPosition:getTweenPoint(action.startPos, action.endPos, completion )];
         
     };
     
@@ -216,32 +210,48 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     
 }
 
-+ (NKAction *)moveToX:(CGFloat)x y:(CGFloat)y duration:(F1t)sec {
-    
++ (NKAction *)move2dTo:(V2t)location duration:(F1t)sec {
     NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
     
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         
         if (action.reset) {
-            action.startPos = node.position3d;
-            V3t p = node.position3d;
-            action.endPos = V3Make(x, y, p.z);
+            action.startPos = node.position;
+            V3t p = node.position;
+            action.endPos = V3Make(location.x, location.y, node.position.z);
             action.reset = false;
         }
-
         
-        [node setPosition3d:getTweenPoint(action.startPos, action.endPos, completion )];
-
+        
+        [node setPosition:getTweenPoint(action.startPos, action.endPos, completion )];
+        
     };
     
     return newAction;
 }
 
-+ (NKAction *)moveTo:(P2t)location duration:(F1t)sec {
-    
-    return [NKAction moveToX:location.x y:location.y duration:sec];
-    
-}
+//+ (NKAction *)moveTo:(V3t)location duration:(F1t)sec {
+//    
+//    NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
+//    
+//    newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
+//        
+//        if (action.reset) {
+//            action.startPos = node.position;
+//            V3t p = node.position;
+//            action.endPos = V3Make(location.x, location.y, location.z);
+//            action.reset = false;
+//        }
+//        
+//        
+//        [node setPosition:getTweenPoint(action.startPos, action.endPos, completion )];
+//        
+//    };
+//    
+//    return newAction;
+//
+//    
+//}
 
 + (NKAction *)moveToX:(CGFloat)x duration:(F1t)sec {
     NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
@@ -249,13 +259,13 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         
         if (action.reset) {
-            action.startPos = node.position3d;
-            V3t p = node.position3d;
+            action.startPos = node.position;
+            V3t p = node.position;
             action.endPos = V3Make(x, p.y, p.z);
             action.reset = false;
         }
         
-        [node setPosition3d:getTweenPoint(action.startPos, action.endPos, completion )];
+        [node setPosition:getTweenPoint(action.startPos, action.endPos, completion )];
 
     };
     
@@ -268,14 +278,14 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         
         if (action.reset) {
-            action.startPos = node.position3d;
-            V3t p = node.position3d;
+            action.startPos = node.position;
+            V3t p = node.position;
             action.endPos = V3Make(p.x, y, p.z);
             action.reset = false;
 
         }
         
-        [node setPosition3d:getTweenPoint(action.startPos, action.endPos, completion )];
+        [node setPosition:getTweenPoint(action.startPos, action.endPos, completion )];
 
         
     };
@@ -291,12 +301,12 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         
         if (action.reset) {
-            action.startPos = node.position3d;
+            action.startPos = node.position;
             //action.endPos = V3Make(location.x, location.y, location.z);
             action.reset = false;
         }
         
-        [node setPosition3d:getTweenPoint(action.startPos, V3Subtract(target.getGlobalPosition, node.scene.getGlobalPosition), completion )];
+        [node setPosition:getTweenPoint(action.startPos, target.globalPosition, completion )];
         
     };
     
@@ -314,8 +324,8 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
             action.reset = false;
         }
         
-        [node setPosition3d:V3Subtract(target.getGlobalPosition, node.scene.getGlobalPosition)];
-        //[node setPosition3d:getTweenPoint(action.startPos, target.getGlobalPosition, completion )];
+        [node setPosition:target.globalPosition];
+        //[node setPosition:getTweenPoint(action.startPos, target.globalPosition, completion )];
     };
     
     return newAction;
@@ -324,7 +334,7 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
 
 #pragma mark - ROTATE
 
-+(NKAction *)rotate3dByAngle:(V3t)angles duration:(F1t)sec {
++(NKAction *)rotateByAngles:(V3t)angles duration:(F1t)sec {
     
     NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
     
@@ -349,7 +359,7 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     
 }
 
-+(NKAction *)rotate3dToAngle:(V3t)angles duration:(F1t)sec {
++(NKAction *)rotateToAngles:(V3t)angles duration:(F1t)sec {
     
     NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
     
@@ -385,7 +395,7 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
 }
 
 
-+(NKAction *)rotateByAngle:(CGFloat)radians duration:(F1t)sec {
++(NKAction *)rotateZByAngle:(CGFloat)radians duration:(F1t)sec {
     
     return [NKAction rotateAxis:V3Make(0,0,1) byAngle:radians duration:sec];
     
@@ -439,7 +449,7 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
 
 #pragma mark - GL LOOK AT
 
-+ (NKAction*)enterOrbitForNode:(NKNode*)target atLongitude:(float)longitude latitude:(float)latitude radius:(float)radius duration:(F1t)sec {
++ (NKAction*)enterOrbitForNode:(NKNode *)target atLongitude:(float)longitude latitude:(float)latitude radius:(float)radius duration:(F1t)sec offset:(V3t)offset {
     
     NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
     
@@ -447,15 +457,20 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
         
         if (action.reset) {
             action.reset = false;
-            action.startPos = [node position3d];
+            action.startPos = [node position];
             [node setOrbit:V3Make(longitude,latitude,radius)];
         }
         
-        [node setPosition3d:getTweenPoint(action.startPos, V3Add([node currentOrbit],V3Subtract(target.getGlobalPosition, node.scene.getGlobalPosition)), completion)];
+        [node setPosition:getTweenPoint(action.startPos, V3Add(V3Add([node currentOrbit],target.globalPosition),offset), completion)];
         
     };
     
     return newAction;
+    
+}
++ (NKAction*)enterOrbitForNode:(NKNode*)target atLongitude:(float)longitude latitude:(float)latitude radius:(float)radius duration:(F1t)sec {
+    
+    return [NKAction enterOrbitForNode:target atLongitude:longitude latitude:latitude radius:radius duration:sec offset:V3MakeF(0)];
 
 }
 
@@ -471,12 +486,12 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
         
         if (action.reset) {
             action.reset = false;
-            action.startPos = [node position3d];
+            action.startPos = [node position];
             [node setOrbit:V3Make(longitude,latitude,radius)];
             action.endPos = V3Add([node currentOrbit],offset);
         }
        
-        [node setPosition3d:getTweenPoint(action.startPos, action.endPos, completion)];
+        [node setPosition:getTweenPoint(action.startPos, action.endPos, completion)];
         
     };
     
@@ -503,13 +518,19 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
         }
         
         [node setOrbit:getTweenPoint(action.startPos, action.endPos, completion)];
-        [node setPosition3d:V3Add(offset, [node currentOrbit])];
+        [node setPosition:V3Add(offset, [node currentOrbit])];
     };
     
     return newAction;
 }
 
 + (NKAction*)maintainOrbitForNode:(NKNode *)target longitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius duration:(F1t)sec {
+
+    return [NKAction maintainOrbitForNode:target longitude:deltaLongitude latitude:deltaLatitude radius:deltaRadius duration:sec offset:V3MakeF(0)];
+}
+
++ (NKAction*)maintainOrbitForNode:(NKNode *)target longitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius duration:(F1t)sec offset:(V3t)offset {
+    
     NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
     
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
@@ -522,11 +543,13 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
             [node setOrbit:action.endPos];
         }
         [node setOrbit:getTweenPoint(action.startPos, action.endPos, completion)];
-        [node setPosition3d:V3Add(V3Subtract(target.getGlobalPosition, node.scene.getGlobalPosition), [node currentOrbit])];
+        [node setPosition:V3Add(V3Add(target.globalPosition, [node currentOrbit]),offset)];
     };
     
     return newAction;
+    
 }
+
 + (NKAction*)panTolookAtNode:(NKNode*)target duration:(F1t)sec {
     
     NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
@@ -538,8 +561,8 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
             action.reset = false;
         }
         
-        action.startOrientation = Q4GetM16Rotate([node getGlobalTransformMatrix]);
-        action.endOrientation = Q4GetM16Rotate([node getLookMatrix:[target getGlobalPosition]]);
+        action.startOrientation = Q4GetM16Rotate([node globalTransform]);
+        action.endOrientation = Q4GetM16Rotate([node getLookMatrix:[target globalPosition]]);
         
         [node setOrientation:QuatSlerp(action.startOrientation, action.endOrientation,completion)];
         
@@ -575,10 +598,10 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         if (action.reset) {
             action.reset = false;
-            action.startPos = node.scale3d;
+            action.startPos = node.scale;
             action.endPos = V3Make(action.startPos.x * scale, action.startPos.y * scale, action.startPos.z * scale);
         }
-        [node setScale3d:getTweenPoint(action.startPos, action.endPos, completion)];
+        [node setScale:getTweenPoint(action.startPos, action.endPos, completion)];
     };
     return newAction;
 }
@@ -588,10 +611,10 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         if (action.reset) {
             action.reset = false;
-            action.startPos = node.scale3d;
+            action.startPos = node.scale;
             action.endPos = V3Make(action.startPos.x * xScale, action.startPos.y * yScale, action.startPos.z);
         }
-       [node setScale3d:getTweenPoint(action.startPos, action.endPos, completion)];
+       [node setScale:getTweenPoint(action.startPos, action.endPos, completion)];
     };
     return newAction;
 }
@@ -601,10 +624,10 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         if (action.reset) {
             action.reset = false;
-            action.startPos = node.scale3d;
+            action.startPos = node.scale;
             action.endPos = V3Make(scale, scale, scale);
         }
-       [node setScale3d:getTweenPoint(action.startPos, action.endPos, completion)];
+       [node setScale:getTweenPoint(action.startPos, action.endPos, completion)];
     };
     return newAction;
 }
@@ -614,10 +637,10 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         if (action.reset) {
             action.reset = false;
-            action.startPos = node.scale3d;
+            action.startPos = node.scale;
             action.endPos = V3Make(xScale, yScale, action.startPos.z);
         }
-        [node setScale3d:getTweenPoint(action.startPos, action.endPos, completion)];
+        [node setScale:getTweenPoint(action.startPos, action.endPos, completion)];
     };
     return newAction;
 
@@ -628,10 +651,10 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         if (action.reset) {
             action.reset = false;
-            action.startPos = node.scale3d;
+            action.startPos = node.scale;
             action.endPos = V3Make(scale, action.startPos.y, action.startPos.z);
         }
-        [node setScale3d:getTweenPoint(action.startPos, action.endPos, completion)];
+        [node setScale:getTweenPoint(action.startPos, action.endPos, completion)];
     };
     return newAction;
 }
@@ -641,10 +664,10 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         if (action.reset) {
             action.reset = false;
-            action.startPos = node.scale3d;
+            action.startPos = node.scale;
             action.endPos = V3Make(action.startPos.x, scale, action.startPos.z);
         }
-       [node setScale3d:getTweenPoint(action.startPos, action.endPos, completion)];
+       [node setScale:getTweenPoint(action.startPos, action.endPos, completion)];
     };
     return newAction;
 }
@@ -658,12 +681,12 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
         
         if (action.reset) {
             action.reset = false;
-            action.startPos = node.size3d;
-            action.endPos = V3Make(width, height, node.size3d.z);
+            action.startPos = node.size;
+            action.endPos = V3Make(width, height, node.size.z);
         }
         
         
-        node.size3d = getTweenPoint(action.startPos, action.endPos, completion);
+        node.size = getTweenPoint(action.startPos, action.endPos, completion);
     };
     
     return newAction;
@@ -671,7 +694,7 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
     
 }
 
-+ (NKAction *)resize3d:(V3t)newSize duration:(F1t)duration {
++ (NKAction *)resize:(V3t)newSize duration:(F1t)duration {
     
     NKAction * newAction = [[NKAction alloc] initWithDuration:duration];
     
@@ -679,12 +702,12 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
         
         if (action.reset) {
             action.reset = false;
-            action.startPos = node.size3d;
+            action.startPos = node.size;
             action.endPos = newSize;
         }
         
         
-        node.size3d = getTweenPoint(action.startPos, action.endPos, completion);
+        node.size = getTweenPoint(action.startPos, action.endPos, completion);
     };
     
     return newAction;

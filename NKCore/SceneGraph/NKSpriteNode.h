@@ -27,10 +27,6 @@
 
 #import "NKMeshNode.h"
 
-static inline float cblend(F1t col, F1t bl){
-    return ((col * bl) + (1. - bl));
-}
-
 @class NKTexture;
 @class NKVertexBuffer;
 
@@ -43,7 +39,7 @@ static inline float cblend(F1t col, F1t bl){
 + (instancetype)spriteNodeWithImageNamed:(NSString *)name;
 + (instancetype)spriteNodeWithColor:(NKByteColor *)color size:(S2t)size;
 
-- (instancetype)initWithTexture:(NKTexture*)texture color:(NKByteColor *)color size:(S2t)size;
+- (instancetype)initWithTexture:(NKTexture *)texture color:(NKByteColor *)color size:(V2t)size;
 - (instancetype)initWithTexture:(NKTexture*)texture;
 - (instancetype)initWithImageNamed:(NSString *)name;
 - (instancetype)initWithColor:(NKByteColor *)color size:(S2t)size;

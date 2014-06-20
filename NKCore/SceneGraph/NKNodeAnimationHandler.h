@@ -87,22 +87,18 @@ typedef NS_ENUM(NSInteger, NKActionTimingMode) {
 
 -(instancetype) initWithDuration:(F1t)duration;
 
-+ (NKAction *)move3dByX:(CGFloat)x Y:(CGFloat)y Z:(CGFloat)z duration:(F1t)sec;
-+ (NKAction *)move3dBy:(V3t)delta duration:(F1t)sec;
-+ (NKAction *)move3dTo:(V3t)location duration:(F1t)sec;
++ (NKAction *)moveBy:(V3t)delta duration:(F1t)sec;
++ (NKAction *)moveTo:(V3t)location duration:(F1t)sec;
 
 +(NKAction *)rotateXByAngle:(CGFloat)radians duration:(F1t)sec;
 +(NKAction *)rotateYByAngle:(CGFloat)radians duration:(F1t)sec;
-+(NKAction *)rotate3dByAngle:(V3t)angles duration:(F1t)sec;
++(NKAction *)rotateByAngles:(V3t)angles duration:(F1t)sec;
 
-// SK Compatibility list
++ (NKAction *)move2dTo:(V2t)location duration:(F1t)sec;
 
 + (NKAction *)moveByX:(CGFloat)deltaX y:(CGFloat)deltaY duration:(F1t)sec;
-+ (NKAction *)moveBy:(CGVector)delta duration:(F1t)sec;
-
 + (NKAction *)moveToX:(CGFloat)x y:(CGFloat)y duration:(F1t)sec;
 
-+ (NKAction *)moveTo:(P2t)location duration:(F1t)sec;
 + (NKAction *)moveToX:(CGFloat)x duration:(F1t)sec;
 + (NKAction *)moveToY:(CGFloat)y duration:(F1t)sec;
 
@@ -111,14 +107,13 @@ typedef NS_ENUM(NSInteger, NKActionTimingMode) {
 
 //
 
-+ (NKAction *)rotate3dToAngle:(V3t)angles duration:(F1t)sec;
-+ (NKAction *)rotateByAngle:(CGFloat)radians duration:(F1t)sec;
++ (NKAction *)rotateZByAngle:(CGFloat)radians duration:(F1t)sec;
 + (NKAction *)rotateToAngle:(CGFloat)radians duration:(F1t)sec;
 + (NKAction *)rotateToAngle:(CGFloat)radians duration:(F1t)sec shortestUnitArc:(BOOL)shortestUnitArc;
 //
 //+ (NKAction *)resizeByWidth:(CGFloat)width height:(CGFloat)height duration:(F1t)duration;
 + (NKAction *)resizeToWidth:(CGFloat)width height:(CGFloat)height duration:(F1t)duration;
-+ (NKAction *)resize3d:(V3t)newSize duration:(F1t)duration;
++ (NKAction *)resize:(V3t)newSize duration:(F1t)duration;
 //+ (NKAction *)resizeToWidth:(CGFloat)width duration:(F1t)duration;
 //+ (NKAction *)resizeToHeight:(CGFloat)height duration:(F1t)duration;
 //
@@ -186,10 +181,12 @@ typedef NS_ENUM(NSInteger, NKActionTimingMode) {
 + (NKAction *)enterOrbitAtLongitude:(float)longitude latitude:(float)latitude radius:(float)radius offset:(V3t)offset duration:(F1t)sec;
 + (NKAction*)enterOrbitAtLongitude:(float)longitude latitude:(float)latitude radius:(float)radius duration:(F1t)sec;
 + (NKAction*)enterOrbitForNode:(NKNode*)target atLongitude:(float)longitude latitude:(float)latitude radius:(float)radius duration:(F1t)sec;
++ (NKAction*)enterOrbitForNode:(NKNode*)target atLongitude:(float)longitude latitude:(float)latitude radius:(float)radius duration:(F1t)sec offset:(V3t)offset;
 
 + (NKAction *)maintainOrbitDeltaLongitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius offset:(V3t)offset duration:(F1t)sec;
 + (NKAction *)maintainOrbitDeltaLongitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius duration:(F1t)sec;
 + (NKAction*)maintainOrbitForNode:(NKNode *)target longitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius duration:(F1t)sec;
++ (NKAction*)maintainOrbitForNode:(NKNode *)target longitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius duration:(F1t)sec offset:(V3t)offset;
 
 @end
 

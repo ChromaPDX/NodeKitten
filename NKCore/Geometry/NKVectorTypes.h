@@ -17,6 +17,7 @@ typedef GLfloat F1t;
 
 union _V2t {
     struct { F1t x, y; };
+    struct { F1t min, max; };
     struct { F1t s, t; };
     struct { F1t width, height; };
 };
@@ -29,6 +30,8 @@ union _V3t {
 	struct { F1t x, y, z; };
     struct { F1t r, g, b; };
     struct { F1t hue, sat, val; };
+    struct { F1t width, height, depth; };
+    struct { V2t point; F1t unused; };
     F1t v[3];
 }; // VECTOR 3
 
@@ -40,7 +43,7 @@ typedef V3t HSVcolor;
 union _V4t
 {
     struct { F1t x, y, z, w; };
-    struct { V3t xyz; F1t extra;};
+    struct { V3t xyz; F1t unused;};
     struct { P2t origin; S2t size;};
     struct { F1t r, g, b, a; };
     struct { F1t s, t, p, q; };
@@ -85,6 +88,27 @@ typedef struct {
 	F1t y;
     F1t z;
 } A4t; // ANGLE+AXIS 4
+
+union _V6t
+{
+    struct
+    {
+        V3t min;
+        V3t max;
+    };
+    
+    struct
+    {
+        V2t x;
+        V2t y;
+        V2t z;
+    };
+
+    
+    F1t m[6];
+} ;
+
+typedef union _V6t V6t;
 
 union _V9t
 {
@@ -135,6 +159,13 @@ union _M16t
     };
     struct
     {
+        V4t column1;
+        V4t column2;
+        V4t column3;
+        V4t column4;
+    };
+    struct
+    {
         V4t v[4];
     };
     
@@ -157,6 +188,12 @@ static inline V3t  V3MakeF(F1t x)
 static inline V3t V3Make(F1t x, F1t y, F1t z)
 {
 	V3t  ret = {x,y,z};
+	return ret;
+}
+
+static inline V6t V6Make(F1t minX, F1t minY, F1t minZ,F1t maxX, F1t maxY, F1t maxZ)
+{
+	V6t  ret = {minX,minY,minZ,maxX,maxY,maxZ};
 	return ret;
 }
 
@@ -1873,48 +1910,29 @@ static inline M16t M16MakeOrtho(F1t left,F1t right,
 
 static inline void M16LookAt(M16t *mat, V3t eye, V3t center, V3t up )
 {
-	V3t f,s,u;
-    
-    f = V3FastNormalize(V3Subtract(eye,center));
-	//vec3_diff( &f, center, eye );
-    
-    u = V3FastNormalize(V3CrossProduct(up,f));
-    
-    s = V3FastNormalize(V3CrossProduct(f,s));
+    V3t n = V3Normalize(V3Subtract(eye, center));
+    V3t u = V3Normalize(V3CrossProduct(up, n));
+    V3t v = V3CrossProduct(n, u);
     
     mat->m00 = u.x;
     mat->m01 = u.y;
     mat->m02 = u.z;
     
-    mat->m10 = f.x;
-    mat->m11 = f.y;
-    mat->m12 = f.z;
+    mat->m10 = v.x;
+    mat->m11 = v.y;
+    mat->m12 = v.z;
     
-    mat->m20 = s.x;
-    mat->m21 = s.y;
-    mat->m22 = s.z;
-    
-
+    mat->m20 = n.x;
+    mat->m21 = n.y;
+    mat->m22 = n.z;
 }
 
 static inline M16t M16MakeLookAt(V3t ev,V3t cv, V3t uv)
 {
-//    V3t ev = { eyeX, eyeY, eyeZ };
-//    V3t cv = { centerX, centerY, centerZ };
-//    V3t uv = { upX, upY, upZ };
-    
     V3t n = V3Normalize(V3Subtract(ev, cv));
     V3t u = V3Normalize(V3CrossProduct(uv, n));
     V3t v = V3CrossProduct(n, u);
-    
-//    M16t m = { u.x, v.x, n.x, 0.0f,
-//        u.y, v.y, n.y, 0.0f,
-//        u.z, v.z, n.z, 0.0f,
-//        ev.x,
-//        ev.y,
-//        ev.z,
-//        1.0f };
-    
+
     M16t m = { u.x, v.x, n.x, 0.0f,
                u.y, v.y, n.y, 0.0f,
                u.z, v.z, n.z, 0.0f,
@@ -2322,11 +2340,11 @@ static inline M9t M16GetInverseNormalMatrix(M16t modelViewMatrix){
 #pragma mark - Logging Functions
 
 static inline void NKLogV3(NSString* name, V3t vec){
-    NSLog(@"%@ : %f %f %f", name, vec.x, vec.y, vec.z);
+    NSLog(@"%@ : x: %1.2f y: %1.2f z: %1.2f", name, vec.x, vec.y, vec.z);
 }
 
 static inline void NKLogV4(NSString* name, V4t vec){
-    NSLog(@"%@ : %f %f %f %f", name, vec.x, vec.y, vec.z, vec.w);
+    NSLog(@"%@ : x: %1.2f y: %1.2f z:%1.2f w:%1.2f", name, vec.x, vec.y, vec.z, vec.w);
 }
 
 static inline void NKLogM16(NSString* name, M16t mat){

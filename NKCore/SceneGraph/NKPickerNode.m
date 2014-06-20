@@ -29,7 +29,7 @@
                 tempSize += temp + self.padding.y;
             }
             
-            S2t childSize;
+            V3t childSize;
             
             if ([child isKindOfClass:[NKScrollNode class]]) {
                 childSize.height = self.size.height * child.autoSizePct.y;
@@ -44,7 +44,7 @@
             float cOffset = tempSize + self.scrollPosition.y;
             float zPos = -(fabs(cOffset) * .75);
             float rotation = MAX(-45,MIN(cOffset / 8., 45));
-            [child setPosition3d:V3Make(0,cOffset*.95,zPos)];
+            [child setPosition:V3Make(0,cOffset*.95,zPos)];
             [child setOrientationEuler:V3Make(rotation,0, 0)];
             
             [child setSize:childSize];
@@ -61,7 +61,7 @@
                 tempSize += temp + self.padding.x;
             }
             
-            S2t childSize;
+            V3t childSize;
             
             if ([child isKindOfClass:[NKScrollNode class]]) {
                 childSize.width = self.size.width * child.autoSizePct.x;
@@ -76,7 +76,7 @@
             float cOffset = tempSize + self.scrollPosition.x - self.size.width/2.;
             float zPos = -(fabs(cOffset) * .75);
             float rotation = MAX(-45,MIN(cOffset / 8., 45));
-            [child setPosition3d:V3Make(cOffset*.95,0,zPos)];
+            [child setPosition:V3Make(cOffset*.95,0,zPos)];
             [child setOrientationEuler:V3Make(0, rotation, 0)];
             
             [child setSize:childSize];
@@ -174,10 +174,10 @@
     if (self.selectedChild) {
         
         if (self.scrollDirectionVertical) {
-            return self.selectedChild.position;
+            return self.selectedChild.position.point;
         }
         else {
-            return self.selectedChild.position;
+            return self.selectedChild.position.point;
         }
         
     }

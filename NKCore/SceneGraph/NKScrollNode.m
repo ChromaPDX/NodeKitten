@@ -243,7 +243,7 @@
                 tempSize += temp + _padding.y;
             }
             
-            S2t childSize;
+            V3t childSize = self.size;
             
             if ([child isKindOfClass:[NKScrollNode class]]) {
                 childSize.height = self.size.height * child.autoSizePct.y;
@@ -255,7 +255,7 @@
                 childSize = child.size;
             }
             
-            [child setPosition3d:V3Make(0,self.size.height/2. - (tempSize + childSize.height/2.) + _scrollPosition.y,4)];
+            [child setPosition:V3Make(0,self.size.height/2. - (tempSize + childSize.height/2.) + _scrollPosition.y,4)];
             
             [child setSize:childSize];
             
@@ -271,7 +271,7 @@
                 tempSize += temp + _padding.x;
             }
             
-            S2t childSize;
+            V3t childSize = self.size;
             
             if ([child isKindOfClass:[NKScrollNode class]]) {
                 childSize.width = self.size.width * child.autoSizePct.x;
@@ -283,7 +283,7 @@
                 childSize = child.size;
             }
             
-            [child setPosition3d:V3Make(tempSize + childSize.width/2. + _scrollPosition.x - self.size.width/2.,0,4)];
+            [child setPosition:V3Make(tempSize + childSize.width/2. + _scrollPosition.x - self.size.width/2.,0,4)];
             
             [child setSize:childSize];
             
@@ -306,11 +306,11 @@
     
     R4t r = [_parent getDrawFrame];
     
-    if ([(NKScrollNode*)_parent scrollDirectionVertical] && (self.position3d.y + self.size.height/2. < r.y ||
-                                                                 self.position3d.y - self.position3d.y/2. > r.y + _parent.size.height)) {
+    if ([(NKScrollNode*)_parent scrollDirectionVertical] && (self.position.y + self.size.height/2. < r.y ||
+                                                                 self.position.y - self.position.y/2. > r.y + _parent.size.height)) {
         return true;
     }
-    else if (self.position3d.x + self.size.width/2. < r.x || self.position3d.x - self.size.width/2. > r.x + r.size.width) {
+    else if (self.position.x + self.size.width/2. < r.x || self.position.x - self.size.width/2. > r.x + r.size.width) {
         return true;
     }
 }

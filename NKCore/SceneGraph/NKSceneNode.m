@@ -52,8 +52,8 @@
         _hitQueue = [NSMutableArray array];
         _lights = [NSMutableArray array];
         
-        self.blendMode = NKBlendModeNone;
-        self.cullFace = NKCullFaceNone;
+        self.blendMode = -1;
+        self.cullFace = -1;
         
         _camera = [[NKCamera alloc]initWithScene:self];
         
@@ -79,23 +79,43 @@
 }
 
 -(void)updateWithTimeSinceLast:(F1t)dt {
-    _camera.dirty = true;
+    
+    if (loaded) {
     
 #if NK_LOG_METRICS
     frames++;
 #endif
 
+    [_camera setDirty:true];
+    
     [NKSoundManager updateWithTimeSinceLast:dt];
     
     [NKGLManager updateWithTimeSinceLast:dt];
     
     [[NKBulletWorld sharedInstance] updateWithTimeSinceLast:dt];
-
-    [_camera updateWithTimeSinceLast:dt];
+    
+    [self setDirty:false];
     
     [super updateWithTimeSinceLast:dt];
+    
+    [_camera updateCameraWithTimeSinceLast:dt];
+        
+    }
+    
 }
 
+-(void)setDirty:(bool)dirty {
+    
+        _dirty = dirty;
+        
+        if (dirty) {
+            for (NKNode *n in intChildren) {
+                if ([n isKindOfClass:[NKLightNode class]]) {
+                }
+                [n setDirty:dirty];
+            }
+        }
+}
 
 -(void)drawHitBuffer {
     
@@ -106,6 +126,8 @@
     [_activeShader use];
     
     [super drawWithHitShader];
+    
+    [_camera drawWithHitShader];
 }
 
 -(void)processHitBuffer {
@@ -126,19 +148,17 @@
     
     [_hitQueue removeAllObjects];
     
-    [_hitDetectBuffer unbind];
-    
 }
 
 -(void)setActiveShader:(NKShaderProgram *)activeShader {
  
     if (!activeShader) {
-        _activeShader = activeShader;
+        _activeShader = nil;
         glUseProgram(0);
     }
     
     else if (![_activeShader isEqual:activeShader]) {
-        
+        //NSLog(@"set shader: %@", activeShader.name);
         _activeShader = activeShader;
         [_activeShader use];
         
@@ -146,18 +166,19 @@
         
         if  ([_activeShader uniformNamed:NKS_S2D_TEXTURE]){
             [[_activeShader uniformNamed:NKS_S2D_TEXTURE] bindI1:0];
-               // glUniform1i([[_activeShader uniformNamed:NKS_S2D_TEXTURE] glLocation], 0);
+                glUniform1i([[_activeShader uniformNamed:NKS_S2D_TEXTURE] glLocation], 0);
         }
         
         if ([_activeShader uniformNamed:NKS_LIGHT]){
-            [[_activeShader uniformNamed:NKS_I1_NUM_LIGHTS] bindI1:(int)_lights.count];
-            if (_lights.count) {
-                [[_activeShader uniformNamed:NKS_LIGHT] bindLightProperties:[(NKLightNode*)_lights[0] pointer] count:(int)_lights.count];
+            if (_lights) {
+                [[_activeShader uniformNamed:NKS_I1_NUM_LIGHTS] bindI1:(int)_lights.count];
+                if (_lights.count) {
+                    [[_activeShader uniformNamed:NKS_LIGHT] bindLightProperties:[(NKLightNode*)_lights[0] pointer] count:(int)_lights.count];
+                }
             }
-        }
-        
-        if ([_activeShader uniformNamed:NKS_V3_EYE_DIRECTION]){
-            [[_activeShader uniformNamed:NKS_V3_EYE_DIRECTION] bindV3:self.scene.camera.eyeDirection];
+            else {
+                [[_activeShader uniformNamed:NKS_I1_NUM_LIGHTS] bindI1:0];
+            }
         }
        
     }
@@ -170,6 +191,7 @@
         [self drawHitBuffer];
 #else
         [super draw];
+        [_camera draw];
 #endif
 }
 
@@ -209,9 +231,32 @@
     //[self.activeShader setMatrix3:M9IdentityMake() forUniform:[nksf:@"u_%@",nks(NKS_M9_NORMAL)]];
 }
 
-//-(V3t)getGlobalPosition {
-//    return V3MakeF(0);
-//}
+// SCENE DOES NOT TRANSFORM CHILDREN
+
+- (void)addChild:(NKNode *)child {
+    
+    if (!intChildren) {
+        intChildren = [[NSMutableArray alloc]init];
+    }
+    
+    NSMutableArray *temp = [intChildren mutableCopy];
+    
+    if (![temp containsObject:child]) {
+        [temp addObject:child];
+        [child setScene:self];
+    }
+    
+    intChildren = temp;
+    
+}
+
+-(M16t)globalTransform {
+    return M16IdentityMake();
+}
+
+-(V3t)globalPosition {
+    return V3Make(0, 0, 0);
+}
 
 //-(void)end {
 //    
@@ -250,7 +295,7 @@
 //        R4t d = [self getDrawFrame];
 //        
 //        glPushMatrix();
-//        ofMultMatrix( self.node->getLocalTransformMatrix() );
+//        ofMultMatrix( self.node->getlocalTransform() );
 //        
 //        fbo->draw(d.x, d.y);
 //        
@@ -264,6 +309,8 @@
 //    
 //    
 //}
+
+
 
 -(void)alertDidSelectOption:(int)option {
     if (option == 0) {
@@ -284,14 +331,15 @@
     
     if (animated) {
       
-        [_alertSprite setPosition:P2Make(0, -self.size.height)];
-        [_alertSprite runAction:[NKAction moveTo:P2Make(0, 0) duration:.3]];
+        [_alertSprite setPosition2d:P2Make(0, -self.size.height)];
+        [_alertSprite runAction:[NKAction move2dTo:P2Make(0, 0) duration:.3]];
     }
 }
 
+
 -(void)dismissAlertAnimated:(BOOL)animated{
     if (animated) {
-        [_alertSprite runAction:[NKAction moveTo:P2Make(0, -self.size.height) duration:.3] completion:^{
+        [_alertSprite runAction:[NKAction move2dTo:P2Make(0, -self.size.height) duration:.3] completion:^{
             [self removeChild:_alertSprite];
             _alertSprite = nil;
         }];
@@ -314,30 +362,30 @@
     [_stack popMatrix];
 }
 
--(void)keyPressed:(NSUInteger)key {
+-(void)keyDown:(NSUInteger)key {
 
     NSLog(@"key down %d", key);
     
-    V3t p = position;
+    V3t p = _position;
     
     switch (key) {
             
         case 123:
             
-            [self setPosition3d:V3Make(p.x-1, p.y, p.z)];
+            [self setPosition:V3Make(p.x-1, p.y, p.z)];
             break;
         case 124:
             
-            [self setPosition3d:V3Make(p.x+1, p.y, p.z)];
+            [self setPosition:V3Make(p.x+1, p.y, p.z)];
             break;
             
         case 126: //up arrow
         
-            [self setPosition3d:V3Make(p.x, p.y, p.z+1)];
+            [self setPosition:V3Make(p.x, p.y, p.z+1)];
             break;
             
         case 125: // down arrow
-            [self setPosition3d:V3Make(p.x, p.y, p.z-1)];
+            [self setPosition:V3Make(p.x, p.y, p.z-1)];
             break;
             
         default:
@@ -375,35 +423,47 @@
 
 }
 
+#if TARGET_OS_IPHONE
+-(void)setNkView:(NKUIView *)nkView {
+    _nkView = nkView;
+    loaded = true;
+}
+#else
+
+-(void)setNkView:(NKView *)nkView {
+    _nkView = nkView;
+    loaded = true;
+}
+#endif
+
 -(void)unload {
-    [self.nkView stopAnimation];
+    
+    glFinish();
+    
+    [self clear];
+    
+    loaded = false;
+    
+    _hitQueue = nil;
+    
+    //[self.nkView stopAnimation];
     
 #if NK_LOG_METRICS
     [metricsTimer invalidate];
 #endif
     
-    [self clear];
     
     for (NKNode* c in self.allChildren) {
-        [[NKBulletWorld sharedInstance]removeNode:c];
         [c removeFromParent];
     }
     
+    [NKBulletWorld reset];
+    
+    [_lights removeAllObjects];
+    
     [_hitDetectBuffer unload];
-    
-//
-//    for (NKShaderProgram* s in [[NKShaderManager programCache] allValues]) {
-//        [s unload];
-//    }
-//    [[NKShaderManager programCache] removeAllObjects];
-    
-    
-//    [_hitDetectShader unload];
 }
 
--(void)dealloc {
-    [self unload];
-}
 
 @end
 

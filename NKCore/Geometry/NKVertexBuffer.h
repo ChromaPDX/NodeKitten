@@ -47,12 +47,40 @@ typedef void (^GeometrySetupBlock)(GLuint size);
 
 @interface NKVertexBuffer : NSObject
 
+{
+    V3t *vertices;
+    V3t *normals;
+    V3t *texCoords;
+    C4t *colors;
+    V3t *tangents;
+    V3t *biNormals;
+    F1t *boneWeights;
+    M16t *boneTransforms;
+    
+    U1t *indices;
+    
+    int verticesOffset;
+    int normalsOffset;
+    int texCoordsOffset;
+    int colorsOffset;
+    int tangentsOffset;
+    int biNormalsOffset;
+    int boneWeightsOffset;
+    
+    int stride;
+    F1t *interlacedData;
+    
+}
+
 @property (nonatomic, strong) NKIndexBuffer *indexBuffer;
+@property (nonatomic) V3t center;
 
 - (id)initWithSize:(GLsizeiptr)size
        numberOfElements:(GLuint)numElements
               data:(const GLvoid *)data
              setup:(GeometrySetupBlock)geometrySetupBlock;
+
+-(V3t*) vertices;
 
 -(instancetype)initWithVertexData:(const GLvoid *)data ofSize:(GLsizeiptr)size;
 
@@ -66,13 +94,18 @@ typedef void (^GeometrySetupBlock)(GLuint size);
 
 +(instancetype)axes;
 
++(V6t)boundingSizeForVertexSet:(NSArray*)set;
+-(V3t)normalizeForGroupWithSize:(F1t)unitSize groupBoundingBox:(V6t)box center:(bool)center;
+
 // GL ALLOC BLOCKS
 +(GeometrySetupBlock)riggedMeshSetupBlock;
 +(GeometrySetupBlock)primitiveSetupBlock;
 
+-(void)bufferData;
 - (void)bind;
 - (void)unbind;
 
+@property (nonatomic) NSUInteger numVertices;
 @property (nonatomic) NSUInteger numberOfElements;
 @property (nonatomic) int* elementOffset;
 @property (nonatomic) int* elementSize;
@@ -89,67 +122,3 @@ typedef void (^GeometrySetupBlock)(GLuint size);
 
 
 @end
-
-static inline V3t normalizeVertices(V3t* vertices, int length, V3t size, bool center) {
-    
-    float minx = 1000000., maxx = -1000000.;
-    float miny = 1000000., maxy = -1000000.;
-    float minz = 1000000., maxz = -1000000.;
-    
-    V3t finalModelSize;
-    
-    for (int i = 0; i <length; i++){ // FIND LARGEST VALUE
-        
-        if (vertices[i].x < minx)
-            minx = vertices[i].x;
-        if (vertices[i].x > maxx)
-            maxx = vertices[i].x;
-        
-        if (vertices[i].y < miny)
-            miny = vertices[i].y;
-        if (vertices[i].y > maxy)
-            maxy = vertices[i].y;
-        
-        if (vertices[i].z < minz)
-            minz = vertices[i].z;
-        if (vertices[i].z > maxz)
-            maxz = vertices[i].z;
-        
-    };
-    
-    float width = fabsf(maxx - minx);
-    float height = fabsf(maxy - miny);
-    float depth = fabsf(maxz - minz);
-    
-    NKLogV3(@"min", V3Make(minx, miny, minz));
-    NKLogV3(@"max", V3Make(maxx, maxy, maxz));
-    NKLogV3(@"center", V3Make((minx+maxx), (miny+maxy), (minz+maxz)));
-    
-    V3t modelSize = V3Make(width, height, depth);
-    
-    V3t modelInverse = V3Divide(V3MakeF(2.), modelSize);
-    
-    V3t modelNormalized = V3UnitRetainAspect(modelSize);
-    
-    finalModelSize = V3Multiply(size, modelNormalized);
-    
-    //                NKLogV3(@"obj size:", modelSize);
-    //                NKLogV3(@"obj divisor:", modelInverse);
-    //                NKLogV3(@"normalized size", modelNormalized);
-    //                NKLogV3(@"normalized center", offsetNormalized);
-    
-    for (int p = 0; p < length; p++){
-        
-        if (center) {
-            V3t offset = V3Make((minx+maxx), (miny+maxy), (minz+maxz));
-            V3t offsetNormalized = V3Divide(offset, modelSize);
-            vertices[p] = V3Subtract(V3Multiply(vertices[p], modelInverse),offsetNormalized);
-        }
-        else {
-            vertices[p] = V3Multiply(vertices[p], modelInverse);
-        }
-    }
-    
-    return finalModelSize;
-    
-}

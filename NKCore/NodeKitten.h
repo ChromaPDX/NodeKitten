@@ -71,7 +71,7 @@
 // 3D MODELS
 
 #if NK_USE_ASSIMP
-//#import "NKAssimpLoader.h"
+#import "NKAssimpLoader.h"
 #endif
 // SOUND
 

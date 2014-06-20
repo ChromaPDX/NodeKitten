@@ -32,6 +32,10 @@
     return self;
 }
 
+-(V3t*)vertices {
+    return vertices;
+}
+
 +(instancetype)axes {
     GLfloat gCubeVertexData[7*6] =
     {
@@ -645,7 +649,7 @@
                          data:(const GLvoid *)data
                         setup:(void(^)())geometrySetupBlock {
     
-    NSLog(@"load vertex buffer with: %ld vertices", _numberOfElements);
+    NSLog(@"load vertex buffer with: %ld vertices", _numVertices);
     
     //glEnable(GL_DEPTH_TEST);
 #if NK_USE_GLES
@@ -697,6 +701,7 @@
 
 - (void)dealloc
 {
+    
     glDeleteBuffers(1, &_vertexBuffer);
 #if NK_USE_GLES
     glDeleteVertexArraysOES(1, &_vertexArray);
@@ -707,6 +712,226 @@
     glDeleteVertexArrays(1, &_vertexArray);
 #endif
 #endif
+    
+}
+
++(V6t)boundingSizeForVertexSet:(NSArray*)set {
+    
+    float minx = 1000000., maxx = -1000000.;
+    float miny = 1000000., maxy = -1000000.;
+    float minz = 1000000., maxz = -1000000.;
+    
+    for (NKVertexBuffer *buf in set) {
+        
+        V3t* vertices = buf.vertices;
+        
+        for (int i = 0; i < buf.numVertices; i++){ // FIND LARGEST VALUE
+            
+            if (vertices[i].x < minx)
+                minx = vertices[i].x;
+            if (vertices[i].x > maxx)
+                maxx = vertices[i].x;
+            
+            if (vertices[i].y < miny)
+                miny = vertices[i].y;
+            if (vertices[i].y > maxy)
+                maxy = vertices[i].y;
+            
+            if (vertices[i].z < minz)
+                minz = vertices[i].z;
+            if (vertices[i].z > maxz)
+                maxz = vertices[i].z;
+            
+        };
+    }
+    
+    V6t box;
+    
+    box.x = P2Make(minx, maxx);
+    box.y = P2Make(miny, maxy);
+    box.z = P2Make(minz, maxz);
+    
+    return box;
+    
+}
+
+-(V3t)centerOfBoundingSize:(V6t)box {
+    return V3Make((box.x.min+box.x.max)*.5, (box.y.min+box.y.max)*.5, (box.z.min+box.z.max)*.5);
+}
+
+-(V3t)sizeOfBoundingSize:(V6t)box {
+    float width = fabsf(box.x.max - box.x.min);
+    float height = fabsf(box.y.max - box.y.min);
+    float depth = fabsf(box.z.max - box.z.min);
+
+    return V3Make(width, height, depth);
+
+}
+
+-(void)normalizeAndCenter {
+    V6t mySize = [NKVertexBuffer boundingSizeForVertexSet:@[self]];
+    
+    V3t center = [self centerOfBoundingSize:mySize];
+    
+    V3t modelSize = [self sizeOfBoundingSize:mySize];
+    V3t modelInverse = V3Divide(V3MakeF(2.), modelSize);
+    
+    V3t offsetNormalized = V3Divide(V3MultiplyScalar(center, 2.), modelSize);
+    
+    //V3t center = V3Divide(V3MultiplyScalar(center), modelSize);
+    _center = center;
+    
+    NKLogV3(@"my center :", _center);
+    
+    for (int p = 0; p < self.numVertices; p++){
+            vertices[p] = V3Subtract(V3Multiply(vertices[p], modelInverse),offsetNormalized);
+            //vertices[p] = V3Multiply(vertices[p], modelInverse);
+            //NKLogV3(@"normalized vertex", vertices[p]);
+    }
+    
+}
+
+-(V3t)normalizeForGroupWithSize:(F1t)unitSize groupBoundingBox:(V6t)box center:(bool)center {
+
+    //NKLogV3(@"group offset Normalized", offsetNormalized);
+    // store for later ratio
+    V6t myBoundingSize = [NKVertexBuffer boundingSizeForVertexSet:@[self]];
+    
+    V3t mySize = [self sizeOfBoundingSize:myBoundingSize];
+    
+    [self normalizeAndCenter];
+    
+    V3t groupSize = [self sizeOfBoundingSize:box];
+    
+    V3t groupCenter = [self centerOfBoundingSize:box];
+
+      NKLogV3(@"groupCenter: ", groupCenter);
+    
+    V3t groupAspect = V3UnitRetainAspect(groupSize);
+    
+    V3t aspectExpand = V3MultiplyScalar(V3Multiply(groupAspect, V3Divide(mySize, groupSize)), unitSize);
+    
+
+    V3t myRelative;
+    NKLogV3(@"my relative center", myRelative = V3Subtract(_center, groupCenter ));
+    
+    _center = V3MultiplyScalar(V3DivideScalar(myRelative, V3Largest(groupSize)), unitSize*2.);
+
+    NKLogV3(@"my center normalized:", _center);
+    
+//    _center = V3MakeF(0);
+//    
+//    _center = V3Subtract(V3Divide(V3MultiplyScalar(_center, unitSize), groupSize), groupCenterNormalized);
+//
+//    _center = V3Divide(_center, aspectExpand);
+    
+    //return V3Make(2., 2., 2.);
+        NKLogV3(@"my final size:", aspectExpand);
+    return aspectExpand;
+}
+
+
+-(void)bufferData {
+    
+    stride = 0;
+    
+    if (vertices){
+        verticesOffset = stride;
+        stride+=3;
+    }
+    if (normals){
+        normalsOffset = stride;
+        stride+=3;
+    }
+    if (texCoords){
+        texCoordsOffset = stride;
+        stride+=3;
+    }
+    if (colors){
+        colorsOffset = stride;
+        stride+=4;
+    }
+    if (tangents){
+        tangentsOffset = stride;
+        stride+=3;
+    }
+    if (biNormals){
+        biNormalsOffset = stride;
+        stride+=3;
+    }
+    if (boneWeights){
+        boneWeightsOffset = stride;
+        stride+=1;
+    }
+    
+    interlacedData = (F1t*)calloc(sizeof(F1t)*stride*self.numVertices, sizeof(F1t));
+    
+    for (int i = 0; i < self.numVertices; i++){
+        if (vertices)
+            memcpy(interlacedData+(i*stride),vertices+i, sizeof(V3t));
+        if (normals)
+            memcpy(interlacedData+(i*stride)+normalsOffset, vertices+i, sizeof(V3t));
+        if (texCoords)
+            memcpy(interlacedData+(i*stride)+texCoordsOffset, texCoords+i, sizeof(V3t));
+        if (colors)
+            memcpy(interlacedData+(i*stride)+colorsOffset, colors+i, sizeof(C4t));
+        if (tangents)
+            memcpy(interlacedData+(i*stride)+tangentsOffset, tangents+i, sizeof(V3t));
+        if (biNormals)
+            memcpy(interlacedData+(i*stride)+biNormalsOffset, biNormals+i, sizeof(V3t));
+        if (boneWeights)
+            memcpy(interlacedData+(i*stride)+boneWeightsOffset, boneWeights+i, sizeof(V3t));
+    }
+    
+    [self loadVertexDataWithSize:self.numVertices*sizeof(F1t)*stride data:interlacedData setup: newGeometrySetupBlock {
+        
+        //NSLog(@"stride %d floats, %d bytes", stride, stride*sizeof(F1t));
+        
+        if (vertices){
+            glEnableVertexAttribArray(NKS_V4_POSITION);
+            glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
+                                  sizeof(F1t)*stride, BUFFER_OFFSET(0));
+        }
+        if (normals) {
+            glEnableVertexAttribArray(NKS_V3_NORMAL);
+            glVertexAttribPointer(NKS_V3_NORMAL, 3, GL_FLOAT, GL_FALSE,
+                                  sizeof(F1t)*stride, BUFFER_OFFSET(sizeof(F1t)*normalsOffset));
+        }
+        
+        if (texCoords){
+            glEnableVertexAttribArray(NKS_V2_TEXCOORD);
+            glVertexAttribPointer(NKS_V2_TEXCOORD, 3, GL_FLOAT, GL_FALSE,
+                                  sizeof(F1t)*stride, BUFFER_OFFSET(sizeof(F1t)*texCoordsOffset));
+        }
+        
+        if (colors) {
+            glEnableVertexAttribArray(NKS_V4_COLOR);
+            glVertexAttribPointer(NKS_V4_COLOR, 4, GL_FLOAT, GL_FALSE,
+                                  sizeof(F1t)*stride, BUFFER_OFFSET(sizeof(F1t)*colorsOffset));
+        }
+        
+        if (tangents) {
+            glEnableVertexAttribArray(NKS_V3_TANGENT);
+            glVertexAttribPointer(NKS_V3_TANGENT, 3, GL_FLOAT, GL_FALSE,
+                                  sizeof(F1t)*stride, BUFFER_OFFSET(sizeof(F1t)*tangentsOffset));
+        }
+        
+        if (biNormals) {
+            glEnableVertexAttribArray(NKS_V3_BINORMAL);
+            glVertexAttribPointer(NKS_V3_BINORMAL, 3, GL_FLOAT, GL_FALSE,
+                                  sizeof(F1t)*stride, BUFFER_OFFSET(sizeof(F1t)*biNormalsOffset));
+        }
+        
+        if (boneWeights) {
+            glEnableVertexAttribArray(NKS_F1_BONE_WEIGHT);
+            glVertexAttribPointer(NKS_F1_BONE_WEIGHT, 1, GL_FLOAT, GL_FALSE,
+                                  sizeof(F1t)*stride, BUFFER_OFFSET(sizeof(F1t)*boneWeightsOffset));
+        }
+    }];
+    
+    if (interlacedData) {
+        free(interlacedData);
+    }
     
 }
 

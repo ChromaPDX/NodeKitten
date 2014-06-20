@@ -53,7 +53,7 @@ typedef void (^CallBack)();
 
 {
     int frames;
-    
+    bool loaded;
     NKVertexBuffer *axes;
     
    #if NK_LOG_METRICS
@@ -124,7 +124,8 @@ typedef void (^CallBack)();
 -(void)processHitBuffer;
 -(void)drawHitBuffer;
 
--(void)keyPressed:(NSUInteger)key;
+-(void)keyDown:(NSUInteger)key;
+-(void)keyUp:(NSUInteger)key;
 
 @end
 

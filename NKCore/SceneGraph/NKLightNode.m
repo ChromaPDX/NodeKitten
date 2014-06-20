@@ -28,7 +28,7 @@
     p.isLocal = true;
     p.isSpot = false;
     
-    p.ambient = V3Make(.4,.4,.4);
+    p.ambient = V3Make(.2,.2,.2);
     p.color = V3Make(1.,1.,1.);
     p.coneDirection = V3Make(0, 0, -1);
     p.halfVector = V3MakeF(0);
@@ -36,8 +36,8 @@
     p.spotCosCutoff = 10.;
     p.spotExponent = 2;
     p.constantAttenuation = 1.;
-    p.linearAttenuation = .05;
-    p.quadraticAttenuation = 0.;
+    p.linearAttenuation = .2;
+    p.quadraticAttenuation = 0;
     
     return [self initWithProperties:p];
     
@@ -59,18 +59,18 @@
     _properties.color = color.RGBColor;
 }
 
--(void)setPosition3d:(V3t)position3d {
-    [super setPosition3d:position3d];
-    _properties.position = V3MultiplyM16(self.scene.camera.viewMatrix, V3Subtract(self.getGlobalPosition,self.scene.camera.getGlobalPosition));
+-(void)setDirty:(bool)dirty {
+    [super setDirty:dirty];
+     _properties.position = V3MultiplyM16WithTranslation(self.scene.camera.viewMatrix, self.globalPosition);
+    // NKLogV3(@"light pos in eye space", _properties.position);
 }
 
--(void)setParent:(NKNode *)parent {
-    [super setParent:parent];
+-(void)setScene:(NKSceneNode *)scene {
+    [super setScene:scene];
     
     if (![self.scene.lights containsObject:self]) {
         [self.scene.lights addObject:self];
     }
-    
 }
 
 -(void)chooseShader {

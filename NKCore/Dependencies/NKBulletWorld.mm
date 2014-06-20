@@ -57,9 +57,14 @@ static inline btVector3 btv(V3t v){
         ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
         solver = new btSequentialImpulseConstraintSolver;
         
+        
         dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,overlappingPairCache,solver,collisionConfiguration);
         
         dynamicsWorld->setGravity(btVector3(0,-10,0));
+        
+        btContactSolverInfo& info = dynamicsWorld->getSolverInfo();
+        info.m_numIterations = 20; //more iterations will allow the solver to converge to the actual solution better
+    
         
         _btShapeCache = [[NSMutableSet alloc]init];
         
@@ -77,6 +82,17 @@ static inline btVector3 btv(V3t v){
     [[NKBulletWorld sharedInstance]setGravity:gravity];
 }
 
++(void)reset {
+    [[NKBulletWorld sharedInstance] reset];
+}
+
+-(void)reset {
+    NSArray *temp = [_nodes copy];
+    for (NKNode* n in temp) {
+        [self removeNode:n];
+    }
+}
+
 +(NKBulletShape *)cachedShapeWithShape:(NKBulletShapes)shape size:(V3t)size {
     for (NKBulletShape* s in [[NKBulletWorld sharedInstance] btShapeCache]) {
         if (s.shape == shape) {
@@ -89,21 +105,118 @@ static inline btVector3 btv(V3t v){
     return nil;
 }
 
++(void*)dynamicsWorld {
+    return [[NKBulletWorld sharedInstance]dynamicsWorld];
+}
+
+-(void*)dynamicsWorld {
+    return dynamicsWorld;
+}
+
+-(void)addSpringConstraintToBodyA:(btRigidBody*)bodyA atPosition:(V3t)bodyAPos bodyB:(btRigidBody*)bodyB atPosition:(V3t)bodyBPos length:(F1t)length{
+    
+    btTransform frameInA, frameInB;
+    
+    frameInA = btTransform::getIdentity();
+    frameInA.setOrigin(btv(bodyAPos));
+    frameInB = btTransform::getIdentity();
+    frameInB.setOrigin(btv(bodyBPos));
+    
+    btGeneric6DofSpringConstraint* pGen6DOFSpring = new btGeneric6DofSpringConstraint(*bodyA, *bodyB, frameInA, frameInB, true);
+    
+    
+    pGen6DOFSpring->setLinearUpperLimit(btVector3(0., length, 0.));
+    pGen6DOFSpring->setLinearLowerLimit(btVector3(0., -length, 0.));
+    
+    pGen6DOFSpring->setAngularLowerLimit(btVector3(0.f, 0.f, 0));
+    pGen6DOFSpring->setAngularUpperLimit(btVector3(0.f, 0.f, 0));
+    
+    NSLog(@"add spring : ");
+    NKLogV3(@"apos", bodyAPos);
+    NKLogV3(@"bpos", bodyBPos);
+    
+    dynamicsWorld->addConstraint(pGen6DOFSpring, true);
+    //pGen6DOFSpring->setDbgDrawSize(btScalar(5.f));
+    
+    pGen6DOFSpring->enableSpring(0, true);
+    pGen6DOFSpring->setStiffness(0, 39.478f);
+    pGen6DOFSpring->setDamping(0, 0.1f);
+    
+    pGen6DOFSpring->enableSpring(5, true);
+    pGen6DOFSpring->setStiffness(5, 39.478f);
+    pGen6DOFSpring->setDamping(0, 0.1f);
+    
+    pGen6DOFSpring->setEquilibriumPoint();
+    
+}
+
+//var constraint = new Physijs.HingeConstraint(
+//                                             physijs_mesh_a, // First object to be constrained
+//                                             physijs_mesh_b, // OPTIONAL second object - if omitted then physijs_mesh_1 will be constrained to the scene
+//                                             new THREE.Vector3( 0, 10, 0 ), // point in the scene to apply the constraint
+//                                             new THREE.Vector3( 1, 0, 0 ) // Axis along which the hinge lies - in this case it is the X axis
+//                                             );
+//scene.addConstraint( constraint );
+//constraint.setLimits(
+//                     low, // minimum angle of motion, in radians
+//                     high, // maximum angle of motion, in radians
+//                     bias_factor, // applied as a factor to constraint error
+//                     relaxation_factor, // controls bounce at limit (0.0 == no bounce)
+//);
+
+-(void)addWheelConstraintToBodyA:(btRigidBody*)bodyA atPosition:(V3t)bodyAPos bodyB:(btRigidBody*)bodyB atPosition:(V3t)bodyBPos limits:(V6t)limits{
+    
+    btTransform frameInA, frameInB;
+    
+    frameInA = btTransform::getIdentity();
+    frameInA.setOrigin(btv(bodyAPos));
+    frameInB = btTransform::getIdentity();
+    frameInB.setOrigin(btv(bodyBPos));
+    
+//    btHin
+//    btHingeConstraint(*bodyA, *bodyB, frameInA, btv(limits.min));
+//    //btHinge2Constraint(*bodyA, *bodyB, btv(bodyAPos), <#btVector3 &axis1#>, <#btVector3 &axis2#>)
+    btGeneric6DofConstraint* wheelJoint = new btGeneric6DofConstraint(*bodyA, *bodyB, frameInA, frameInB, true);
+
+    wheelJoint->setAngularLowerLimit(btv(limits.min));
+    wheelJoint->setAngularUpperLimit(btv(limits.max));
+    
+
+   // wheelJoint->setOverrideNumSolverIterations(20);
+    
+//    wheelJoint->getTranslationalLimitMotor()->m_enableMotor[0] = true;
+//    wheelJoint->getTranslationalLimitMotor()->m_targetVelocity[0] = 5.0f;
+//    wheelJoint->getTranslationalLimitMotor()->m_maxMotorForce[0] = 0.1f;
+//    
+    //wheelJoint->enableAngularMotor(true, 0, 1);
+    
+    NSLog(@"add spring : ");
+    NKLogV3(@"apos", bodyAPos);
+    NKLogV3(@"bpos", bodyBPos);
+    
+    dynamicsWorld->addConstraint(wheelJoint, true);
+    
+}
+
 -(void)updateWithTimeSinceLast:(F1t)dt {
-    dynamicsWorld->stepSimulation(dt);
-    
-    //NSLog(@"num objects: %d",dynamicsWorld->getNumCollisionObjects() );
-    
-//    for (int j=dynamicsWorld->getNumCollisionObjects()-1; j>=0 ;j--)
-//    {
-//        btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[j];
-//        btRigidBody* body = btRigidBody::upcast(obj);
-//        if (body && body->getMotionState())
-//        {
-//            btTransform trans;
-//            body->getMotionState()->getWorldTransform(trans);
-//        }
-//    }
+    int numSimSteps = dynamicsWorld->stepSimulation(1/30.f, 10);
+//    //during idle mode, just run 1 simulation step maximum
+//    int maxSimSubSteps = 2;
+//    //int numSimSteps = dynamicsWorld->stepSimulation(dt,10);
+//    
+//    //optional but useful: debug drawing
+//    //m_dynamicsWorld->debugDrawWorld();
+////
+////            if (numSimSteps > maxSimSubSteps)
+////            {
+////                //detect dropping frames
+////                NSLog(@"Dropped (%i) simulation steps out of %i\n",numSimSteps - maxSimSubSteps,numSimSteps);
+////            } else
+////            {
+////               NSLog(@"FT: %f vs: %f Simulated (%i) steps\n",dt ,1 / 60.,numSimSteps);
+////            }
+//    
+   // NSLog(@"FT: %f vs: %f Simulated (%i) steps\n",dt ,1 / 60.,numSimSteps);
 }
 
 -(void)addNode:(NKNode*)node {
@@ -122,6 +235,13 @@ static inline btVector3 btv(V3t v){
 -(void)removeNode:(NKNode*)node {
 
     if ([_nodes containsObject:node]) {
+        int numConstraints = ((btRigidBody*)node.body.btBody)->getNumConstraintRefs();
+
+        for (int i = 0; i < numConstraints; i++){
+            btTypedConstraint *ref = ((btRigidBody*)node.body.btBody)->getConstraintRef(i);
+            dynamicsWorld->removeConstraint(ref);
+        }
+        
         dynamicsWorld->removeRigidBody((btRigidBody*)node.body.btBody);
         [_nodes removeObject:node];
     }
@@ -177,9 +297,19 @@ static inline btVector3 btv(V3t v){
                 collisionShape = new btSphereShape(size.x);
                 break;
                 
-            case NKBulletShapeCylinder:
+            case NKBulletShapeXCylinder:
+                collisionShape = new btCylinderShapeX(btv(size));
+                break;
+                
+            case NKBulletShapeYCylinder:
                 collisionShape = new btCylinderShape(btv(size));
                 break;
+                
+            case NKBulletShapeZCylinder:
+                collisionShape = new btCylinderShapeZ(btv(size));
+                break;
+                
+
                 
             case NKBulletShapeCone:
                 collisionShape = new btConeShape(size.x,size.y);
@@ -200,7 +330,9 @@ static inline btVector3 btv(V3t v){
             return @"box";
         case NKBulletShapeSphere:
             return @"sphere";
-        case NKBulletShapeCylinder:
+        case NKBulletShapeXCylinder:
+        case NKBulletShapeYCylinder:
+        case NKBulletShapeZCylinder:
             return @"cylinder";
         case NKBulletShapeCone:
             return @"cone";
@@ -301,11 +433,30 @@ static inline btVector3 btv(V3t v){
    // btTransform tr;
    // body->getMotionState()->getWorldTransform(tr);
    // tr.setOrigin(btv(V3GetM16Translation(transform)));
+    
     body->getMotionState()->setWorldTransform(tr);
     body->setWorldTransform(tr);
     
 }
 
+-(V3t)rayTest:(P2t)screenLocation {
+    
+//    V3t start = 
+//    btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+//    
+//    // Perform raycast
+//    world->rayTest(Start, End, RayCallback);
+//    
+//    if(RayCallback.hasHit()) {
+//        End = RayCallback.m_hitPointWorld;
+//        Normal = RayCallback.m_hitNormalWorld;
+//        
+//        // Do some clever stuff here
+//    }
+    return V3MakeF(0);
+}
+
+#pragma mark - Properties
 
 -(void)setMass:(F1t)mass inertia:(V3t)inertia {
     body->setMassProps(mass, btv(inertia));
@@ -328,12 +479,15 @@ static inline btVector3 btv(V3t v){
 }
 
 // FORCE
+#pragma mark - Force
 
 -(void)applyTorque:(V3t)torque {
+     [self forceAwake];
     body->applyTorque(btv(torque));
 }
 
 -(void)applyTorqueImpulse:(V3t)torque {
+    [self forceAwake];
     body->applyTorqueImpulse(btv(torque));
 }
 
@@ -342,6 +496,7 @@ static inline btVector3 btv(V3t v){
 }
 
 -(void)applyCentralImpulse:(V3t)force {
+    [self forceAwake];
     body->applyCentralForce(btv(force));
 }
 
@@ -367,7 +522,26 @@ static inline btVector3 btv(V3t v){
     body->setActivationState(true);
 }
 
+#pragma mark - Constaints
+
+-(void)addSpringConstraintAtPosition:(V3t)position toNode:(NKNode*)nodeB atPosition:(V3t)positionB length:(F1t)length{
+    
+    [[NKBulletWorld sharedInstance] addSpringConstraintToBodyA:(btRigidBody*)self.btBody atPosition:position bodyB:(btRigidBody*)nodeB.body.btBody atPosition:positionB length:length];
+    
+}
+
+-(void)addWheelConstraintAtPosition:(V3t)position toNode:(NKNode*)nodeB atPosition:(V3t)positionB limits:(V6t)limits{
+    [[NKBulletWorld sharedInstance] addWheelConstraintToBodyA:(btRigidBody*)self.btBody atPosition:position bodyB:(btRigidBody*)nodeB.body.btBody atPosition:positionB limits:limits];
+}
 // COLLISION
+#pragma mark - Collision
+
+-(bool)isDynamic {
+    if (body->isKinematicObject() || body->isStaticObject()){
+        return 0;
+    }
+    return 1;
+}
 
 -(NKCollisionFilter)collisionGroup {
     return _collisionGroup;

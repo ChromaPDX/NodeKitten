@@ -18,6 +18,7 @@
 @class AIMaterial;
 struct aiMesh;
 
+
 @interface NKMeshNode (ASSIMP)
 
 -(instancetype)initWithAIAsset:(const aiMesh *)asset
@@ -56,6 +57,116 @@ struct aiMesh;
 
 @end
 
+@implementation NKVertexBuffer (ASSIMP)
+
+-(instancetype)initWithAsset:(const aiMesh *)asset {
+    
+    if (self = [super init]){
+        
+        self.numVertices = asset->mNumVertices;
+
+        NSLog(@"asset has %d unique vertices %d face vertices", self.numVertices, asset->mNumFaces*3);
+        
+        // TODO: This is kinda unclean.
+        assert(asset->mPrimitiveTypes == aiPrimitiveType_TRIANGLE);
+        
+        indices = (U1t *)malloc(asset->mNumFaces * sizeof(unsigned int) * 3);
+        int idx = 0;
+        for (int i = 0; i < asset->mNumFaces; ++i)
+        {
+            aiFace &face = asset->mFaces[i];
+            
+            //assert(face.mNumIndices == 3);
+            
+            for (int j = 0; j < face.mNumIndices; ++j)
+            {
+                indices[idx++] = face.mIndices[j];
+            }
+        }
+        
+        // Set up vertex buffer
+        vertices = (V3t*)malloc(sizeof(V3t) * self.numVertices);
+        memcpy(vertices, asset->mVertices, sizeof(V3t) * self.numVertices);
+        
+        // Optionally set up the normal buffer.
+        if (asset->mNormals)
+        {
+            normals = (V3t*)malloc(sizeof(V3t) * self.numVertices);
+            memcpy(normals, asset->mNormals, sizeof(V3t) * self.numVertices);
+        }
+        
+        // Optionally set up the first texture coord buffer.
+        // TODO: Support more than 1 set of texcoords.
+        if (asset->mTextureCoords[0])
+        {
+            texCoords = (V3t*)malloc(sizeof(V3t) * self.numVertices);
+            memcpy(texCoords, asset->mTextureCoords[0], sizeof(V3t) * self.numVertices);
+        }
+        
+        // Optionally set up color buffer.
+        // TODO: Support more than 1 set of colors.
+        if (asset->mColors[0])
+        {
+            colors = (V4t*)malloc(sizeof(C4t) * self.numVertices);
+            memcpy(colors, asset->mColors[0], sizeof(C4t) * self.numVertices);
+            
+        }
+        
+        // Optionally set up the bitangent & tangent buffer.
+        
+        if (asset->HasTangentsAndBitangents())
+        {
+            tangents = (V3t*)malloc(sizeof(V3t) * self.numVertices);
+            memcpy(tangents, asset->mTangents, sizeof(V3t) * self.numVertices);
+            
+            biNormals = (V3t*)malloc(sizeof(V3t) * self.numVertices);
+            memcpy(biNormals, asset->mBitangents, sizeof(V3t) * self.numVertices);
+            
+        }
+        
+        // Optionally set up bones!
+        if (asset->HasBones())
+        {
+            if (asset->mNumBones) {
+                NSLog(@"model has %d bones", asset->mNumBones);
+                boneTransforms = (M16t*)malloc(sizeof(M16t) * asset->mNumBones);
+                
+                for (int i = 0; i < asset->mNumBones; ++i)
+                {
+                    aiBone *bone = asset->mBones[i];
+                    
+                    memcpy(boneTransforms[i].m, &bone->mOffsetMatrix, sizeof(M16t));
+                    
+                    boneWeights = (float *)calloc(asset->mNumVertices, sizeof(float));
+                    for (int j = 0; j < bone->mNumWeights; ++j)
+                    {
+                        aiVertexWeight &v = bone->mWeights[j];
+                        boneWeights[v.mVertexId] = v.mWeight;
+                    }
+                }
+            }
+        }
+        
+        //        int numberOfUnusedBones = MAX_NUMBER_OF_BONES - asset->mNumBones;
+        //
+        //        GLuint *firstUnusedBone = &(buffers[BUFFER_BONEWEIGHTS + asset->mNumBones]);
+        //
+        //        glDeleteBuffers(numberOfUnusedBones, firstUnusedBone);
+        //        memset(firstUnusedBone, 0, numberOfUnusedBones * sizeof(GLuint));
+        
+        self.numberOfElements = MAX(self.numVertices, asset->mNumFaces*3);
+        
+        self.indexBuffer = [[NKIndexBuffer alloc]initWithSize:self.numberOfElements*sizeof(U1t) data:indices];
+        
+        free(indices);
+        
+    }
+    
+    return self;
+}
+
+@end
+
 @interface NSString (AIString)
 
 + (id) stringWithAIString:(aiString *)aString;
@@ -67,11 +178,16 @@ struct aiMesh;
 
 + (id) sceneFromFile:(NSString *)file
 {
-    return [[self alloc] initFromFile:file];
+    return [[self alloc] initWithFile:file];
 }
 
-- (id) initFromFile:(NSString *)file
+- (id) initWithFile:(NSString *)file
 {
+    return [self initWithFile:file normalize:1.];
+}
+
+- (id) initWithFile:(NSString *)file normalize:(F1t)normalize {
+
     if (self = [super init])
     {
         NSString *filename = [file lastPathComponent];
@@ -84,7 +200,7 @@ struct aiMesh;
             NSLog(@"Could not load scene from path: %@", scenePath);
             self = nil;
         }
-        else if (![self loadScene:scene])
+        else if (![self loadScene:scene withNormalize:normalize])
         {
             NSLog(@"Could not create data structure for scene %@", filename);
             self = nil;
@@ -101,12 +217,11 @@ struct aiMesh;
 }
 
 
-- (BOOL) loadScene:(const aiScene *)scene
+- (BOOL) loadScene:(const aiScene *)scene withNormalize:(F1t)normalize
 {
 
     NSLog(@"%d meshes, %d materials, %d animations, %d textures, %d lights, %d cameras", scene->mNumMeshes, scene->mNumMaterials, scene->mNumAnimations, scene->mNumTextures, scene->mNumLights, scene->mNumCameras);
     
-   // NSLog(@"loading materials");
     
     NSMutableArray* newMaterials = [NSMutableArray arrayWithCapacity:scene->mNumMaterials];
     for (int i = 0; i < scene->mNumMaterials; ++i)
@@ -116,18 +231,32 @@ struct aiMesh;
     
     NSLog(@"loading meshes");
     
-    NSMutableArray* newMeshes = [NSMutableArray arrayWithCapacity:scene->mNumMeshes];
+    // FIRST LOAD ALL VBO'S FOR SIZE NORMALIZE
     
-    NKMeshNode *rootNode;
+    NSMutableArray *vbos = [NSMutableArray arrayWithCapacity:scene->mNumMeshes];
     
-    for (int i = 0; i < scene->mNumMeshes; ++i)
-    {
+    for (int i = 0; i < scene->mNumMeshes; ++i){
+        
         aiMesh *sceneMesh = scene->mMeshes[i];
         
         if (![[NSString stringWithAIString:&sceneMesh->mName] isEqualToString:@""]) {
             NSLog(@"scene model named: %@",[NSString stringWithAIString:&sceneMesh->mName]);
         }
         
+        [vbos addObject:[[NKVertexBuffer alloc] initWithAsset:sceneMesh]];
+    }
+    
+    V6t boundingSize = [NKVertexBuffer boundingSizeForVertexSet:vbos];
+    
+    // LOAD MESH NODES
+    
+    NSMutableArray* newMeshes = [NSMutableArray arrayWithCapacity:scene->mNumMeshes];
+    
+    NKMeshNode *rootNode;
+    
+    for (int i = 0; i < scene->mNumMeshes; ++i){
+        
+        aiMesh *sceneMesh = scene->mMeshes[i];
         
         AIMaterial *material = [newMaterials objectAtIndex:(sceneMesh->mMaterialIndex)];
         
@@ -136,12 +265,26 @@ struct aiMesh;
             material = newMaterials[0];
         }
         
-        NKMeshNode *mesh = [[NKMeshNode alloc]initWithAIAsset:sceneMesh
-                                material:material];
+        NKVertexBuffer *vbo = vbos[i];
+        
+        //
+        
+        
+        NKMeshNode *mesh = [[NKMeshNode alloc] initWithVertexBuffer:vbo drawMode:GL_TRIANGLES texture:material.tex color:NKWHITE size:[vbo normalizeForGroupWithSize:normalize groupBoundingBox:boundingSize center:true]];
+
+        [vbo bufferData];
+        
+        // DO TEXURES
+        mesh.position = mesh.vertexBuffer.center;
+        
+        mesh.drawMode = GL_TRIANGLES;
+        mesh.cullFace = NKCullFaceNone;
+        //mesh.drawBoundingBox = true;
         
         if (i==0) {
             rootNode = mesh;
         }
+        
         [newMeshes addObject:mesh];
     }
     
@@ -171,6 +314,7 @@ struct aiMesh;
     
     return YES;
 }
+
 
 @end
 
@@ -306,166 +450,6 @@ struct aiMesh;
 
 @end
 
-@implementation NKMeshNode (ASSIMP)
-
--(instancetype)initWithAIAsset:(const aiMesh *)asset
-                      material:(AIMaterial *)theMaterial {
-    
-    
-    V3t *vertices = NULL;
-    V3t *normals = NULL;
-    V3t *textureCoords = NULL;
-    C4t *colors = NULL;
-    V3t *tangents = NULL;
-    V3t *binormals = NULL;
-    F1t *boneWeights = NULL;
-    U1t *indices = NULL;
-    
-    int numElements = asset->mNumVertices;
-    
-    NSLog(@"asset has %d unique vertices %d face vertices", numElements, asset->mNumFaces*3);
-    
-    // TODO: This is kinda unclean.
-    assert(asset->mPrimitiveTypes == aiPrimitiveType_TRIANGLE);
-    
-    _numTris = asset->mNumFaces;
-    
-    indices = (U1t *)malloc(asset->mNumFaces * sizeof(unsigned int) * 3);
-    int idx = 0;
-    for (int i = 0; i < asset->mNumFaces; ++i)
-    {
-        aiFace &face = asset->mFaces[i];
-        
-        //assert(face.mNumIndices == 3);
-        
-        for (int j = 0; j < face.mNumIndices; ++j)
-        {
-            indices[idx++] = face.mIndices[j];
-        }
-    }
-    
-    // Set up vertex buffer
-    vertices = (V3t*)malloc(sizeof(V3t) * numElements);
-    memcpy(vertices, asset->mVertices, sizeof(V3t) * numElements);
-    
-    normalizeVertices(vertices, numElements, V3MakeF(1.),true);
-    
-    // Optionally set up color buffer.
-    // TODO: Support more than 1 set of colors.
-    if (asset->mColors[0])
-    {
-        colors = (V4t*)malloc(sizeof(C4t) * numElements);
-        memcpy(colors, asset->mColors[0], sizeof(C4t) * numElements);
-        
-    }
-    
-    // Optionally set up the normal buffer.
-    if (asset->mNormals)
-    {
-        normals = (V3t*)malloc(sizeof(V3t) * numElements);
-        memcpy(normals, asset->mNormals, sizeof(V3t) * numElements);
-    }
-    
-    // Optionally set up the first texture coord buffer.
-    // TODO: Support more than 1 set of texcoords.
-    if (asset->mTextureCoords[0])
-    {
-        textureCoords = (V3t*)malloc(sizeof(V3t) * numElements);
-        memcpy(textureCoords, asset->mTextureCoords[0], sizeof(V3t) * numElements);
-    }
-    
-    // Optionally set up bones!
-    if (asset->HasBones())
-    {
-        if (asset->mNumBones) {
-            NSLog(@"model has %d bones", asset->mNumBones);
-            boneOffsets = (M16t*)malloc(sizeof(M16t) * asset->mNumBones);
-            
-            for (int i = 0; i < asset->mNumBones; ++i)
-            {
-                aiBone *bone = asset->mBones[i];
-                
-                memcpy(boneOffsets[i].m, &bone->mOffsetMatrix, sizeof(M16t));
-                
-                boneWeights = (float *)calloc(asset->mNumVertices, sizeof(float));
-                for (int j = 0; j < bone->mNumWeights; ++j)
-                {
-                    aiVertexWeight &v = bone->mWeights[j];
-                    boneWeights[v.mVertexId] = v.mWeight;
-                }
-            }
-        }
-    }
-    
-    //        int numberOfUnusedBones = MAX_NUMBER_OF_BONES - asset->mNumBones;
-    //
-    //        GLuint *firstUnusedBone = &(buffers[BUFFER_BONEWEIGHTS + asset->mNumBones]);
-    //
-    //        glDeleteBuffers(numberOfUnusedBones, firstUnusedBone);
-    //        memset(firstUnusedBone, 0, numberOfUnusedBones * sizeof(GLuint));
-    
-    // Optionally set up the bitangent & tangent buffer.
-    
-    if (asset->HasTangentsAndBitangents())
-    {
-        tangents = (V3t*)malloc(sizeof(V3t) * numElements);
-        memcpy(tangents, asset->mTangents, sizeof(V3t) * numElements);
-        
-        binormals = (V3t*)malloc(sizeof(V3t) * numElements);
-        memcpy(binormals, asset->mBitangents, sizeof(V3t) * numElements);
-        
-    }
-    
-    NKRiggedStruct *elements = (NKRiggedStruct*)malloc(sizeof(NKRiggedStruct) * numElements);
-    
-    for (int i = 0; i < numElements; i++) {
-        memcpy(&elements[i].vertex, &vertices[i], sizeof(V3t));
-        memcpy(&elements[i].normal, &normals[i], sizeof(V3t));
-        if (textureCoords)
-        memcpy(&elements[i].texCoord, &textureCoords[i], sizeof(V3t));
-        if (tangents)
-            memcpy(&elements[i].tangent, &tangents[i], sizeof(V3t));
-        if (binormals)
-            memcpy(&elements[i].biNormal, &binormals[i], sizeof(V3t));
-        if (boneWeights)
-            memcpy(&elements[i].boneWeight, &boneWeights[i], sizeof(F1t));
-    }
-    
-    free(vertices);
-    free(normals);
-    if (textureCoords)
-        free(textureCoords);
-    if(tangents)
-        free(tangents);
-    if(binormals)
-        free(binormals);
-    if(boneWeights)
-        free(boneWeights);
-    
-    GLuint totalElements = MAX(numElements, asset->mNumFaces*3);
-    
-    NKVertexBuffer *vbo = [[NKVertexBuffer alloc]initWithSize:sizeof(NKRiggedStuct)*numElements numberOfElements:totalElements data:elements setup:[NKVertexBuffer riggedMeshSetupBlock]];
-    
-    free(elements);
-    
-    if (indices) {
-        //NSLog(@"has index buffer");
-        vbo.indexBuffer = [[NKIndexBuffer alloc]initWithSize:totalElements*sizeof(U1t) data:indices];
-        free(indices);
-    }
-    
-    self = [self initWithVertexBuffer:vbo drawMode:GL_TRIANGLES texture:theMaterial.tex color:NKWHITE size:V3MakeF(1.)];
-    
-    // DO TEXURES
-    _drawMode = GL_TRIANGLES;
-    self.cullFace = NKCullFaceNone;
-    
-    return self;
-    
-}
-
-
-@end
 
 @implementation AIAnimationNode
 
@@ -541,7 +525,7 @@ struct aiMesh;
     
     asset->GetTexture(aiTextureType_DIFFUSE, 0, texturePathTmp, NULL, NULL, NULL, NULL, &mapMode);
     
-    NSString *texturePath = [NSString stringWithAIString:texturePathTmp];
+    NSString *texturePath = [[NSString stringWithAIString:texturePathTmp] lastPathComponent];
     
     NSLog(@"full path: %@", texturePath);
     

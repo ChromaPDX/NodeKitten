@@ -30,7 +30,9 @@ typedef NS_ENUM(GLint, NKBulletShapes)
     NKBulletShapeNone,
     NKBulletShapeBox,
     NKBulletShapeSphere,
-    NKBulletShapeCylinder,
+    NKBulletShapeXCylinder,
+    NKBulletShapeYCylinder,
+    NKBulletShapeZCylinder,
     NKBulletShapeCone,
     NKBulletNumShapes
 } NS_ENUM_AVAILABLE(10_8, 5_0);
@@ -48,6 +50,9 @@ typedef NS_ENUM(GLint, NKBulletShapes)
 
 -(void)addNode:(NKNode*)node;
 -(void)removeNode:(NKNode*)node;
++(void)reset;
+
++(void*)dynamicsWorld;
 
 @end
 
@@ -68,6 +73,7 @@ typedef NS_ENUM(GLint, NKBulletShapes)
     NKCollisionFilter _collisionMask;
 }
 @property (nonatomic, strong) NKBulletShape *shape;
+@property (nonatomic) bool isDynamic;
 
 -(void*)btBody;
 
@@ -92,11 +98,17 @@ typedef NS_ENUM(GLint, NKBulletShapes)
 -(void)applyCentralForce:(V3t)force;
 -(void)applyCentralImpulse:(V3t)force;
 -(void)applyDamping:(F1t)timeStep;
+// Constraints
+-(void)addSpringConstraintAtPosition:(V3t)position toNode:(NKNode*)nodeB atPosition:(V3t)positionB length:(F1t)length;
+-(void)addWheelConstraintAtPosition:(V3t)position toNode:(NKNode*)nodeB atPosition:(V3t)positionB limits:(V6t)limits;
+
 // COLLISION SYSTEM
 -(void)setCollisionGroup:(NKCollisionFilter)category;
 -(void)setCollisionMask:(NKCollisionFilter)category;
 -(NKCollisionFilter)collisionGroup;
 -(NKCollisionFilter)collisionMask;
+// PICKING / RAY
+-(V3t)rayTest:(P2t)screenLocation;
 
 -(void)forceAwake;
 -(void)forceSleep;

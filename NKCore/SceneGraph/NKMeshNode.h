@@ -15,6 +15,10 @@
 @class NKByteColor;
 //@class NKVertexBuffer;
 
+static inline float cblend(F1t col, F1t bl){
+    return ((col * bl) + (1. - bl));
+}
+
 @interface NKMeshNode : NKNode
 {
     NKVertexBuffer *_vertexBuffer;
@@ -23,7 +27,6 @@
     M16t *boneOffsets;
     
     U1t _numTextures;
-    bool _drawBoundingBox;
     NKPrimitive _primitiveType;
     GLenum _drawMode;
     
@@ -31,6 +34,9 @@
 }
 
 @property (nonatomic, strong) NSDictionary *animations;
+@property (nonatomic) bool drawBoundingBox;
+
+-(NKVertexBuffer*)vertexBuffer;
 
 -(instancetype)initWithObjNamed:(NSString *)name;
 -(instancetype)initWithObjNamed:(NSString *)name withSize:(V3t)size normalize:(bool)normalize;

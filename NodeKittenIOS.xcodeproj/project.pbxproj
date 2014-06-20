@@ -757,8 +757,8 @@
 		2970D861194A6DAF00EEAC2B /* NKSpriteNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D709194A6DAF00EEAC2B /* NKSpriteNode.m */; };
 		2970D862194A6DAF00EEAC2B /* hqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70B194A6DAF00EEAC2B /* hqLightProgram.nks.txt */; };
 		2970D863194A6DAF00EEAC2B /* hqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70B194A6DAF00EEAC2B /* hqLightProgram.nks.txt */; };
-		2970D864194A6DAF00EEAC2B /* lqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70C194A6DAF00EEAC2B /* lqLightProgram.nks.txt */; };
-		2970D865194A6DAF00EEAC2B /* lqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70C194A6DAF00EEAC2B /* lqLightProgram.nks.txt */; };
+		2970D864194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70C194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt */; };
+		2970D865194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70C194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt */; };
 		2970D866194A6DAF00EEAC2B /* materialStruct.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70D194A6DAF00EEAC2B /* materialStruct.nks.txt */; };
 		2970D867194A6DAF00EEAC2B /* materialStruct.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70D194A6DAF00EEAC2B /* materialStruct.nks.txt */; };
 		2970D868194A6DAF00EEAC2B /* NKShaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D70F194A6DAF00EEAC2B /* NKShaderManager.m */; };
@@ -1271,6 +1271,8 @@
 		29744B71194B8F72009B3CD0 /* SphereTriangleDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29744812194B8F71009B3CD0 /* SphereTriangleDetector.cpp */; };
 		29744B72194B8F72009B3CD0 /* NKBulletWorld.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29744815194B8F72009B3CD0 /* NKBulletWorld.mm */; };
 		29744B73194B8F72009B3CD0 /* NKBulletWorld.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29744815194B8F72009B3CD0 /* NKBulletWorld.mm */; };
+		297BF6A219516F270004AFCD /* lqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */; };
+		297BF6A319516F270004AFCD /* lqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */; };
 		29CC5D77194E14B200614265 /* cvTextureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */; };
 		29CC5D78194E14B200614265 /* cvTextureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */; };
 		29CC5D7A194E174400614265 /* textureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D79194E174400614265 /* textureProgram.nks.txt */; };
@@ -2057,7 +2059,7 @@
 		2970D708194A6DAF00EEAC2B /* NKSpriteNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKSpriteNode.h; sourceTree = "<group>"; };
 		2970D709194A6DAF00EEAC2B /* NKSpriteNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKSpriteNode.m; sourceTree = "<group>"; };
 		2970D70B194A6DAF00EEAC2B /* hqLightProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hqLightProgram.nks.txt; sourceTree = "<group>"; };
-		2970D70C194A6DAF00EEAC2B /* lqLightProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lqLightProgram.nks.txt; sourceTree = "<group>"; };
+		2970D70C194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = oldlqLightProgram.nks.txt; sourceTree = "<group>"; };
 		2970D70D194A6DAF00EEAC2B /* materialStruct.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = materialStruct.nks.txt; sourceTree = "<group>"; };
 		2970D70E194A6DAF00EEAC2B /* NKShaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKShaderManager.h; sourceTree = "<group>"; };
 		2970D70F194A6DAF00EEAC2B /* NKShaderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKShaderManager.m; sourceTree = "<group>"; };
@@ -2527,6 +2529,7 @@
 		29744813194B8F71009B3CD0 /* SphereTriangleDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereTriangleDetector.h; sourceTree = "<group>"; };
 		29744814194B8F71009B3CD0 /* NKBulletWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKBulletWorld.h; sourceTree = "<group>"; };
 		29744815194B8F72009B3CD0 /* NKBulletWorld.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NKBulletWorld.mm; sourceTree = "<group>"; };
+		297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lqLightProgram.nks.txt; sourceTree = "<group>"; };
 		29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cvTextureProgram.nks.txt; sourceTree = "<group>"; };
 		29CC5D79194E174400614265 /* textureProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = textureProgram.nks.txt; sourceTree = "<group>"; };
 		29DACA59194B403300F382E4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
@@ -3799,7 +3802,8 @@
 				29CC5D79194E174400614265 /* textureProgram.nks.txt */,
 				29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */,
 				2970D70B194A6DAF00EEAC2B /* hqLightProgram.nks.txt */,
-				2970D70C194A6DAF00EEAC2B /* lqLightProgram.nks.txt */,
+				297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */,
+				2970D70C194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt */,
 				2970D70D194A6DAF00EEAC2B /* materialStruct.nks.txt */,
 				2970D70E194A6DAF00EEAC2B /* NKShaderManager.h */,
 				2970D70F194A6DAF00EEAC2B /* NKShaderManager.m */,
@@ -4700,6 +4704,7 @@
 				292E5C57194D356D002B6D43 /* cppunit.spec.in in Resources */,
 				2971B911194C0521001BE97F /* jeep1a.fbx in Resources */,
 				292E5C93194D356D002B6D43 /* Makefile.am in Resources */,
+				297BF6A219516F270004AFCD /* lqLightProgram.nks.txt in Resources */,
 				292E5C13194D356D002B6D43 /* BUGS in Resources */,
 				292E5C17194D356D002B6D43 /* CodingGuideLines.txt in Resources */,
 				2971B93B194C0521001BE97F /* jeep1.fbx.readme.txt in Resources */,
@@ -4787,7 +4792,7 @@
 				292E5C67194D356D002B6D43 /* Money.dox in Resources */,
 				2971B977194C0521001BE97F /* guard1_body.png in Resources */,
 				292E5CB5194D356D002B6D43 /* cppunit_dll.vcproj in Resources */,
-				2970D864194A6DAF00EEAC2B /* lqLightProgram.nks.txt in Resources */,
+				2970D864194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt in Resources */,
 				292E5C63194D356D002B6D43 /* Makefile.am in Resources */,
 				292E5D17194D356E002B6D43 /* CppUnitLibraries.sln in Resources */,
 				292E5C8F194D356D002B6D43 /* Makefile.am in Resources */,
@@ -4965,6 +4970,7 @@
 				292E5C58194D356D002B6D43 /* cppunit.spec.in in Resources */,
 				2971B912194C0521001BE97F /* jeep1a.fbx in Resources */,
 				292E5C94194D356D002B6D43 /* Makefile.am in Resources */,
+				297BF6A319516F270004AFCD /* lqLightProgram.nks.txt in Resources */,
 				292E5C14194D356D002B6D43 /* BUGS in Resources */,
 				292E5C18194D356D002B6D43 /* CodingGuideLines.txt in Resources */,
 				2971B93C194C0521001BE97F /* jeep1.fbx.readme.txt in Resources */,
@@ -5052,7 +5058,7 @@
 				292E5C68194D356D002B6D43 /* Money.dox in Resources */,
 				2971B978194C0521001BE97F /* guard1_body.png in Resources */,
 				292E5CB6194D356D002B6D43 /* cppunit_dll.vcproj in Resources */,
-				2970D865194A6DAF00EEAC2B /* lqLightProgram.nks.txt in Resources */,
+				2970D865194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt in Resources */,
 				292E5C64194D356D002B6D43 /* Makefile.am in Resources */,
 				292E5D18194D356E002B6D43 /* CppUnitLibraries.sln in Resources */,
 				292E5C90194D356D002B6D43 /* Makefile.am in Resources */,

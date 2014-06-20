@@ -20,8 +20,8 @@
 //@property (nonatomic, strong) AINode *rootNode;
 
 + (NKMeshNode*)meshNodeFromFile:(NSString *)file;
-+ (id) sceneFromFile:(NSString *)file;
-- (id) initFromFile:(NSString *)file;
+- (id) initWithFile:(NSString *)file;
+- (id) initWithFile:(NSString *)file normalize:(F1t)normalize;
 
 @end
 

@@ -100,7 +100,7 @@ static NKStaticDraw *sharedObject = nil;
         _boundingBoxMesh = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveCube texture:nil color:NKGREEN size:V3MakeF(1.)];
         _boundingBoxMesh.drawMode = GL_LINES;
     }
-    _boundingBoxMesh.localTransformMatrix = node.localTransformMatrix;
+    _boundingBoxMesh.localTransform = node.localTransform;
     [_boundingBoxMesh customDraw];
 }
 

@@ -17,9 +17,9 @@
 #pragma mark -
 
 -(void)setScene:(NKSceneNode *)scene {
-    
     _scene = scene;
-    scene.nkView = self;
+    
+    _scene.nkView = self;
     
     w = self.bounds.size.width;
     h = self.bounds.size.height;
@@ -43,6 +43,8 @@
         [_scene processHitBuffer];
     }
     
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
     glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -392,10 +394,11 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 
 
 -(void)keyDown:(NSEvent *)theEvent {
-    //if (theEvent.keyCode == NSUpArrowFunctionKey){
-    [_scene keyPressed:theEvent.keyCode];
+    [_scene keyDown:theEvent.keyCode];
+}
 
-    //}
+-(void)keyUp:(NSEvent *)theEvent {
+    [_scene keyUp:theEvent.keyCode];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent

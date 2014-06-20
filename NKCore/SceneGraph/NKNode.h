@@ -72,15 +72,14 @@ typedef void (^CompletionBlock)(void);
 
 #pragma mark - POSITION / GEOMETRY
 
-    M16t localTransformMatrix;
+    M16t _localTransform;
+    M16t _cachedGlobalTransform;
     
-    Q4t orientation; // matrix set orientation
-    V3t scale; // matrix set scale
-    V3t position; // matrix set translation
-	
-	V3t axis[3];
+    Q4t _orientation; // matrix set orientation
+    V3t _scale; // matrix set scale
+    V3t _position; // matrix set translation
     
-    V3t _size3d;
+    V3t _size;
     
     NKNode *_parent;
     NSMutableArray *intChildren;
@@ -100,17 +99,21 @@ typedef void (^CompletionBlock)(void);
     F1t _colorBlendFactor;
     
     EventBlock _eventBlock;
+    
+    bool _dirty;
+    
+    NKSceneNode* _scene;
 }
 
 #pragma mark - NODE TREE
 
-@property (nonatomic, weak) NKSceneNode* scene;
+
 @property (nonatomic, strong) NSArray *children;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, strong) NKByteColor *uidColor;
-@property (nonatomic) bool dirty;
 @property (nonatomic) V3t positionRef;
 @property (nonatomic) V3t scalarVelocity;
+
 
 #pragma mark - POSITION PROPERTIES
 
@@ -170,7 +173,12 @@ typedef void (^CompletionBlock)(void);
 - (void)setParent:(NKNode *)parent;
 - (BOOL)inParentHierarchy:(NKNode *)parent;
 
+-(void)setDirty:(bool)dirty;
+
 - (void) unload;
+
+-(void)setScene:(NKSceneNode *)scene;
+-(NKSceneNode*)scene;
 
 #pragma mark - PHYSICS
 
@@ -178,10 +186,16 @@ typedef void (^CompletionBlock)(void);
 
 #pragma mark - GEOMETRY METHODS
 
-- (void)setZPosition:(int)zPosition;
-- (void)setPosition:(P2t)position;
+-(bool)containsPoint:(P2t)location;
 
--(V3t)getGlobalPosition;
+- (void)setZPosition:(int)zPosition;
+-(V3t)position;
+- (void)setPosition:(V3t)position;
+-(void)setPosition2d:(V2t)position;
+
+-(V3t)globalPosition;
+-(M16t)globalTransform;
+
 -(P2t)positionInNode:(NKNode*)node;
 -(V3t)positionInNode3d:(NKNode*)node;
 
@@ -198,10 +212,9 @@ typedef void (^CompletionBlock)(void);
 //**
 - (void)draw;
 //**
-// draw encompasses these 3 states
--(void)begin;
+// draw encompasses these 2 states
+-(void)setupViewMatrix;
 -(void)customDraw;
--(void)end;
 //**
 
 // drawing for hit detection
@@ -236,23 +249,15 @@ typedef void (^CompletionBlock)(void);
 
 #pragma mark - MATRIX METHODS
 
--(M16t)getGlobalTransformMatrix;
--(void)setLocalTransformMatrix:(M16t)_localTransformMatrix;
--(M16t)localTransformMatrix;
+-(void)setLocalTransform:(M16t)localTransform;
+-(M16t)localTransform;
 
 #pragma mark - POSITION METHODS
 
--(bool)containsPoint:(P2t) location;
-
--(P2t)position;
--(V3t)position3d;
--(void)setPosition3d:(V3t)position3d;
-
--(void)setSize:(S2t)size;
--(void)setSize3d:(V3t)size3d;
-
--(S2t) size;
--(V3t) size3d;
+-(void)setSize2d:(S2t)size;
+-(void)setSize:(V3t)size;
+-(V2t)size2d;
+-(V3t) size;
 
 -(R4t)getDrawFrame;
 - (R4t)calculateAccumulatedFrame;
@@ -268,6 +273,7 @@ typedef void (^CompletionBlock)(void);
 -(Q4t) getGlobalOrientation;
 -(Q4t) orientation;
 -(V3t) getOrientationEuler;
+-(F1t) getYOrientation;
 
 // look etc.
 
@@ -286,13 +292,13 @@ typedef void (^CompletionBlock)(void);
 
 #pragma mark - SCALE METHODS
 
--(void)setScale3d:(V3t)s;
--(void)setScale:(F1t)s;
+-(void)setScale:(V3t)scale;
+-(void)setScaleF:(F1t)s;
 -(void)setXScale:(F1t)s;
 -(void)setYScale:(F1t)s;
 
--(V3t)scale3d;
--(P2t)scale;
+-(V3t)scale;
+-(V2t)scale2d;
 
 #pragma mark - TOUCH
 

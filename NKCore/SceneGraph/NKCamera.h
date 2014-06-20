@@ -32,9 +32,13 @@
 - (M16t)projectionMatrix;
 - (M16t)viewProjectionMatrix;
 
+-(M16t)orthographicMatrix;
+
 - (V3t)eyeDirection;
 
 -(instancetype)initWithScene:(NKSceneNode*)scene;
 -(P2t)screenToWorld:(P2t)p;
+
+-(void)updateCameraWithTimeSinceLast:(F1t)dt;
 
 @end

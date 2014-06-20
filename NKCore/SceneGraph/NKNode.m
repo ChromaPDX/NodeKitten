@@ -23,11 +23,11 @@
     if (self){
         
         self.name = @"NEW NODE";
-        
-        [self setSize3d:size];
-        [self setScale:1.];
+
+        [self setSize:size];
+        [self setScaleF:1.];
         [self setOrientationEuler:V3Make(0, 0, 0)];
-        [self setPosition3d:V3Make(0, 0, 0)];
+        [self setPosition:V3Make(0, 0, 0)];
         
         _upVector = V3Make(0, 1, 0);
         
@@ -51,7 +51,7 @@
 //    self = [super init];
 //    
 //    if (self) {
-//        _size3d = size;
+//        _size = size;
 //    }
 //    
 //    return self;
@@ -84,6 +84,8 @@
     
 }
 
+
+
 - (void)insertChild:(NKNode *)child atIndex:(NSInteger)index {
     if (!intChildren) {
         intChildren = [[NSMutableArray alloc]init];
@@ -97,27 +99,6 @@
     }
     
     intChildren = temp;
-}
-
--(NKSceneNode*)scene {
-    
-    if (!_scene) { // CACHE POINTER
-        
-        if (_parent) {
-            _scene = _parent.scene;
-            return _parent.scene;
-        }
-        
-        if ([self isKindOfClass:[NKSceneNode class]]) {
-            _scene = (NKSceneNode*) self;
-            return (NKSceneNode*) self;
-        }
-        
-        return nil;
-    }
-    
-    return _scene;
-    
 }
 
 - (void)fadeInChild:(NKNode*)child duration:(NSTimeInterval)seconds{
@@ -170,7 +151,7 @@
 -(void)setParent:(NKNode *)parent {
     
     if (_parent) {
-        V3t p = self.getGlobalPosition;
+        V3t p = self.globalPosition;
         //NKLogV3(@"global position", p);
         [_parent removeChild:self];
         _parent = parent;
@@ -180,40 +161,66 @@
         _parent = parent;
     }
     
-    self.scene;
+    self.scene = parent.scene;
     
     if (self.userInteractionEnabled && _parent) {
-        if (!_uidColor) {
-            [NKShaderManager newUIDColorForNode:self];
-        }
         [_parent setUserInteractionEnabled:true];
     }
+}
+
+-(void)setScene:(NKSceneNode *)scene {
+    if (!_uidColor) {
+        [NKShaderManager newUIDColorForNode:self];
+    }
+    
+    _scene = scene;
+}
+
+-(NKSceneNode*)scene {
+    
+    if (!_scene) { // CACHE POINTER
+        
+        if (_parent) {
+            _scene = _parent.scene;
+            return _parent.scene;
+        }
+        
+        if ([self isKindOfClass:[NKSceneNode class]]) {
+            _scene = (NKSceneNode*) self;
+            return (NKSceneNode*) self;
+        }
+        
+        return nil;
+    }
+    
+    return _scene;
+    
 }
 
 -(NKNode*)parent {
     return _parent;
 }
 
--(S2t)size {
-    return S2Make(_size3d.x, _size3d.y);
+-(S2t)size2d {
+    return _size.point;
 }
 
--(V3t)size3d {
-    return _size3d;
+-(V3t)size {
+    return _size;
 }
 
--(void)setSize:(S2t)size {
+-(void)setSize2d:(S2t)size {
     w = size.width;
     h = size.height;
-    _size3d.x = w;
-    _size3d.y = h;
+    _size.x = w;
+    _size.y = h;
 }
 
--(void)setSize3d:(V3t)size3d {
-    _size3d = size3d;
-    w = _size3d.x;
-    h = _size3d.y;
-    d = _size3d.z;
+-(void)setSize:(V3t)size {
+    _size = size;
+    w = _size.x;
+    h = _size.y;
+    d = _size.z;
 }
 
 
@@ -339,7 +346,17 @@
 }
 
 - (void)removeFromParent{
-    [_parent removeChildrenInArray:@[self]];
+    if (_body) {
+        [[NKBulletWorld sharedInstance]removeNode:self];
+    }
+    
+    if (_uidColor) {
+        [[NKShaderManager uidColors] removeObjectForKey:_uidColor];
+    }
+    
+    if (_parent){
+        [_parent removeChildrenInArray:@[self]];
+    }
 }
 
 #pragma mark - Actions
@@ -374,8 +391,10 @@
 - (void)updateWithTimeSinceLast:(F1t) dt {
     // IF OVERRIDE, CALL SUPER
     
-    if (_body){
-        [_body getTransform:&localTransformMatrix];
+    if (_body && _body.isDynamic){
+        [_body getTransform:&_localTransform];
+        //NKLogV3(@"update physics position: ", V3GetM16Translation(localTransform));
+        _dirty = true;
     }
     
     [animationHandler updateWithTimeSinceLast:dt];
@@ -383,8 +402,6 @@
     for (NKNode *child in intChildren) {
         [child updateWithTimeSinceLast:dt];
     }
-    
-    _dirty = false;
 }
 
 
@@ -452,21 +469,21 @@
                 break;
                 
             case NKCullFaceFront:
-                if (_scene.cullFace == NKCullFaceNone) {
+                if (_scene.cullFace < 1) {
                     glEnable(GL_CULL_FACE);
                 }
                 glCullFace(GL_FRONT);
                 break;
                 
             case NKCullFaceBack:
-                if (_scene.cullFace == NKCullFaceNone) {
+                if (_scene.cullFace < 1) {
                     glEnable(GL_CULL_FACE);
                 }
                 glCullFace(GL_BACK);
                 break;
                 
             case NKCullFaceBoth:
-                if (_scene.cullFace == NKCullFaceNone) {
+                if (_scene.cullFace < 1) {
                     glEnable(GL_CULL_FACE);
                 }
                 glCullFace(GL_FRONT_AND_BACK);
@@ -488,7 +505,7 @@
     if (_blendMode != self.scene.blendMode) {
         
         switch (_blendMode){
-            case NKBlendModeNone:
+            case -1: case NKBlendModeNone:
                 glDisable(GL_BLEND);
                 break;
                 
@@ -547,14 +564,9 @@
     }
 }
 
--(void)begin {
-    
-    [self.scene pushMultiplyMatrix:localTransformMatrix];
-    
-}
 
 -(void)draw {
-    [self begin];
+   // [self begin];
     
     [self pushStyle];
     
@@ -578,12 +590,15 @@
         [tc draw];
     }
     
-    [self end];
+   // [self end];
+}
+
+
+-(void)setupViewMatrix {
+    // OVERRIDE
 }
 
 -(void)drawWithHitShader {
-    
-    [self begin];
     
     if (_userInteractionEnabled) {
          [self customdrawWithHitShader];
@@ -592,8 +607,6 @@
     for (NKNode *child in intChildren) {
         [child drawWithHitShader];
     }
-    
-    [self end];
 }
 
 -(void)customDraw {
@@ -635,8 +648,8 @@
 // this sucks, needs work
 //-(P2t)transformedPoint:(P2t)location {
 //
-//    M16t inverse = M16InvertColumnMajor([self getGlobalTransformMatrix], NULL);
-//    //M16t inverse = [self getGlobalTransformMatrix];
+//    M16t inverse = M16InvertColumnMajor([self globalTransform], NULL);
+//    //M16t inverse = [self globalTransform];
 //
 //    V3t transformed = V3MultiplyM16(inverse, V3Make(location.x, location.y, V3GetM16Translation(inverse).z));
 //
@@ -649,7 +662,7 @@
 
 -(P2t)inverseProjectedPoint:(P2t)location {
     
-    M16t globalTransform = [self getGlobalTransformMatrix];
+    M16t globalTransform = [self globalTransform];
     
     //    bool isInvertible;
     
@@ -686,9 +699,9 @@
     
     //    P2t p = [self inverseProjectedPoint:location];
     //
-    //    V3t globalPos = [self getGlobalPosition];
+    //    V3t globalPos = [self globalPosition];
     //
-    //    R4t r = R4Make(globalPos.x - _size3d.x * _anchorPoint3d.x, globalPos.y - _size3d.y *_anchorPoint3d.y, _size3d.x, _size3d.y);
+    //    R4t r = R4Make(globalPos.x - _size.x * _anchorPoint3d.x, globalPos.y - _size.y *_anchorPoint3d.y, _size.x, _size.y);
     //
     //    //bool withinArea = false;
     //    if ( p.x > r.x && p.x < r.x + r.size.width && p.y > r.y && p.y < r.y + r.size.height)
@@ -700,13 +713,13 @@
     
 }
 
--(V3t)getGlobalPosition{
-    return V3GetM16Translation([self getGlobalTransformMatrix]);
+-(V3t)globalPosition{
+    return V3GetM16Translation([self globalTransform]);
 }
 
 -(R4t)getWorldFrame{
-    V3t g = [self getGlobalPosition];
-    return R4Make(g.x - _size3d.x * _anchorPoint3d.x, g.y - _size3d.y *_anchorPoint3d.y, _size3d.x, _size3d.y);
+    V3t g = [self globalPosition];
+    return R4Make(g.x - _size.x * _anchorPoint3d.x, g.y - _size.y *_anchorPoint3d.y, _size.x, _size.y);
     
 }
 
@@ -715,26 +728,9 @@
     //[self logCoords];
     //V3t g = node->getPosition();
     //return R4Make(g.x - _size.width * _anchorPoint.x, g.y - _size.height *_anchorPoint.y, _size.width, _size.height);
-    return R4Make(-_size3d.x * _anchorPoint3d.x, -_size3d.y *_anchorPoint3d.y, _size3d.x, _size3d.y);
+    return R4Make(-_size.x * _anchorPoint3d.x, -_size.y *_anchorPoint3d.y, _size.x, _size.y);
 }
 
-
--(void)logPosition {
-    V3t p = [self getGlobalPosition];
-    NSLog(@"name:%@ global coords %f, %f, %f :: position %f %f %f",self.name, p.x, p.y, p.z,position.x, position.y, position.z);
-}
--(void)logCoords{
-    V3t p = [self getGlobalPosition];
-    NSLog(@"%@ coords %f, %f, %f :: size %f %f",self.name, p.x, p.y, p.z, w, h);
-}
-
--(void)logMatrix:(M16t)M16 {
-    NSLog(@"MATRIX for %@ \n %f %f %f %f \n %f %f %f %f \n %f %f %f %f \n %f %f %f %f",self.name,
-          M16.m00, M16.m01, M16.m02, M16.m03,
-          M16.m10, M16.m11, M16.m12, M16.m13,
-          M16.m20, M16.m21, M16.m22, M16.m23,
-          M16.m30, M16.m31, M16.m32, M16.m33);
-}
 
 -(bool)shouldCull {
     return 0;
@@ -742,7 +738,7 @@
 
 -(P2t)childLocationIncludingRotation:(NKNode*)child {
     
-    P2t polar = carToPol(child.position);
+    P2t polar = carToPol(child.position.point);
     polar.y += self.zRotation;
     
     //NSLog(@"zRotation: %f", self.zRotation);
@@ -758,38 +754,42 @@
 
 #pragma mark - MATRIX
 
--(void) setTransformMatrix:(const M16t) m44 {
-	localTransformMatrix = m44;
+-(void)setLocalTransform:(M16t)localTransform {
+    [self setDirty:true];
     
-    orientation = Q4GetM16Rotate(localTransformMatrix);
-    position = V3GetM16Translation(localTransformMatrix);
-    scale = V3GetM16Scale(localTransformMatrix);
+    _localTransform = localTransform;
+    _scale = V3GetM16Scale(_localTransform);
     
-	//Q4t so;
-    // M16Decompose(m44, position, orientation, scale, so);
-    
-}
-
--(M16t)tranformMatrixInNode:(NKNode*)n{
-    
-    if (_parent == n || !_parent) {
-        return localTransformMatrix;
-    }
-    else {
-        // recursive add
-        return M16Multiply([_parent tranformMatrixInNode:n],localTransformMatrix);
+    if (_body) {
+        [_body setTransform:[self globalTransform]];
     }
     
 }
 
--(M16t)getGlobalTransformMatrix {
+//-(M16t)tranformMatrixInNode:(NKNode*)n{
+//    
+//    if (_parent == n || !_parent) {
+//        return localTransform;
+//    }
+//    else {
+//        // recursive add
+//        return M16Multiply([_parent tranformMatrixInNode:n],localTransform);
+//    }
+//    
+//}
+
+-(M16t)globalTransform {
     
-    if (!_parent) {
-        return localTransformMatrix;
+    if (_dirty) {
+        //NSLog(@"cache global matrix");
+        _dirty = false;
+        if (!_parent || _parent == self.scene) {
+            return _cachedGlobalTransform = _localTransform;
+        }
+        return _cachedGlobalTransform = M16Multiply([_parent globalTransform],_localTransform);
     }
     else {
-        // recursive add
-        return M16Multiply([_parent getGlobalTransformMatrix],localTransformMatrix);
+        return _cachedGlobalTransform;
     }
     
 }
@@ -798,60 +798,66 @@
 
 // BASE, all should refer to this:
 
--(V3t)position3d {
-    return position;
+-(void)setPosition2d:(V2t)position {
+    [self setPosition:V3Make(position.x, position.y, _position.z)];
 }
 
--(void)setPosition3d:(V3t)position3d {
-    position = position3d;
-    M16SetV3Translation(&localTransformMatrix, position);
+-(void)setPosition:(V3t)position {
+    _position = position;
+    M16SetV3Translation(&_localTransform, _position);
+    
+    [self setDirty:true];
+    
     if (_body){
-        //[[NKBulletWorld sharedInstance] removeNode:self];
-        [_body setTransform:localTransformMatrix];
-        //[[NKBulletWorld sharedInstance] addNode:self];
+        [_body setTransform:[self globalTransform]];
     }
-    if (!_dirty) {
-        [self setDirty:true];
-    }
+}
+
+-(V3t)position {
+    return _position;
 }
 
 -(void)setDirty:(bool)dirty {
-    _dirty = dirty;
     
-    if (dirty) {
-        for (NKNode *n in intChildren) {
-            [n setDirty:dirty];
+        _dirty = dirty;
+        
+        if (dirty) {
+            for (NKNode *n in intChildren) {
+                [n setDirty:dirty];
+            }
         }
-    }
+    
 }
-// convenience >>
 
 -(void)setZPosition:(int)zPosition {
-    [self setPosition3d:V3Make(position.x,position.y, zPosition)];
+    [self setPosition:V3Make(_position.x,_position.y, zPosition)];
 }
 
 -(void) setGlobalPosition:(const V3t)p {
 	if(_parent == NULL) {
-		[self setPosition3d:p];
+		[self setPosition:p];
 	} else {
-        M16t global = [_parent getGlobalTransformMatrix];
+        M16t global = [_parent globalTransform];
         M16Invert(&global);
-        [self setPosition3d:V3MultiplyM16WithTranslation(global, p)];
-        NKLogV3(@"new global position", self.getGlobalPosition);
-        //[self setPosition3d:V3Subtract(p, _parent.getGlobalPosition)];
+        [self setPosition:V3MultiplyM16WithTranslation(global, p)];
 	}
 }
 
--(void)setPosition:(P2t)p {
-    [self setPosition3d:V3Make(p.x, p.y, position.z)];
-}
 
--(P2t)position {
-    return P2Make(position.x, position.y);
+-(M16t)tranformMatrixInNode:(NKNode*)n{
+    
+    if (_parent == n || !_parent) {
+        return _localTransform;
+    }
+    else {
+        // recursive add
+        return M16Multiply([_parent tranformMatrixInNode:n], _localTransform);
+    }
+    
 }
 
 -(P2t)positionInNode:(NKNode *)n {
-    //    V3t p = self.node->getGlobalPosition() - n.node->getGlobalPosition();
+    //    V3t p = self.node->globalPosition() - n.node->globalPosition();
     //
     V3t p = [self convertPoint3d:V3Make(0,0,0) toNode:n];
     return P2Make(p.x, p.y);
@@ -874,61 +880,62 @@
 
 #pragma mark - Orientation
 
--(void)setLocalTransformMatrix:(M16t)_localTransformMatrix {
-    localTransformMatrix = _localTransformMatrix;
-    _size3d = V3GetM16Translation(localTransformMatrix);
-}
-
--(M16t)localTransformMatrix {
-    return localTransformMatrix;
+-(M16t)localTransform {
+    return _localTransform;
 }
 
 -(void) createMatrix {
-	//if(isMatrixDirty) {
-	//	isMatrixDirty = false;
+    [self setDirty:true];
     
-    // Make identity, scale it, rotate it
-    localTransformMatrix = M16Multiply(M16MakeScale(scale), M16MakeRotate(orientation));
-    // Set Translation
-    //localTransformMatrix = M16TranslateWithV3(localTransformMatrix, position);
-    M16SetV3Translation(&(localTransformMatrix), position);
+    _localTransform = M16Multiply(M16MakeScale(_scale), M16MakeRotate(_orientation));
+    M16SetV3Translation(&(_localTransform), _position);
     
-    //	if(scale[0]>0) axis[0] = localTransformMatrix.getRowAsVec3f(0)/scale[0];
-    //	if(scale[1]>0) axis[1] = localTransformMatrix.getRowAsVec3f(1)/scale[1];
-    //	if(scale[2]>0) axis[2] = localTransformMatrix.getRowAsVec3f(2)/scale[2];
+    if (_body) {
+        [_body setTransform:[self globalTransform]];
+    }
+    //	if(scale[0]>0) axis[0] = localTransform.getRowAsVec3f(0)/scale[0];
+    //	if(scale[1]>0) axis[1] = localTransform.getRowAsVec3f(1)/scale[1];
+    //	if(scale[2]>0) axis[2] = localTransform.getRowAsVec3f(2)/scale[2];
     
-    // [self logMatrix:localTransformMatrix];
+    // [self logMatrix:localTransform];
 }
 
 //----------------------------------------
 -(void) setOrientation:(const Q4t)q {
-	orientation = q;
+	_orientation = q;
 	[self createMatrix];
 }
 
 //----------------------------------------
 -(void) setOrientationEuler:(const V3t)eulerAngles {
     [self setOrientation:Q4FromV3(eulerAngles)];
-    //[self rotateMatrix:M16MakeEuler(eulerAngles)];
 }
 
 -(Q4t) orientation{
-	return orientation;
+	return _orientation;
 }
 
 -(Q4t)getGlobalOrientation {
-    return Q4GetM16Rotate([self getGlobalTransformMatrix]);
+    return Q4GetM16Rotate([self globalTransform]);
 }
 
--(V3t) getOrientationEuler {
-    return V3FromQ4(orientation);
+-(V3t)getOrientationEuler {
+    return V3FromQ4(Q4GetM16Rotate([self globalTransform]));
+}
+
+-(F1t)getYOrientation {
+    V3t raw = V3FromQ4(Q4GetM16Rotate([self localTransform]));
+    
+    if (raw.x < 0) {
+        return -raw.y;
+    }
+    
+    return raw.y;
 }
 
 -(void)setZRotation:(F1t)rotation {
-    
     Q4t zRot = Q4FromAngleAndV3(rotation, V3Make(0,0,1));
     [self setOrientation:zRot];
-    
 }
 
 -(void)setOrbit:(V3t)orbit {
@@ -947,26 +954,26 @@
 }
 
 -(V3t)orbitForLongitude:(float)longitude latitude:(float)latitude radius:(float)radius { //centerPoint:(V3t)centerPoint {
-    V3t p = V3RotatePoint(V3Make(0, 0, radius), latitude, V3Make(1, 0, 0));
-    return V3RotatePoint(p, longitude, V3Make(0, 1, 0));
+    V3t p = V3RotatePoint(V3Make(0, 0, radius), longitude, V3Make(0, 1, 0));
+    return V3RotatePoint(p, latitude, V3Make(1, 0, 0));
 }
 
 -(void)rotateMatrix:(M16t)M16 {
-    M16t m = M16MakeScale(scale);
-    localTransformMatrix = M16Multiply(m,M16);
-    M16SetV3Translation(&localTransformMatrix, position);
+    M16t m = M16MakeScale(_scale);
+    _localTransform = M16Multiply(m,M16);
+    M16SetV3Translation(&_localTransform, _position);
 }
 
 //-(void)globalRotateMatrix:(M16t)M16 {
 //    M16t m = M16MakeScale(scale);
-//    //localTransformMatrix = M16TranslateWithV3(localTransformMatrix, position);
+//    //localTransform = M16TranslateWithV3(localTransform, position);
 //    M16SetV3Translation(&m, position);
 //    m = M16Multiply(m, M16);
-//    localTransformMatrix = M16Multiply(m, M16InvertColumnMajor([_parent getGlobalTransformMatrix], 0));
+//    localTransform = M16Multiply(m, M16InvertColumnMajor([_parent globalTransform], 0));
 //}
 
 -(void)lookAtNode:(NKNode*)node {
-    [self lookAtPoint:[node getGlobalPosition]];
+    [self lookAtPoint:[node globalPosition]];
 }
 
 -(void)lookAtPoint:(V3t)point {
@@ -978,7 +985,7 @@
 
 -(M16t)getLookMatrix:(V3t)lookAtPosition {
 
-   return M16MakeLookAt(self.getGlobalPosition, lookAtPosition, [self upVector]);
+   return M16MakeLookAt(self.globalPosition, lookAtPosition, [self upVector]);
     
 }
 
@@ -986,39 +993,38 @@
     if (!_parent){
         return _upVector;
     }
-    return V3MultiplyM16([_parent getGlobalTransformMatrix], _upVector);
+    return V3MultiplyM16([_parent globalTransform], _upVector);
 }
 
 #pragma mark - SCALE
 
-
--(void)setScale:(F1t)s {
-    [self setScale3d:V3Make(s,s,s)];
-}
-
 - (void)setXScale:(F1t)s {
-    V3t nScale = scale;
+    V3t nScale = _scale;
     nScale.x = s;
-    [self setScale3d:nScale];
+    [self setScale:nScale];
 }
 
 - (void)setYScale:(F1t)s {
-    V3t nScale = scale;
+    V3t nScale = _scale;
     nScale.y = s;
-    [self setScale3d:nScale];
+    [self setScale:nScale];
 }
 
--(void)setScale3d:(V3t)s{
-    scale = s;
+-(void)setScaleF:(F1t)s {
+    _scale = V3MakeF(s);
+}
+
+-(void)setScale:(V3t)scale{
+    _scale = scale;
 	[self createMatrix];
 }
 
--(V3t)scale3d {
-    return scale;
+-(V3t)scale {
+    return _scale;
 }
 
--(P2t)scale {
-    return P2Make(scale.x, scale.y);
+-(V2t)scale2d {
+    return _scale.point;
 }
 
 #pragma mark - ALPHA / BLEND
