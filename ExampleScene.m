@@ -786,7 +786,6 @@
     
     s.body = [[NKBulletBody alloc] initWithType:NKBulletShapeSphere Size:s.size transform:s.localTransform mass:1.];
     
-    
     [s.body setCollisionGroup:NKCollisionFilterCharacter];
     [s.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls];
     
