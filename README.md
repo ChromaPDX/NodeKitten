@@ -8,9 +8,11 @@ lot’s to do, this should be considered under construction.
 
 see to ToDoList.txt in NKCore folder
 
-DEPENDENCIES / CODE SOURCES / SHOUT OUTS
+DEPENDENCIES / 3rd PARTY LICENSES / SHOUT OUTS
 
-Bullet 3d rigid body physics source code included
+MIKMidi - source included - Original author: Andrew R. Madsen (andrew@mixedinkey.com) https://github.com/mixedinkey-opensource/MIKMIDI
+ASSIMP - source included - https://github.com/assimp/assimp
+Bullet 3d - source included - https://github.com/bulletphysics/bullet3
 
 Some math functions from apple’s GL KIT
 Some math functions from GFX (sio2)
@@ -24,6 +26,12 @@ Confirm demo app works on your platform
 2. put an NKView or NKUIView in an XIB file, 
 3. make a subclass NKSceneNode as ‘MyScene’ etc. 
 4. in app delegate or elsewhere, set your view’s scene property to ‘MyScene’.
+
+- modules specific istructions -
+
+to ignore modules, remove folder 'group' from xcode project, flag #NK_USE_xxx to 0 in NKMacro.h
+
+*MIKMidi for iOS target requires libxml2 added target link binary with libraries, also add to header search paths: $(SDKROOT)/usr/include/libxml2
 
 IN USE:
 

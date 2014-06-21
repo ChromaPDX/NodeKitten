@@ -6,11 +6,13 @@
 //  Copyright (c) 2014 chroma. All rights reserved.
 //
 
-#if NK_USE_MIDI
+
 
 #import "NKMidiManager.h"
-#import "NKSceneNode.h"
 
+#if NK_USE_MIDI
+
+#import "NKSceneNode.h"
 #import <mach/mach.h>
 #import <mach/mach_time.h>
 

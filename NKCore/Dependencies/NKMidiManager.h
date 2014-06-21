@@ -7,10 +7,10 @@
 //
 
 
+#import "NKpch.h"
 
 #if NK_USE_MIDI
 
-#import <Foundation/Foundation.h>
 #import "MIKMIDI.h"
 
 @class NKSceneNode;
