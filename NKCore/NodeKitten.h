@@ -68,11 +68,16 @@
 
 #import "NKNodeAnimationHandler.h"
 
-// 3D MODELS
+// DEPENDENCIES / MODULES
 
 #if NK_USE_ASSIMP
 #import "NKAssimpLoader.h"
 #endif
+
+#if NK_USE_MIDI
+#import "NKMidiManager.h"
+#endif
+
 // SOUND
 
 #import "NKSoundManager.h"

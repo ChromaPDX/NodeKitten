@@ -30,6 +30,11 @@
 #import "NKNode.h"
 #import "NKAlertSprite.h"
 
+#if NK_USE_MIDI
+#import "MIKMIDI.h"
+typedef void (^MidiReceivedBlock)(MIKMIDICommand* command);
+#define newMidiReceivedBlock (MidiReceivedBlock)^(MIKMIDICommand* command)
+#endif
 
 #if TARGET_OS_IPHONE
 @class NKUIView;
@@ -82,7 +87,6 @@ typedef void (^CallBack)();
 @property (nonatomic) BOOL drawLights;
 @property (nonatomic, strong) NSMutableArray *lights;
 
-
 // HIT DETECTION
 
 -(void)dispatchEvent:(NKEvent*)event;
@@ -104,6 +108,12 @@ typedef void (^CallBack)();
 @property (nonatomic, weak) NKTexture *boundTexture;
 @property (nonatomic) NKBlendMode blendModeState;
 @property (nonatomic) bool fill;
+
+// EXTERNAL MODULES
+#if NK_USE_MIDI
+-(void)handleMidiCommand:(MIKMIDICommand*)command;
+@property (nonatomic, strong) MidiReceivedBlock midiReceivedBlock;
+#endif
 
 - (void)draw;
 // encompasses 3 states
@@ -129,56 +139,4 @@ typedef void (^CallBack)();
 
 @end
 
-@interface NKMatrixStack : NSObject
 
-{
-    M16t *matrixStack;
-    UInt32 matrixBlockSize;
-    UInt32 matrixCount;
-}
-
-//@property (nonatomic) M16t currentMatrix;
-
--(M16t*)data;
--(M16t)currentMatrix;
-
--(void)pushMultiplyMatrix:(M16t)matrix;
--(void)pushMatrix:(M16t)matrix;
--(void)pushScale:(V3t)scale;
--(void)popMatrix;
--(void)reset;
-
-@end
-
-@interface NKM9Stack : NSObject
-
-{
-    M9t *matrixStack;
-    UInt32 matrixBlockSize;
-    UInt32 matrixCount;
-}
-
-@property (nonatomic) M9t currentMatrix;
-
--(M9t*)data;
--(void)pushMatrix:(M9t)matrix;
--(void)reset;
-
-@end
-
-
-@interface NKVector4Stack : NSObject
-{
-    V4t *vectorStack;
-    UInt32 vectorBlockSize;
-    UInt32 vectorCount;
-}
-
-
-@property (nonatomic) M16t currentVector;
-
--(V4t*)data;
--(void)pushVector:(V4t)vector;
--(void)reset;
-
-@end

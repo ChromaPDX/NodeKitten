@@ -78,16 +78,15 @@ typedef void (^CompletionBlock)(void);
     Q4t _orientation; // matrix set orientation
     V3t _scale; // matrix set scale
     V3t _position; // matrix set translation
-    
+    V3t _anchorPoint;
     V3t _size;
     
     NKNode *_parent;
-    NSMutableArray *intChildren;
+    NSArray *_children;
     NSMutableSet *touches;
-    // of internals
 
-    NKByteColor *_color;
-    
+
+    NKByteColor *_color;    
     NodeAnimationHandler *animationHandler;
     
     F1t w;
@@ -107,19 +106,15 @@ typedef void (^CompletionBlock)(void);
 
 #pragma mark - NODE TREE
 
-
 @property (nonatomic, strong) NSArray *children;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, strong) NKByteColor *uidColor;
 @property (nonatomic) V3t positionRef;
 @property (nonatomic) V3t scalarVelocity;
-
+@property (nonatomic) M16t modelViewCache;
 
 #pragma mark - POSITION PROPERTIES
 
-@property (nonatomic) P2t anchorPoint;
-@property (nonatomic) V3t anchorPoint3d;
-@property (nonatomic) F1t zRotation;
 @property (nonatomic) V3t upVector;
 
 #pragma mark - STATE + INTERACTION PROPERTIES
@@ -188,7 +183,10 @@ typedef void (^CompletionBlock)(void);
 
 -(bool)containsPoint:(P2t)location;
 
-- (void)setZPosition:(int)zPosition;
+-(void)setXPosition:(float)position;
+-(void)setYPosition:(float)position;
+-(void)setZPosition:(float)position;
+
 -(V3t)position;
 - (void)setPosition:(V3t)position;
 -(void)setPosition2d:(V2t)position;
@@ -261,6 +259,11 @@ typedef void (^CompletionBlock)(void);
 
 -(R4t)getDrawFrame;
 - (R4t)calculateAccumulatedFrame;
+
+-(void)setAnchorPoint:(V3t)anchorPoint;
+-(void)setAnchorPoint2d:(V2t)anchorPoint;
+-(V3t)anchorPoint;
+-(V2t)anchorPoint2d;
 
 #pragma mark - ORIENTATION METHODS
 

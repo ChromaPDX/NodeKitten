@@ -8,11 +8,150 @@
 
 #import "ExampleScene.h"
 
-#define numScenes 7
+#define numScenes 8
 
 #define TEST_BATCH_DRAW
 
 @implementation ExampleScene
+
+-(void)updateWithTimeSinceLast:(F1t)dt {
+    [super updateWithTimeSinceLast:dt];
+    
+    if (acceleration > 0) {
+        [[[self childNodeWithName:@"FL"] body] applyTorqueImpulse:V3Make(-2,0,0)];
+        [[[self childNodeWithName:@"FR"] body] applyTorqueImpulse:V3Make(-2,0,0)];
+    }
+    else if (acceleration < 0) {
+        [[[self childNodeWithName:@"FL"] body] applyCentralImpulse:V3MultiplyM16([[self childNodeWithName:@"FLS"] globalTransform], V3Make(2., 0, 0))];
+        [[[self childNodeWithName:@"FR"] body] applyTorqueImpulse:V3MultiplyM16([[self childNodeWithName:@"FRS"] globalTransform], V3Make(2., 0, 0))];
+    }
+    if (steering < 0) { // left
+        [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,.1,0)];
+        [[[self childNodeWithName:@"FRS"] body] applyTorqueImpulse:V3Make(0,.1,0)];
+    }
+    else if (steering > 0){
+        [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,-.1,0)];
+        [[[self childNodeWithName:@"FRS"] body] applyTorqueImpulse:V3Make(0,-.1,0)];
+    }
+    else {
+        
+//        V3t steerForward = [[self childNodeWithName:@"FLS"] globalTransform].column3.xyz;
+//        V3t vehicleForward = [[self childNodeWithName:@"BODY"] globalTransform].column3.xyz;
+//        
+//        F1t steeringAngle = V3DotProduct(steerForward, vehicleForward);
+//        
+//        if (steeringAngle > .9) {
+//            [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,-.1,0)];
+//        }
+//        else if (steeringAngle < .9) {
+//            [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,.1,0)];
+//        }
+    }
+    //    NKLogV3(@"cam pos", self.camera.globalPosition);
+    //    NKLogV3(@"cam target", self.camera.target.globalPosition);
+    //NKLogM16(@"view matrix", self.camera.viewMatrix);
+    
+}
+-(void)keyDown:(NSUInteger)key {
+    
+    NSLog(@"key down %lu", (unsigned long)key);
+    
+    if (key == 126) { // UP
+        acceleration = 1;
+    }
+    else if (key == 125) { // DOWN
+        acceleration = -1;
+    }
+    else if (key == 123) { // LEFT
+        steering = -1;
+    }
+    else if (key == 124) { // RIGHT
+        steering = 1;
+    }
+}
+
+-(void)keyUp:(NSUInteger)key {
+    
+    NSLog(@"key up %lu", (unsigned long)key);
+    
+    if (key == 126) { // UP
+        if (acceleration == 1)
+            acceleration = 0;
+    }
+    else if (key == 125) { // DOWN
+        if (acceleration == -1)
+            acceleration = 0;
+    }
+    else if (key == 123) { // LEFT
+        if (steering == -1)
+            steering = 0;
+    }
+    else if (key == 124) { // RIGHT
+        if (steering == 1)
+            steering = 0;
+    }
+    
+}
+-(void)handleEvent:(NKEvent *)event {
+    [super handleEvent:event];
+    
+    if (NKEventPhaseDoubleTap == event.phase) {
+        [self unload];
+        self.nkView.scene = [[ExampleScene alloc]initWithSize:self.size2d sceneChoice:0];
+    }
+}
+
+-(void)addBallToNode:(NKNode*)n {
+    NKNode *s = [[NKNode alloc]initWithSize:V3MakeF(1.5)];
+    [s setPosition:V3Make(0, 2, 25)];
+    s.color = NKWHITE;
+    
+    [n addChild:s];
+    
+    s.body = [[NKBulletBody alloc] initWithType:NKBulletShapeSphere Size:s.size transform:s.localTransform mass:1.];
+    
+    [s.body setCollisionGroup:NKCollisionFilterCharacter];
+    [s.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls];
+    
+    [[NKBulletWorld sharedInstance] addNode:s];
+    
+    s.userInteractionEnabled = true;
+    s.eventBlock = newEventBlock{
+        
+        [s.body forceAwake];
+        
+        // NSLog(@"boing!");
+        if (NKEventPhaseBegin == event.phase) {
+            [s.body setLinearVelocity:V3MakeF(0)];
+            [s.body setAngularVelocity:V3MakeF(0)];
+            s.positionRef = V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y));
+        }
+        else if (NKEventPhaseMove == event.phase){
+            if (!V3Equal(V3MakeF(0), s.positionRef)) {
+                V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y)), s.positionRef);
+                [s.body setLinearVelocity:V3Multiply(delta, V3MakeF(.25))];
+            }
+        }
+        
+        else if (NKEventPhaseEnd == event.phase){
+            if (!V3Equal(V3MakeF(0), s.positionRef)) {
+                V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y)), s.positionRef);
+                [s.body applyCentralImpulse:V3Negate(V3Multiply(delta, V3MakeF(50.)))];
+                s.positionRef = V3MakeF(0.);
+                [s runAction:[NKAction delayFor:.5] completion:^{
+                    [s runAction:[NKAction fadeAlphaTo:0 duration:1.] completion:^{
+                        [s removeFromParent];
+                        [self addBallToNode:n];
+                    }];
+                }];
+                
+            }
+            
+            
+        }
+    };
+    
+}
 
 -(instancetype)initWithSize:(S2t)size sceneChoice:(int)sceneChoice {
     
@@ -39,7 +178,7 @@
 
             for (int i = 0; i < numScenes; i++) {
                 
-                NKScrollNode *sc = [[NKScrollNode alloc] initWithParent:table autoSizePct:.15];
+                NKScrollNode *sc = [[NKScrollNode alloc] initWithParent:table autoSizePct:1./numScenes];
                 [table addChild:sc];
                 
                 if (i % 2 == 0){
@@ -71,13 +210,14 @@
                     case 6:
                         sc.name =  [NSString stringWithFormat:@"%d - VIDEO", i];
                         break;
+                    case 7:
+                        sc.name =  [NSString stringWithFormat:@"%d - MIDI", i];
+                        break;
                         
                     default:
                         sc.name =  [NSString stringWithFormat:@"%d", i];
-
                         break;
                 }
-                //sc.name =
                 
                 sc.eventBlock = newEventBlock{
                     if (NKEventPhaseEnd == event.phase) {
@@ -99,7 +239,8 @@
         
         else if (sceneChoice == 1) {
             
-            NKTexture * tex = [NKTexture textureWithImageNamed:@"earthmap.png"];
+            
+            NKTexture * tex = [NKTexture textureWithImageNamed:@"h-alpha-a.jpg"];
             //NKTexture*tex;
             
             V3t sceneCoords = V3Make(0,0,-30);
@@ -125,15 +266,15 @@
             p.isLocal = true;
             p.isSpot = false;
             
-            p.ambient = V3Make(.2,.2,.4);
-            p.color = V3Make(1.,1.,1.);
+            p.ambient = V3Make(.4,.4,.4);
+            p.color = V3Make(2.,2.,2.);
             p.coneDirection = V3Make(0, 0, -1);
             p.halfVector = V3MakeF(0);
             
             p.spotCosCutoff = 10.;
             p.spotExponent = 2;
             p.constantAttenuation = 1.;
-            p.linearAttenuation = .1;
+            p.linearAttenuation = .05;
             p.quadraticAttenuation = 0.;
             
             _omni = [[NKLightNode alloc] initWithProperties:p];
@@ -186,6 +327,7 @@
                     s = [[NKNode alloc] initWithSize:V3MakeF((arc4random() % 100 + 1)*.01)];
                     s.color = NKWHITE;
                     [emitter addChild:s];
+                    [s setTransparency:.8];
 #else
                     s = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveLODSphere texture:tex color:NKCOLOR_RANDOM size:V3MakeF((arc4random() % 100 + 1)*.01)];
                     [self addChild:s];
@@ -198,6 +340,7 @@
                     s = [[NKNode alloc] initWithSize:V3MakeF((arc4random() % 40 + 1)*.01)];
                     s.color = NKWHITE;
                     [emitter addChild:s];
+                     [s setTransparency:.8];
 #else
                     s = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveLODSphere texture:tex color:NKWHITE size:V3MakeF((arc4random() % 40 + 1)*.01)];
                     [self addChild:s];
@@ -555,6 +698,8 @@
                                           
                 [self addChild:node];
                 
+                node.drawBoundingBox = true;
+                
                 if (i < 4){
                     node.body = [[NKBulletBody alloc]initWithType:NKBulletShapeXCylinder Size:node.size transform:node.globalTransform mass:5.];
                     [node.body setCollisionGroup:NKCollisionFilterCharacter];
@@ -570,7 +715,12 @@
                     [node.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls];
                     [[NKBulletWorld sharedInstance] addNode:node];
                     
-                    [self.camera setParent:node];
+                    //[self.camera setParent:node];
+                    
+                    [self.camera runAction:[NKAction enterOrbitForNode:node atLongitude:arc4random() % 360 latitude:0 radius:1. duration:.5 offset:V3Make(0, 2, 3)] completion:^{
+                        [self.camera  repeatAction:[NKAction maintainOrbitForNode:node longitude:28 latitude:2 radius:0 duration:1. offset:V3Make(0, 2, 3)]];
+                    }];
+                    
                     [self.camera setTarget:node];
                     
                     _omni = [[NKLightNode alloc] initWithDefaultProperties];
@@ -617,17 +767,11 @@
                       
                     
                     }
-                    for (int p = 4; p < 6; p++){
-                        NKNode *wheel = scene.meshes[p];
-                        //[wheel setParent:node];
-                        //[wheel runAction:[NKAction move3dBy:V3Make(0,500,0) duration:10.]];
-                       // [self.camera setTarget:wheel];
-                    }
                 }
 
             }
             
-            //[ground runAction:[NKAction rotateXByAngle:-30 duration:3.]];
+            [ground runAction:[NKAction rotateXByAngle:-30 duration:3.]];
             //[self.camera runAction:[NKAction move3dByX:0 Y:100 Z:-100 duration:10.]];
             
         }
@@ -684,149 +828,70 @@
             [self addChild:videoNode3];
         }
         
+#pragma mark - 7 - MIDI
+        
+        else if (sceneChoice == 7) { // MIDI
+            
+            
+            self.camera.position = V3Make(0, 0, 4);
+            
+            _omni = [[NKLightNode alloc] initWithDefaultProperties];
+            
+            [self addChild:_omni];
+            
+            [_omni runAction:[NKAction moveTo:V3MakeF(1) duration:2.] completion:^{
+                [_omni runAction:[NKAction delayFor:.4] completion:^{
+                    [_omni runAction:[NKAction enterOrbitAtLongitude:0 latitude:0 radius:2 offset:(V3Make(0, 0, 3)) duration:1.] completion:^{
+                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:11 radius:.0 offset:(V3Make(0, 0, 3)) duration:.3]];
+                    }];
+                }];
+            }];
+
+            
+            NKBatchNode* emitter = [[NKBatchNode alloc]initWithPrimitive:NKPrimitiveRect texture:[NKTexture textureWithImageNamed:@"spark.png"] color:NKWHITE size:V3MakeF(.1)];
+            
+            [self addChild:emitter];
+            
+            emitter.cullFace = NKCullFaceNone;
+            emitter.blendMode = NKBlendModeAdd;
+            
+            for (int i = 0; i < 2000; i++) {
+                NKNode *s = [[NKNode alloc] initWithSize:V3MakeF((arc4random() % 20 + .01)*.01)];
+                s.color = NKWHITE;
+                [emitter addChild:s];
+                [s runAction:[NKAction enterOrbitAtLongitude:arc4random() % 360 latitude:arc4random() % 360 radius:(arc4random() % 10)*.1+1  duration:4.] completion:^{
+                    [s repeatAction:[NKAction maintainOrbitDeltaLongitude:50 latitude:20. radius:0.0 duration:(arc4random() % 20+4) * .1]];
+                }];
+            }
+            
+            self.midiReceivedBlock = newMidiReceivedBlock {
+                
+                if (command.commandType == MIKMIDICommandTypeNoteOn){
+                    
+                    //NSLog(@"add node");
+                    
+                    NKNode *s = [[NKNode alloc] initWithSize:V3MakeF((arc4random() % 100 + 1)*.01)];
+                    s.color = NKWHITE;
+                    [emitter addChild:s];
+                    
+                    [s runAction:[NKAction enterOrbitAtLongitude:arc4random() % 360 latitude:arc4random() % 360 radius:(arc4random() % 10)*.1  duration:4.] completion:^{
+                        [s repeatAction:[NKAction maintainOrbitDeltaLongitude:50 latitude:20. radius:0.0 duration:(arc4random() % 20+4) * .2]];
+                    }];
+                    
+                    
+                }
+            };
+
+            
+        }
+        
+
+        
     }
     
 
     return self;
 }
 
--(void)updateWithTimeSinceLast:(F1t)dt {
-    [super updateWithTimeSinceLast:dt];
-    
-    if (acceleration > 0) {
-        [[[self childNodeWithName:@"FL"] body] applyTorqueImpulse:V3Make(-2,0,0)];
-        [[[self childNodeWithName:@"FR"] body] applyTorqueImpulse:V3Make(-2,0,0)];
-    }
-    else if (acceleration < 0) {
-        [[[self childNodeWithName:@"FL"] body] applyCentralImpulse:V3MultiplyM16([[self childNodeWithName:@"FLS"] globalTransform], V3Make(2., 0, 0))];
-        [[[self childNodeWithName:@"FR"] body] applyTorqueImpulse:V3MultiplyM16([[self childNodeWithName:@"FRS"] globalTransform], V3Make(2., 0, 0))];
-    }
-    if (steering < 0) { // left
-        [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,.1,0)];
-        [[[self childNodeWithName:@"FRS"] body] applyTorqueImpulse:V3Make(0,.1,0)];
-    }
-    else if (steering > 0){
-        [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,-.1,0)];
-        [[[self childNodeWithName:@"FRS"] body] applyTorqueImpulse:V3Make(0,-.1,0)];
-    }
-    else {
-        
-        V3t steerForward = [[self childNodeWithName:@"FLS"] globalTransform].column3.xyz;
-        V3t vehicleForward = [[self childNodeWithName:@"BODY"] globalTransform].column3.xyz;
-        
-        F1t steeringAngle = V3DotProduct(steerForward, vehicleForward);
-        
-        if (steeringAngle > .9) {
-            [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,-.1,0)];
-        }
-        else if (steeringAngle < .9) {
-            [[[self childNodeWithName:@"FLS"] body] applyTorqueImpulse:V3Make(0,.1,0)];
-        }
-    }
-//    NKLogV3(@"cam pos", self.camera.globalPosition);
-//    NKLogV3(@"cam target", self.camera.target.globalPosition);
-    //NKLogM16(@"view matrix", self.camera.viewMatrix);
-    
-}
--(void)keyDown:(NSUInteger)key {
-    
-    NSLog(@"key down %lu", (unsigned long)key);
-    
-    if (key == 126) { // UP
-        acceleration = 1;
-    }
-    else if (key == 125) { // DOWN
-        acceleration = -1;
-    }
-    else if (key == 123) { // LEFT
-        steering = -1;
-    }
-    else if (key == 124) { // RIGHT
-        steering = 1;
-    }
-}
-
--(void)keyUp:(NSUInteger)key {
-    
-    NSLog(@"key up %lu", (unsigned long)key);
-    
-    if (key == 126) { // UP
-        if (acceleration == 1)
-        acceleration = 0;
-    }
-    else if (key == 125) { // DOWN
-        if (acceleration == -1)
-        acceleration = 0;
-    }
-    else if (key == 123) { // LEFT
-        if (steering == -1)
-              steering = 0;
-    }
-    else if (key == 124) { // RIGHT
-        if (steering == 1)
-            steering = 0;
-    }
-
-}
--(void)handleEvent:(NKEvent *)event {
-    [super handleEvent:event];
-
-    if (NKEventPhaseDoubleTap == event.phase) {
-        [self unload];
-        self.nkView.scene = [[ExampleScene alloc]initWithSize:self.size2d sceneChoice:0];
-    }
-}
-
--(void)addBallToNode:(NKNode*)n {
-    NKNode *s = [[NKNode alloc]initWithSize:V3MakeF(1.5)];
-    [s setPosition:V3Make(0, 2, 25)];
-    s.color = NKWHITE;
-    
-    [n addChild:s];
-    
-    s.body = [[NKBulletBody alloc] initWithType:NKBulletShapeSphere Size:s.size transform:s.localTransform mass:1.];
-    
-    [s.body setCollisionGroup:NKCollisionFilterCharacter];
-    [s.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls];
-    
-    [[NKBulletWorld sharedInstance] addNode:s];
-    
-    s.userInteractionEnabled = true;
-    s.eventBlock = newEventBlock{
-        
-        [s.body forceAwake];
-        
-        // NSLog(@"boing!");
-        if (NKEventPhaseBegin == event.phase) {
-            [s.body setLinearVelocity:V3MakeF(0)];
-            [s.body setAngularVelocity:V3MakeF(0)];
-            s.positionRef = V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y));
-        }
-        else if (NKEventPhaseMove == event.phase){
-            if (!V3Equal(V3MakeF(0), s.positionRef)) {
-                V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y)), s.positionRef);
-                [s.body setLinearVelocity:V3Multiply(delta, V3MakeF(.25))];
-            }
-        }
-        
-        else if (NKEventPhaseEnd == event.phase){
-            if (!V3Equal(V3MakeF(0), s.positionRef)) {
-                V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y)), s.positionRef);
-                [s.body applyCentralImpulse:V3Negate(V3Multiply(delta, V3MakeF(50.)))];
-                s.positionRef = V3MakeF(0.);
-                [s runAction:[NKAction delayFor:.5] completion:^{
-                    [s runAction:[NKAction fadeAlphaTo:0 duration:1.] completion:^{
-                        [s removeFromParent];
-                        [self addBallToNode:n];
-                    }];
-                }];
-   
-            }
-            
-            
-        }
-    };
-    
-}
 
 @end

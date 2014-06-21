@@ -499,7 +499,24 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
 }
 
 +(NKAction *)maintainOrbitDeltaLongitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius duration:(F1t)sec {
-    return [NKAction maintainOrbitDeltaLongitude:deltaLongitude latitude:deltaLatitude radius:deltaRadius offset:V3MakeF(0) duration:sec];
+    NKAction * newAction = [[NKAction alloc] initWithDuration:sec];
+    
+    newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
+        
+        if (action.reset) {
+            action.reset = false;
+            
+            action.startPos = V3Make(node.longitude, node.latitude, node.radius);
+            action.endPos = V3Add(action.startPos, V3Make(deltaLongitude, deltaLatitude, deltaRadius));
+            
+            [node setOrbit:action.endPos];
+        }
+        
+        [node setOrbit:getTweenPoint(action.startPos, action.endPos, completion)];
+        [node setPosition:[node currentOrbit]];
+    };
+    
+    return newAction;
 }
 
 + (NKAction *)maintainOrbitDeltaLongitude:(float)deltaLongitude latitude:(float)deltaLatitude radius:(float)deltaRadius offset:(V3t)offset duration:(F1t)sec {

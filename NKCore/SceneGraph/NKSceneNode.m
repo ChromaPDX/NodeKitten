@@ -16,6 +16,10 @@
     
     if (self){
         
+#if NK_USE_MIDI
+        [[NKMidiManager sharedInstance] setDelegate:self];
+#endif
+        
 #if NK_GL_DEBUG
         // Obtain iOS version
 		int OSVersion_ = 0;
@@ -69,12 +73,14 @@
         [[NSRunLoop mainRunLoop] addTimer:metricsTimer forMode:NSDefaultRunLoopMode];
 #endif
         NSLog(@"init scene with size, %f %f", size.width, size.height);
+        
+        
     }
     return self;
 }
 
 -(void)logMetricsPerSecond {
-    NSLog(@"fps %d : bBodies %lu : lights %lu", frames, (unsigned long)[[NKBulletWorld sharedInstance] nodes].count, (unsigned long)_lights.count);
+    NSLog(@"fps %d : nodes: %lu : bBodies %lu : lights %lu", frames, self.allChildren.count, (unsigned long)[[NKBulletWorld sharedInstance] nodes].count, (unsigned long)_lights.count);
     frames = 0;
 }
 
@@ -85,8 +91,6 @@
 #if NK_LOG_METRICS
     frames++;
 #endif
-
-    [_camera setDirty:true];
     
     [NKSoundManager updateWithTimeSinceLast:dt];
     
@@ -98,6 +102,8 @@
     
     [super updateWithTimeSinceLast:dt];
     
+    [_camera setDirty:true];
+//        
     [_camera updateCameraWithTimeSinceLast:dt];
         
     }
@@ -109,7 +115,7 @@
         _dirty = dirty;
         
         if (dirty) {
-            for (NKNode *n in intChildren) {
+            for (NKNode *n in _children) {
                 if ([n isKindOfClass:[NKLightNode class]]) {
                 }
                 [n setDirty:dirty];
@@ -234,19 +240,21 @@
 // SCENE DOES NOT TRANSFORM CHILDREN
 
 - (void)addChild:(NKNode *)child {
-    
-    if (!intChildren) {
-        intChildren = [[NSMutableArray alloc]init];
+
+    NSMutableArray *temp;
+    if (!_children) {
+        temp = [[NSMutableArray alloc]initWithCapacity:1];
     }
-    
-    NSMutableArray *temp = [intChildren mutableCopy];
+    else {
+        temp = [_children mutableCopy];
+    }
     
     if (![temp containsObject:child]) {
         [temp addObject:child];
         [child setScene:self];
     }
     
-    intChildren = temp;
+    _children = temp;
     
 }
 
@@ -351,11 +359,11 @@
 }
 
 -(void)pushMultiplyMatrix:(M16t)matrix {
-    [_stack pushMultiplyMatrix:matrix];
+    [_stack multiplyMatrix:matrix];
 }
 
 -(void)pushScale:(V3t)scale {
-    [_stack pushScale:scale];
+    [_stack appendMatrixScale:scale];
 }
 
 -(void)popMatrix {
@@ -464,182 +472,16 @@
     [_hitDetectBuffer unload];
 }
 
-
-@end
-
-@implementation NKMatrixStack
-
--(instancetype)init {
-    self = [super init];
-    if (self) {
-        matrixStack = malloc(sizeof(M16t)*NK_BATCH_SIZE);
-        matrixBlockSize = NK_BATCH_SIZE;
-        matrixCount = 0;
-    }
-    return self;
-}
-
--(M16t*)data {
-    return matrixStack;
-}
-
--(void)pushMatrix{
-    if (matrixBlockSize <= matrixCount) {
-        NSLog(@"Expanding MATRIX STACK allocation size");
-        M16t* copyBlock = malloc(sizeof(M16t) * (matrixCount*2));
-        memcpy(copyBlock, matrixStack, sizeof(M16t) * (matrixCount));
-        free(matrixStack);
-        matrixStack = copyBlock;
-        matrixBlockSize = matrixCount * 2;
-    }
-     matrixCount++;
-}
-
--(void)pushMultiplyMatrix:(M16t)matrix {
-    if (matrixCount > 0) {
-         *(matrixStack+matrixCount) = M16Multiply(*(matrixStack+matrixCount-1), matrix);
+#if NK_USE_MIDI
+-(void)handleMidiCommand:(MIKMIDICommand *)command {
+    if (_midiReceivedBlock) {
+        _midiReceivedBlock(command);
     }
     else {
-        *(matrixStack+matrixCount) = matrix;
-    }
-    [self pushMatrix];
-}
-
--(void)pushMatrix:(M16t)matrix {
-    *(matrixStack+matrixCount) = matrix;
-    [self pushMatrix];
-}
-
--(void)pushScale:(V3t)nscale {
-    //_currentMatrix = M16ScaleWithV3(_currentMatrix, nscale);
-    if (matrixCount > 0) {
-    *(matrixStack+matrixCount) = M16ScaleWithV3(*(matrixStack+matrixCount-1), nscale);
-    }
-    //memcpy(matrixStack+matrixCount, _currentMatrix.m, sizeof(M16t));
-    [self pushMatrix];
-}
-
--(M16t)currentMatrix {
-    return *(matrixStack+matrixCount-1);
-}
-
--(void)popMatrix {
-    if (matrixCount > 0) {
-        matrixCount--;
-        //_currentMatrix = *(matrixStack+matrixCount-1);
-        //memcpy(_currentMatrix.m, matrixStack+matrixCount, sizeof(M16t));
-        //NSLog(@"pop M %lu", matrixCount);
-    }
-    // else _currentMatrix = M16IdentityMake();
-    else {
-        NSLog(@"MATRIX STACK UNDERFLOW");
-    }
-    
-    //[_activeShader setMatrix4:modelMatrix forUniform:UNIFORM_MODELVIEWPROJECTION_MATRIX];
-    
-    //[_activeShader setMatrix4:M16Multiply(_camera.projectionMatrix,modelMatrix) forUniform:UNIFORM_MODELVIEWPROJECTION_MATRIX];
-}
-
--(void)reset {
-    matrixCount = 0;
-}
--(void)dealloc {
-    if (matrixStack) {
-        free(matrixStack);
+        NSLog(@"received midi, provide scene a MidiReceivedBlock, or instead, implement: -(void)handleMidiCommand:(MIKMIDICommand *)command in subclass");
     }
 }
+#endif
 
-@end
-
-@implementation NKM9Stack
-
--(instancetype)init {
-    self = [super init];
-    if (self) {
-        matrixStack = malloc(sizeof(M9t)*NK_BATCH_SIZE);
-        matrixBlockSize = NK_BATCH_SIZE;
-        matrixCount = 0;
-    }
-    
-    return self;
-}
-
--(M9t*)data {
-    return matrixStack;
-}
-
--(void)pushMatrix{
-    matrixCount++;
-    
-    if (matrixBlockSize <= matrixCount) {
-        NSLog(@"Expanding MATRIX STACK allocation size");
-        M9t* copyBlock = malloc(sizeof(M9t) * (matrixCount*2));
-        memcpy(copyBlock, matrixStack, sizeof(M9t) * (matrixCount));
-        free(matrixStack);
-        matrixStack = copyBlock;
-        matrixBlockSize = matrixCount * 2;
-    }
-}
-
--(void)pushMatrix:(M9t)matrix {
-    memcpy(matrixStack+matrixCount, matrix.m, sizeof(M9t));
-     [self pushMatrix];
-}
-
--(void)reset {
-    matrixCount = 0;
-}
-
--(void)dealloc {
-    if (matrixStack) {
-        free(matrixStack);
-    }
-}
-
-@end
-
-@implementation NKVector4Stack
-
--(instancetype)init {
-    self = [super init];
-    if (self) {
-        vectorStack = malloc(sizeof(V4t)*NK_BATCH_SIZE);
-        vectorBlockSize = NK_BATCH_SIZE;
-        vectorCount = 0;
-    }
-    
-    return self;
-}
-
--(V4t*)data {
-    return vectorStack;
-}
-
--(void)pushVector{
-    if (vectorBlockSize <= vectorCount) {
-        NSLog(@"Expanding MATRIX STACK allocation size");
-        V4t* copyBlock = malloc(sizeof(V4t) * (vectorCount*2));
-        memcpy(copyBlock, vectorStack, sizeof(V4t) * (vectorCount));
-        free(vectorStack);
-        vectorStack = copyBlock;
-        vectorBlockSize = vectorCount * 2;
-    }
-    vectorCount++;
-}
-
--(void)pushVector:(V4t)vector {
-    memcpy(vectorStack+vectorCount, vector.v, sizeof(V4t));
-     [self pushVector];
-}
-
--(void)reset {
-    vectorCount = 0;
-}
-
--(void)dealloc {
-    if (vectorStack) {
-        free(vectorStack);
-    }
-}
 
 @end

@@ -34,6 +34,7 @@
 // MODULES
 
 #define NK_USE_ASSIMP 0
+#define NK_USE_MIDI 0
 
 // SYSTEM MACROS
 

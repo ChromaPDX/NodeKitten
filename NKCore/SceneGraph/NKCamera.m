@@ -72,10 +72,10 @@
     }
     return viewMatrix;
 }
-
--(M16t)globalTransform {
-    return _localTransform;
-}
+//
+//-(M16t)globalTransform {
+//    return _localTransform;
+//}
 
 -(M16t)projectionMatrix {
     if (pDirty) {

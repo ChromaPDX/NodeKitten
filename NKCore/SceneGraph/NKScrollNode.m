@@ -141,9 +141,9 @@
         
         contentSize = P2Make(0,0);
         
-        for(int i = 0; i < intChildren.count; i++)
+        for(int i = 0; i < _children.count; i++)
         {
-            NKScrollNode *child = intChildren[i];
+            NKScrollNode *child = _children[i];
             
             //            if (_scrollDirectionVertical) {
             //                int temp = child.size.height;
@@ -237,9 +237,9 @@
         if (_scrollDirectionVertical){
             
             int tempSize = 0;
-            for(int i = 0; i < [intChildren indexOfObject:child]; i++)
+            for(int i = 0; i < [_children indexOfObject:child]; i++)
             {
-                int temp = [(NKNode*)intChildren[i] size].height;
+                int temp = [(NKNode*)_children[i] size].height;
                 tempSize += temp + _padding.y;
             }
             
@@ -265,9 +265,9 @@
         else {
             
             int tempSize = 0;
-            for(int i = 0; i < [intChildren indexOfObject:child]; i++)
+            for(int i = 0; i < [_children indexOfObject:child]; i++)
             {
-                int temp = [(NKNode*)intChildren[i] size].width;
+                int temp = [(NKNode*)_children[i] size].width;
                 tempSize += temp + _padding.x;
             }
             
@@ -318,10 +318,10 @@
 
 -(P2t)scrollPositionForChild:(int)child {
     if (_scrollDirectionVertical) {
-        return P2Make(0,-([(NKNode*)intChildren[child] size].height + _padding.y) * (child) + h*contentOffset.y);
+        return P2Make(0,-([(NKNode*)_children[child] size].height + _padding.y) * (child) + h*contentOffset.y);
     }
     else {
-        return P2Make(-([(NKNode*)intChildren[child] size].width + _padding.x) * (child) + w*contentOffset.x, 0);
+        return P2Make(-([(NKNode*)_children[child] size].width + _padding.x) * (child) + w*contentOffset.x, 0);
     }
 }
 
@@ -381,8 +381,8 @@
     
     if (_scrollingEnabled){
         if (_fdirty || cdirty) {
-            for (int i = 0; i < intChildren.count; i++){
-                [self setChildFrame:intChildren[i]];
+            for (int i = 0; i < _children.count; i++){
+                [self setChildFrame:_children[i]];
             }
             
             _fdirty = false;
@@ -535,7 +535,7 @@
         
         else if (_scrollPhase == ScrollPhaseBeginFail) {
             
-//            for (NKNode *child in intChildren) {
+//            for (NKNode *child in _children) {
 //                if ([child touchDown:location id:touchId ] > 0) {
 //                    hit = NKTouchContainsFirstResponder;
 //                };
@@ -546,7 +546,7 @@
         
         else if (_scrollPhase == ScrollPhaseFailed) {
             
-//            for (NKNode *child in intChildren) {
+//            for (NKNode *child in _children) {
 //                if ([child touchMoved:location id:touchId ] > 0) {
 //                    hit = NKTouchContainsFirstResponder;
 //                };
@@ -555,7 +555,7 @@
     }
     else if (NKEventPhaseEnd == event.phase){
         if (_scrollPhase == ScrollPhaseFailed || _scrollPhase == ScrollPhaseBegan || _scrollPhase == ScrollPhaseNil) {
-//            for (NKNode *child in intChildren) {
+//            for (NKNode *child in _children) {
 //                if ([child touchUp:location id:touchId ] > 0){
 //                    hit = NKTouchContainsFirstResponder;
 //                    

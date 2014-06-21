@@ -23,9 +23,9 @@
             
             
             int tempSize = 0;
-            for(int i = 0; i < [intChildren indexOfObject:child]; i++)
+            for(int i = 0; i < [_children indexOfObject:child]; i++)
             {
-                int temp = [(NKNode*)intChildren[i] size].height;
+                int temp = [(NKNode*)_children[i] size].height;
                 tempSize += temp + self.padding.y;
             }
             
@@ -55,9 +55,9 @@
         else {
             
             int tempSize = 0;
-            for(int i = 0; i < [intChildren indexOfObject:child]; i++)
+            for(int i = 0; i < [_children indexOfObject:child]; i++)
             {
-                int temp = [(NKNode*)intChildren[i] size].width;
+                int temp = [(NKNode*)_children[i] size].width;
                 tempSize += temp + self.padding.x;
             }
             
@@ -108,13 +108,13 @@
     
     else {
         
-        for (NKNode* n in intChildren) {
+        for (NKNode* n in _children) {
             
             if ([n containsPoint:P2Make(0,0)]) {
                 
                 self.selectedChild = n;
                 
-                int pos = [intChildren indexOfObject:n];
+                int pos = [_children indexOfObject:n];
                 
                 if (self.scrollDirectionVertical) {
                     
@@ -123,10 +123,10 @@
                 else {
                     if (pos > 0 && n.position.x > n.size.width * .1 && scrollVel > 0) {
                         NSLog(@"going left, %f",scrollVel);
-                        self.selectedChild = intChildren[pos-1];
+                        self.selectedChild = _children[pos-1];
                     }
-                    else if (pos < (intChildren.count - 1 ) && n.position.x < -n.size.width * .1 && scrollVel < 0) {
-                        self.selectedChild = intChildren[pos+1];
+                    else if (pos < (_children.count - 1 ) && n.position.x < -n.size.width * .1 && scrollVel < 0) {
+                        self.selectedChild = _children[pos+1];
                         NSLog(@"going right, %f",scrollVel);
                     }
                 }
@@ -134,10 +134,10 @@
             }
 //            else {
 //                if (self.scrollPosition.x < self.contentSize.width){
-//                    self.selectedChild = intChildren[0];
+//                    self.selectedChild = _children[0];
 //                }
 //                else if (self.scrollPosition.x > 0){
-//                    self.selectedChild = [intChildren lastObject];
+//                    self.selectedChild = [_children lastObject];
 //                }
 //            }
         }
@@ -162,10 +162,10 @@
         }
         else {
             if (realEdges.x > 0) {
-                self.selectedChild = intChildren[0];
+                self.selectedChild = _children[0];
             }
             else {
-                self.selectedChild = [intChildren lastObject];
+                self.selectedChild = [_children lastObject];
             }
         }
 

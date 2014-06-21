@@ -10,6 +10,8 @@
 #define NKNikeField_NKMath_h
 
 #import "NKVectorTypes.h"
+#import "NKMatrixStack.h"
+
 #import "perlin.h"
 
 #ifdef __cplusplus

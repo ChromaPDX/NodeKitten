@@ -427,61 +427,65 @@
 }
 
 +(instancetype)defaultCube {
-    GLfloat gCubeVertexData[216] =
+    GLfloat gCubeVertexData[288] =
     {
         // Data layout for each line below is:
         // positionX, positionY, positionZ,     normalX, normalY, normalZ,
-        1.f, -1.f, -1.f,        1.0f, 0.0f, 0.0f,
-        1.f, 1.f, -1.f,         1.0f, 0.0f, 0.0f,
-        1.f, -1.f, 1.f,         1.0f, 0.0f, 0.0f,
-        1.f, -1.f, 1.f,         1.0f, 0.0f, 0.0f,
-        1.f, 1.f, -1.f,         1.0f, 0.0f, 0.0f,
-        1.f, 1.f, 1.f,          1.0f, 0.0f, 0.0f,
+        1.f, -1.f, -1.f,        1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+        1.f, 1.f, -1.f,         1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+        1.f, -1.f, 1.f,         1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+        1.f, -1.f, 1.f,         1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+        1.f, 1.f, -1.f,         1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+        1.f, 1.f, 1.f,          1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
         
-        1.f, 1.f, -1.f,         0.0f, 1.0f, 0.0f,
-        -1.f, 1.f, -1.f,        0.0f, 1.0f, 0.0f,
-        1.f, 1.f, 1.f,          0.0f, 1.0f, 0.0f,
-        1.f, 1.f, 1.f,          0.0f, 1.0f, 0.0f,
-        -1.f, 1.f, -1.f,        0.0f, 1.0f, 0.0f,
-        -1.f, 1.f, 1.f,         0.0f, 1.0f, 0.0f,
+        1.f, 1.f, -1.f,         0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+        -1.f, 1.f, -1.f,        0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+        1.f, 1.f, 1.f,          0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+        1.f, 1.f, 1.f,          0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+        -1.f, 1.f, -1.f,        0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+        -1.f, 1.f, 1.f,         0.0f, 1.0f, 0.0f,   0.0f, 1.0f,
         
-        -1.f, 1.f, -1.f,        -1.0f, 0.0f, 0.0f,
-        -1.f, -1.f, -1.f,       -1.0f, 0.0f, 0.0f,
-        -1.f, 1.f, 1.f,         -1.0f, 0.0f, 0.0f,
-        -1.f, 1.f, 1.f,         -1.0f, 0.0f, 0.0f,
-        -1.f, -1.f, -1.f,       -1.0f, 0.0f, 0.0f,
-        -1.f, -1.f, 1.f,        -1.0f, 0.0f, 0.0f,
+        -1.f, 1.f, -1.f,        -1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+        -1.f, -1.f, -1.f,       -1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+        -1.f, 1.f, 1.f,         -1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+        -1.f, 1.f, 1.f,         -1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+        -1.f, -1.f, -1.f,       -1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+        -1.f, -1.f, 1.f,        -1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
         
-        -1.f, -1.f, -1.f,       0.0f, -1.0f, 0.0f,
-        1.f, -1.f, -1.f,        0.0f, -1.0f, 0.0f,
-        -1.f, -1.f, 1.f,        0.0f, -1.0f, 0.0f,
-        -1.f, -1.f, 1.f,        0.0f, -1.0f, 0.0f,
-        1.f, -1.f, -1.f,        0.0f, -1.0f, 0.0f,
-        1.f, -1.f, 1.f,         0.0f, -1.0f, 0.0f,
+        -1.f, -1.f, -1.f,       0.0f, -1.0f, 0.0f,  0.0f, 0.0f,
+        1.f, -1.f, -1.f,        0.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+        -1.f, -1.f, 1.f,        0.0f, -1.0f, 0.0f,  0.0f, 1.0f,
+        -1.f, -1.f, 1.f,        0.0f, -1.0f, 0.0f,  0.0f, 1.0f,
+        1.f, -1.f, -1.f,        0.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+        1.f, -1.f, 1.f,         0.0f, -1.0f, 0.0f,  1.0f, 1.0f,
         
-        1.f, 1.f, 1.f,          0.0f, 0.0f, 1.0f,
-        -1.f, 1.f, 1.f,         0.0f, 0.0f, 1.0f,
-        1.f, -1.f, 1.f,         0.0f, 0.0f, 1.0f,
-        1.f, -1.f, 1.f,         0.0f, 0.0f, 1.0f,
-        -1.f, 1.f, 1.f,         0.0f, 0.0f, 1.0f,
-        -1.f, -1.f, 1.f,        0.0f, 0.0f, 1.0f,
+        1.f, 1.f, 1.f,          0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+        -1.f, 1.f, 1.f,         0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+        1.f, -1.f, 1.f,         0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+        1.f, -1.f, 1.f,         0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+        -1.f, 1.f, 1.f,         0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+        -1.f, -1.f, 1.f,        0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
         
-        1.f, -1.f, -1.f,        0.0f, 0.0f, -1.0f,
-        -1.f, -1.f, -1.f,       0.0f, 0.0f, -1.0f,
-        1.f, 1.f, -1.f,         0.0f, 0.0f, -1.0f,
-        1.f, 1.f, -1.f,         0.0f, 0.0f, -1.0f,
-        -1.f, -1.f, -1.f,       0.0f, 0.0f, -1.0f,
-        -1.f, 1.f, -1.f,        0.0f, 0.0f, -1.0f
+        1.f, -1.f, -1.f,        0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
+        -1.f, -1.f, -1.f,       0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
+        1.f, 1.f, -1.f,         0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
+        1.f, 1.f, -1.f,         0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
+        -1.f, -1.f, -1.f,       0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
+        -1.f, 1.f, -1.f,        0.0f, 0.0f, -1.0f,  0.0f, 1.0f
     };
     
-    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(gCubeVertexData) numberOfElements:sizeof(gCubeVertexData) / 6 data:gCubeVertexData setup:newGeometrySetupBlock{
+    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(gCubeVertexData) numberOfElements:36 data:gCubeVertexData setup:newGeometrySetupBlock{
         glEnableVertexAttribArray(NKS_V4_POSITION);
         glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
-                              24, BUFFER_OFFSET(0));
+                              32, BUFFER_OFFSET(0));
         
         glEnableVertexAttribArray(NKS_V3_NORMAL);
         glVertexAttribPointer(NKS_V3_NORMAL, 3, GL_FLOAT, GL_FALSE,
-                              24, BUFFER_OFFSET(12));
+                              32, BUFFER_OFFSET(12));
+        
+        glEnableVertexAttribArray(NKS_V2_TEXCOORD);
+        glVertexAttribPointer(NKS_V2_TEXCOORD, 2, GL_FLOAT, GL_FALSE,
+                              32, BUFFER_OFFSET(sizeof(F1t)*6));
     }];
     
     

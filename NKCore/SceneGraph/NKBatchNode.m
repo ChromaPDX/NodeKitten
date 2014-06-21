@@ -91,42 +91,58 @@
     
     [_mvpStack reset];
     [_mvStack reset];
-    [_childColors reset];
     [_normalStack reset];
+    [_childColors reset];
+ 
+    for (int i = 0; i < _children.count; i++) {
+        NKNode *child = _children[i];
+        child.modelViewCache = M16Multiply(self.scene.camera.viewMatrix,M16ScaleWithV3(child.globalTransform, child.size));
+    }
     
+    _children = [[_children sortedArrayUsingComparator:^NSComparisonResult(NKNode * a, NKNode * b) {
+        return a.modelViewCache.m32 > b.modelViewCache.m32;
+    }] mutableCopy];
+    
+
+    for (int i = 0; i < _children.count; i++) {
+        NKNode *child = _children[i];
+        
+        M16t mvp = M16Multiply(self.scene.camera.projectionMatrix,child.modelViewCache);
+            [_mvpStack appendMatrix:mvp];
+        
+            if (useColor) {
+                [_childColors appendVector:child.glColor];
+            }
+    }
+    
+    if (self.scene.lights.count) {
+        for (int i = 0; i < _children.count; i++) {
+            NKNode *child = _children[i];
+            [_mvStack appendMatrix:child.modelViewCache];
+            [_normalStack appendMatrix:M16GetInverseNormalMatrix(child.modelViewCache)];
+        }
+    }
+    
+//    for (int i = 0; i < _children.count; i++) {
+//        NSLog(@"sorted children, %d ,%f", i, _mvStack.data[i].m32);
+//    }
+    
+    int startingSprite = 0;
     int spritesInBatch = 0;
     
-    for (int i = 0; i < intChildren.count; i++) {
+    for (int i = 0; i < _children.count; i++) {
         
-        NKNode *child = intChildren[i];
-        
-        M16t modelView = M16Multiply(self.scene.camera.viewMatrix,M16ScaleWithV3(child.globalTransform, child.size));
-        M16t mvp = M16Multiply(self.scene.camera.projectionMatrix,modelView);
-        
-        [_mvStack pushMatrix:modelView];
-        
-        [_normalStack pushMatrix:M16GetInverseNormalMatrix(modelView)];
-        [_mvpStack pushMatrix:mvp];
-        
-        if (useColor) {
-            [_childColors pushVector:child.glColor];
-        }
         spritesInBatch++;
         
-        if (spritesInBatch == NK_BATCH_SIZE || i == intChildren.count - 1) {
+        if (spritesInBatch == NK_BATCH_SIZE || i == _children.count - 1) {
+            [self drawGeometry:startingSprite spritesInBatch:spritesInBatch useColor:useColor];
             
-            [self drawGeometry:spritesInBatch useColor:useColor];
-            
-            [_mvpStack reset];
-            [_mvStack reset];
-            [_normalStack reset];
-            [_childColors reset];
+            startingSprite += spritesInBatch;
             spritesInBatch = 0;
-            
         }
         
     }
-    //NSLog(@"%d children, %d batches", intChildren.count, intChildren.count/NK_BATCH_SIZE);
+    //NSLog(@"%d children, %d batches", _children.count, _children.count/NK_BATCH_SIZE);
     
 }
 
@@ -143,27 +159,24 @@
     }
     
     [_mvpStack reset];
-    [_mvStack reset];
     [_childColors reset];
     int spritesInBatch = 0;
+    int startingSprite = 0;
     
-    for (int i = 0; i < intChildren.count; i++) {
-        NKNode *child = intChildren[i];
-        
-        [_mvpStack pushMatrix:M16Multiply(self.scene.camera.viewProjectionMatrix, M16ScaleWithV3(child.globalTransform, child.size))];
-        [_childColors pushVector:child.uidColor.C4Color];
+    for (int i = 0; i < _children.count; i++) {
+        NKNode *child = _children[i];
+        [_mvpStack appendMatrix:M16Multiply(self.scene.camera.viewProjectionMatrix, M16ScaleWithV3(child.globalTransform, child.size))];
+        [_childColors appendVector:child.uidColor.C4Color];
         
         spritesInBatch++;
         
-        if (spritesInBatch == NK_BATCH_SIZE || i == intChildren.count - 1) {
-            
-            [self drawGeometry:spritesInBatch useColor:true];
+        if (spritesInBatch == NK_BATCH_SIZE || i == _children.count - 1) {
+            [self drawGeometry:startingSprite spritesInBatch:spritesInBatch useColor:true];
             
             [_mvpStack reset];
-            [_mvStack reset];
             [_childColors reset];
-            spritesInBatch = 0;
             
+            spritesInBatch = 0;
         }
     }
     
@@ -172,17 +185,20 @@
 }
 
 
--(void)drawGeometry:(int)spritesInBatch useColor:(bool)useColor{
+-(void)drawGeometry:(int)start spritesInBatch:(int)spritesInBatch useColor:(bool)useColor{
     
-    [[self.scene.activeShader uniformNamed:NKS_M16_MV] bindM16Array:_mvStack.data count:spritesInBatch];
+    [[self.scene.activeShader uniformNamed:NKS_M16_MVP] bindM16Array:_mvpStack.data+start count:spritesInBatch];
     
-    [[self.scene.activeShader uniformNamed:NKS_M16_MVP] bindM16Array:_mvpStack.data count:spritesInBatch];
-    
-    [[self.scene.activeShader uniformNamed:NKS_M9_NORMAL] bindM9Array:_normalStack.data count:spritesInBatch];
-    
+    if (self.scene.lights.count) {
+        
+        [[self.scene.activeShader uniformNamed:NKS_M16_MV] bindM16Array:_mvStack.data+start count:spritesInBatch];
+        
+        [[self.scene.activeShader uniformNamed:NKS_M9_NORMAL] bindM9Array:_normalStack.data+start count:spritesInBatch];
+        
+    }
     
     if (useColor) {
-        [[self.scene.activeShader uniformNamed:NKS_V4_COLOR] bindV4Array:_childColors.data count:spritesInBatch];
+        [[self.scene.activeShader uniformNamed:NKS_V4_COLOR] bindV4Array:_childColors.data+start count:spritesInBatch];
     }
     
     if (_primitiveType == NKPrimitiveLODSphere) {

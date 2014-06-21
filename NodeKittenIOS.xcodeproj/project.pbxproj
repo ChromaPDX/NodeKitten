@@ -799,8 +799,6 @@
 		2970D88F194A6DAF00EEAC2B /* NKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D731194A6DAF00EEAC2B /* NKViewController.m */; };
 		2970D890194A6DAF00EEAC2B /* ExampleScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D732194A6DAF00EEAC2B /* ExampleScene.m */; };
 		2970D891194A6DAF00EEAC2B /* ExampleScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D732194A6DAF00EEAC2B /* ExampleScene.m */; };
-		2971B8D1194C0521001BE97F /* ball_Texture.png in Resources */ = {isa = PBXBuildFile; fileRef = 2971B857194C0521001BE97F /* ball_Texture.png */; };
-		2971B8D2194C0521001BE97F /* ball_Texture.png in Resources */ = {isa = PBXBuildFile; fileRef = 2971B857194C0521001BE97F /* ball_Texture.png */; };
 		2971B8D3194C0521001BE97F /* Bob.blend in Resources */ = {isa = PBXBuildFile; fileRef = 2971B859194C0521001BE97F /* Bob.blend */; };
 		2971B8D4194C0521001BE97F /* Bob.blend in Resources */ = {isa = PBXBuildFile; fileRef = 2971B859194C0521001BE97F /* Bob.blend */; };
 		2971B8D5194C0521001BE97F /* bob.source.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2971B85A194C0521001BE97F /* bob.source.txt */; };
@@ -843,8 +841,6 @@
 		2971B8FA194C0521001BE97F /* seymourplane.dae in Resources */ = {isa = PBXBuildFile; fileRef = 2971B870194C0521001BE97F /* seymourplane.dae */; };
 		2971B8FB194C0521001BE97F /* teapots.dae in Resources */ = {isa = PBXBuildFile; fileRef = 2971B871194C0521001BE97F /* teapots.dae */; };
 		2971B8FC194C0521001BE97F /* teapots.dae in Resources */ = {isa = PBXBuildFile; fileRef = 2971B871194C0521001BE97F /* teapots.dae */; };
-		2971B8FD194C0521001BE97F /* earthmap.png in Resources */ = {isa = PBXBuildFile; fileRef = 2971B872194C0521001BE97F /* earthmap.png */; };
-		2971B8FE194C0521001BE97F /* earthmap.png in Resources */ = {isa = PBXBuildFile; fileRef = 2971B872194C0521001BE97F /* earthmap.png */; };
 		2971B8FF194C0521001BE97F /* cart_wheel.source.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2971B875194C0521001BE97F /* cart_wheel.source.txt */; };
 		2971B900194C0521001BE97F /* cart_wheel.source.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2971B875194C0521001BE97F /* cart_wheel.source.txt */; };
 		2971B901194C0521001BE97F /* Cinema4D.fbx in Resources */ = {isa = PBXBuildFile; fileRef = 2971B876194C0521001BE97F /* Cinema4D.fbx */; };
@@ -1273,6 +1269,78 @@
 		29744B73194B8F72009B3CD0 /* NKBulletWorld.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29744815194B8F72009B3CD0 /* NKBulletWorld.mm */; };
 		297BF6A219516F270004AFCD /* lqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */; };
 		297BF6A319516F270004AFCD /* lqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */; };
+		29CA1FC71954CF2000B5C3AF /* MIKMIDIChannelVoiceCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F8C1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.m */; };
+		29CA1FC81954CF2000B5C3AF /* MIKMIDIChannelVoiceCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F8C1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.m */; };
+		29CA1FC91954CF2000B5C3AF /* MIKMIDICommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F8F1954CF1F00B5C3AF /* MIKMIDICommand.m */; };
+		29CA1FCA1954CF2000B5C3AF /* MIKMIDICommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F8F1954CF1F00B5C3AF /* MIKMIDICommand.m */; };
+		29CA1FCB1954CF2000B5C3AF /* MIKMIDICommandThrottler.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F921954CF1F00B5C3AF /* MIKMIDICommandThrottler.m */; };
+		29CA1FCC1954CF2000B5C3AF /* MIKMIDICommandThrottler.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F921954CF1F00B5C3AF /* MIKMIDICommandThrottler.m */; };
+		29CA1FCD1954CF2000B5C3AF /* MIKMIDIControlChangeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F941954CF1F00B5C3AF /* MIKMIDIControlChangeCommand.m */; };
+		29CA1FCE1954CF2000B5C3AF /* MIKMIDIControlChangeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F941954CF1F00B5C3AF /* MIKMIDIControlChangeCommand.m */; };
+		29CA1FCF1954CF2000B5C3AF /* MIKMIDIDestinationEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F961954CF1F00B5C3AF /* MIKMIDIDestinationEndpoint.m */; };
+		29CA1FD01954CF2000B5C3AF /* MIKMIDIDestinationEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F961954CF1F00B5C3AF /* MIKMIDIDestinationEndpoint.m */; };
+		29CA1FD11954CF2000B5C3AF /* MIKMIDIDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F981954CF1F00B5C3AF /* MIKMIDIDevice.m */; };
+		29CA1FD21954CF2000B5C3AF /* MIKMIDIDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F981954CF1F00B5C3AF /* MIKMIDIDevice.m */; };
+		29CA1FD31954CF2000B5C3AF /* MIKMIDIDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F9A1954CF1F00B5C3AF /* MIKMIDIDeviceManager.m */; };
+		29CA1FD41954CF2000B5C3AF /* MIKMIDIDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F9A1954CF1F00B5C3AF /* MIKMIDIDeviceManager.m */; };
+		29CA1FD51954CF2000B5C3AF /* MIKMIDIEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F9C1954CF1F00B5C3AF /* MIKMIDIEndpoint.m */; };
+		29CA1FD61954CF2000B5C3AF /* MIKMIDIEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F9C1954CF1F00B5C3AF /* MIKMIDIEndpoint.m */; };
+		29CA1FD71954CF2000B5C3AF /* MIKMIDIEndpointSynthesizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F9E1954CF1F00B5C3AF /* MIKMIDIEndpointSynthesizer.m */; };
+		29CA1FD81954CF2000B5C3AF /* MIKMIDIEndpointSynthesizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F9E1954CF1F00B5C3AF /* MIKMIDIEndpointSynthesizer.m */; };
+		29CA1FD91954CF2000B5C3AF /* MIKMIDIEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FA01954CF1F00B5C3AF /* MIKMIDIEntity.m */; };
+		29CA1FDA1954CF2000B5C3AF /* MIKMIDIEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FA01954CF1F00B5C3AF /* MIKMIDIEntity.m */; };
+		29CA1FDB1954CF2000B5C3AF /* MIKMIDIErrors.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FA21954CF1F00B5C3AF /* MIKMIDIErrors.m */; };
+		29CA1FDC1954CF2000B5C3AF /* MIKMIDIErrors.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FA21954CF1F00B5C3AF /* MIKMIDIErrors.m */; };
+		29CA1FDD1954CF2000B5C3AF /* MIKMIDIInputPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FA41954CF1F00B5C3AF /* MIKMIDIInputPort.m */; };
+		29CA1FDE1954CF2000B5C3AF /* MIKMIDIInputPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FA41954CF1F00B5C3AF /* MIKMIDIInputPort.m */; };
+		29CA1FDF1954CF2000B5C3AF /* MIKMIDIMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FA61954CF1F00B5C3AF /* MIKMIDIMapping.m */; };
+		29CA1FE01954CF2000B5C3AF /* MIKMIDIMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FA61954CF1F00B5C3AF /* MIKMIDIMapping.m */; };
+		29CA1FE11954CF2000B5C3AF /* MIKMIDIMappingGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FA81954CF1F00B5C3AF /* MIKMIDIMappingGenerator.m */; };
+		29CA1FE21954CF2000B5C3AF /* MIKMIDIMappingGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FA81954CF1F00B5C3AF /* MIKMIDIMappingGenerator.m */; };
+		29CA1FE31954CF2000B5C3AF /* MIKMIDIMappingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FAA1954CF1F00B5C3AF /* MIKMIDIMappingManager.m */; };
+		29CA1FE41954CF2000B5C3AF /* MIKMIDIMappingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FAA1954CF1F00B5C3AF /* MIKMIDIMappingManager.m */; };
+		29CA1FE51954CF2000B5C3AF /* MIKMIDIMappingXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FAC1954CF1F00B5C3AF /* MIKMIDIMappingXMLParser.m */; };
+		29CA1FE61954CF2000B5C3AF /* MIKMIDIMappingXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FAC1954CF1F00B5C3AF /* MIKMIDIMappingXMLParser.m */; };
+		29CA1FE71954CF2000B5C3AF /* MIKMIDINoteOffCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FAE1954CF1F00B5C3AF /* MIKMIDINoteOffCommand.m */; };
+		29CA1FE81954CF2000B5C3AF /* MIKMIDINoteOffCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FAE1954CF1F00B5C3AF /* MIKMIDINoteOffCommand.m */; };
+		29CA1FE91954CF2000B5C3AF /* MIKMIDINoteOnCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FB01954CF1F00B5C3AF /* MIKMIDINoteOnCommand.m */; };
+		29CA1FEA1954CF2000B5C3AF /* MIKMIDINoteOnCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FB01954CF1F00B5C3AF /* MIKMIDINoteOnCommand.m */; };
+		29CA1FEB1954CF2000B5C3AF /* MIKMIDIObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FB21954CF1F00B5C3AF /* MIKMIDIObject.m */; };
+		29CA1FEC1954CF2000B5C3AF /* MIKMIDIObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FB21954CF1F00B5C3AF /* MIKMIDIObject.m */; };
+		29CA1FED1954CF2000B5C3AF /* MIKMIDIOutputPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FB51954CF1F00B5C3AF /* MIKMIDIOutputPort.m */; };
+		29CA1FEE1954CF2000B5C3AF /* MIKMIDIOutputPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FB51954CF1F00B5C3AF /* MIKMIDIOutputPort.m */; };
+		29CA1FEF1954CF2000B5C3AF /* MIKMIDIPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FB71954CF2000B5C3AF /* MIKMIDIPort.m */; };
+		29CA1FF01954CF2000B5C3AF /* MIKMIDIPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FB71954CF2000B5C3AF /* MIKMIDIPort.m */; };
+		29CA1FF11954CF2000B5C3AF /* MIKMIDIPrivateUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FBB1954CF2000B5C3AF /* MIKMIDIPrivateUtilities.m */; };
+		29CA1FF21954CF2000B5C3AF /* MIKMIDIPrivateUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FBB1954CF2000B5C3AF /* MIKMIDIPrivateUtilities.m */; };
+		29CA1FF31954CF2000B5C3AF /* MIKMIDISourceEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FBE1954CF2000B5C3AF /* MIKMIDISourceEndpoint.m */; };
+		29CA1FF41954CF2000B5C3AF /* MIKMIDISourceEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FBE1954CF2000B5C3AF /* MIKMIDISourceEndpoint.m */; };
+		29CA1FF51954CF2000B5C3AF /* MIKMIDISystemExclusiveCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FC01954CF2000B5C3AF /* MIKMIDISystemExclusiveCommand.m */; };
+		29CA1FF61954CF2000B5C3AF /* MIKMIDISystemExclusiveCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FC01954CF2000B5C3AF /* MIKMIDISystemExclusiveCommand.m */; };
+		29CA1FF71954CF2000B5C3AF /* MIKMIDISystemMessageCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FC21954CF2000B5C3AF /* MIKMIDISystemMessageCommand.m */; };
+		29CA1FF81954CF2000B5C3AF /* MIKMIDISystemMessageCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FC21954CF2000B5C3AF /* MIKMIDISystemMessageCommand.m */; };
+		29CA1FF91954CF2000B5C3AF /* MIKMIDIUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FC41954CF2000B5C3AF /* MIKMIDIUtilities.m */; };
+		29CA1FFA1954CF2000B5C3AF /* MIKMIDIUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FC41954CF2000B5C3AF /* MIKMIDIUtilities.m */; };
+		29CA1FFB1954CF2000B5C3AF /* NSUIApplication+MIKMIDI.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FC61954CF2000B5C3AF /* NSUIApplication+MIKMIDI.m */; };
+		29CA1FFC1954CF2000B5C3AF /* NSUIApplication+MIKMIDI.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FC61954CF2000B5C3AF /* NSUIApplication+MIKMIDI.m */; };
+		29CA1FFF1954D0F300B5C3AF /* NKMidiManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FFE1954D0F300B5C3AF /* NKMidiManager.m */; };
+		29CA20001954D0F300B5C3AF /* NKMidiManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1FFE1954D0F300B5C3AF /* NKMidiManager.m */; };
+		29CA20031954D4F300B5C3AF /* NKMatrixStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA20021954D4F300B5C3AF /* NKMatrixStack.m */; };
+		29CA20041954D4F300B5C3AF /* NKMatrixStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA20021954D4F300B5C3AF /* NKMatrixStack.m */; };
+		29CA200D1954E67E00B5C3AF /* ball_Texture.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CA20061954E67E00B5C3AF /* ball_Texture.png */; };
+		29CA200E1954E67E00B5C3AF /* ball_Texture.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CA20061954E67E00B5C3AF /* ball_Texture.png */; };
+		29CA200F1954E67E00B5C3AF /* bokeh.cubemap.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 29CA20071954E67E00B5C3AF /* bokeh.cubemap.jpg */; };
+		29CA20101954E67E00B5C3AF /* bokeh.cubemap.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 29CA20071954E67E00B5C3AF /* bokeh.cubemap.jpg */; };
+		29CA20111954E67E00B5C3AF /* bokeh.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CA20081954E67E00B5C3AF /* bokeh.png */; };
+		29CA20121954E67E00B5C3AF /* bokeh.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CA20081954E67E00B5C3AF /* bokeh.png */; };
+		29CA20131954E67E00B5C3AF /* earthmap.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CA20091954E67E00B5C3AF /* earthmap.png */; };
+		29CA20141954E67E00B5C3AF /* earthmap.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CA20091954E67E00B5C3AF /* earthmap.png */; };
+		29CA20151954E67E00B5C3AF /* h-alpha-a.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 29CA200A1954E67E00B5C3AF /* h-alpha-a.jpg */; };
+		29CA20161954E67E00B5C3AF /* h-alpha-a.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 29CA200A1954E67E00B5C3AF /* h-alpha-a.jpg */; };
+		29CA20171954E67E00B5C3AF /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CA200B1954E67E00B5C3AF /* spark.png */; };
+		29CA20181954E67E00B5C3AF /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CA200B1954E67E00B5C3AF /* spark.png */; };
+		29CA20191954E67E00B5C3AF /* spark2.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CA200C1954E67E00B5C3AF /* spark2.png */; };
+		29CA201A1954E67E00B5C3AF /* spark2.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CA200C1954E67E00B5C3AF /* spark2.png */; };
 		29CC5D77194E14B200614265 /* cvTextureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */; };
 		29CC5D78194E14B200614265 /* cvTextureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */; };
 		29CC5D7A194E174400614265 /* textureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D79194E174400614265 /* textureProgram.nks.txt */; };
@@ -2096,7 +2164,6 @@
 		2970D731194A6DAF00EEAC2B /* NKViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKViewController.m; sourceTree = "<group>"; };
 		2970D732194A6DAF00EEAC2B /* ExampleScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleScene.m; sourceTree = "<group>"; };
 		2970D733194A6DAF00EEAC2B /* ExampleScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleScene.h; sourceTree = "<group>"; };
-		2971B857194C0521001BE97F /* ball_Texture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ball_Texture.png; sourceTree = "<group>"; };
 		2971B859194C0521001BE97F /* Bob.blend */ = {isa = PBXFileReference; lastKnownFileType = file; path = Bob.blend; sourceTree = "<group>"; };
 		2971B85A194C0521001BE97F /* bob.source.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bob.source.txt; sourceTree = "<group>"; };
 		2971B85B194C0521001BE97F /* fleurOptonl.blend */ = {isa = PBXFileReference; lastKnownFileType = file; path = fleurOptonl.blend; sourceTree = "<group>"; };
@@ -2118,7 +2185,6 @@
 		2971B86F194C0521001BE97F /* seymourplane-license.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "seymourplane-license.txt"; sourceTree = "<group>"; };
 		2971B870194C0521001BE97F /* seymourplane.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = seymourplane.dae; sourceTree = "<group>"; };
 		2971B871194C0521001BE97F /* teapots.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = teapots.dae; sourceTree = "<group>"; };
-		2971B872194C0521001BE97F /* earthmap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = earthmap.png; sourceTree = "<group>"; };
 		2971B875194C0521001BE97F /* cart_wheel.source.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cart_wheel.source.txt; sourceTree = "<group>"; };
 		2971B876194C0521001BE97F /* Cinema4D.fbx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cinema4D.fbx; sourceTree = "<group>"; };
 		2971B877194C0521001BE97F /* COLLADA.fbx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COLLADA.fbx; sourceTree = "<group>"; };
@@ -2530,6 +2596,78 @@
 		29744814194B8F71009B3CD0 /* NKBulletWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKBulletWorld.h; sourceTree = "<group>"; };
 		29744815194B8F72009B3CD0 /* NKBulletWorld.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NKBulletWorld.mm; sourceTree = "<group>"; };
 		297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lqLightProgram.nks.txt; sourceTree = "<group>"; };
+		29CA1F8A1954CF1F00B5C3AF /* MIKMIDI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDI.h; sourceTree = "<group>"; };
+		29CA1F8B1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIChannelVoiceCommand.h; sourceTree = "<group>"; };
+		29CA1F8C1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIChannelVoiceCommand.m; sourceTree = "<group>"; };
+		29CA1F8D1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand_SubclassMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIChannelVoiceCommand_SubclassMethods.h; sourceTree = "<group>"; };
+		29CA1F8E1954CF1F00B5C3AF /* MIKMIDICommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDICommand.h; sourceTree = "<group>"; };
+		29CA1F8F1954CF1F00B5C3AF /* MIKMIDICommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDICommand.m; sourceTree = "<group>"; };
+		29CA1F901954CF1F00B5C3AF /* MIKMIDICommand_SubclassMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDICommand_SubclassMethods.h; sourceTree = "<group>"; };
+		29CA1F911954CF1F00B5C3AF /* MIKMIDICommandThrottler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDICommandThrottler.h; sourceTree = "<group>"; };
+		29CA1F921954CF1F00B5C3AF /* MIKMIDICommandThrottler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDICommandThrottler.m; sourceTree = "<group>"; };
+		29CA1F931954CF1F00B5C3AF /* MIKMIDIControlChangeCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIControlChangeCommand.h; sourceTree = "<group>"; };
+		29CA1F941954CF1F00B5C3AF /* MIKMIDIControlChangeCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIControlChangeCommand.m; sourceTree = "<group>"; };
+		29CA1F951954CF1F00B5C3AF /* MIKMIDIDestinationEndpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIDestinationEndpoint.h; sourceTree = "<group>"; };
+		29CA1F961954CF1F00B5C3AF /* MIKMIDIDestinationEndpoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIDestinationEndpoint.m; sourceTree = "<group>"; };
+		29CA1F971954CF1F00B5C3AF /* MIKMIDIDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIDevice.h; sourceTree = "<group>"; };
+		29CA1F981954CF1F00B5C3AF /* MIKMIDIDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIDevice.m; sourceTree = "<group>"; };
+		29CA1F991954CF1F00B5C3AF /* MIKMIDIDeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIDeviceManager.h; sourceTree = "<group>"; };
+		29CA1F9A1954CF1F00B5C3AF /* MIKMIDIDeviceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIDeviceManager.m; sourceTree = "<group>"; };
+		29CA1F9B1954CF1F00B5C3AF /* MIKMIDIEndpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIEndpoint.h; sourceTree = "<group>"; };
+		29CA1F9C1954CF1F00B5C3AF /* MIKMIDIEndpoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIEndpoint.m; sourceTree = "<group>"; };
+		29CA1F9D1954CF1F00B5C3AF /* MIKMIDIEndpointSynthesizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIEndpointSynthesizer.h; sourceTree = "<group>"; };
+		29CA1F9E1954CF1F00B5C3AF /* MIKMIDIEndpointSynthesizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIEndpointSynthesizer.m; sourceTree = "<group>"; };
+		29CA1F9F1954CF1F00B5C3AF /* MIKMIDIEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIEntity.h; sourceTree = "<group>"; };
+		29CA1FA01954CF1F00B5C3AF /* MIKMIDIEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIEntity.m; sourceTree = "<group>"; };
+		29CA1FA11954CF1F00B5C3AF /* MIKMIDIErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIErrors.h; sourceTree = "<group>"; };
+		29CA1FA21954CF1F00B5C3AF /* MIKMIDIErrors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIErrors.m; sourceTree = "<group>"; };
+		29CA1FA31954CF1F00B5C3AF /* MIKMIDIInputPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIInputPort.h; sourceTree = "<group>"; };
+		29CA1FA41954CF1F00B5C3AF /* MIKMIDIInputPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIInputPort.m; sourceTree = "<group>"; };
+		29CA1FA51954CF1F00B5C3AF /* MIKMIDIMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIMapping.h; sourceTree = "<group>"; };
+		29CA1FA61954CF1F00B5C3AF /* MIKMIDIMapping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIMapping.m; sourceTree = "<group>"; };
+		29CA1FA71954CF1F00B5C3AF /* MIKMIDIMappingGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIMappingGenerator.h; sourceTree = "<group>"; };
+		29CA1FA81954CF1F00B5C3AF /* MIKMIDIMappingGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIMappingGenerator.m; sourceTree = "<group>"; };
+		29CA1FA91954CF1F00B5C3AF /* MIKMIDIMappingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIMappingManager.h; sourceTree = "<group>"; };
+		29CA1FAA1954CF1F00B5C3AF /* MIKMIDIMappingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIMappingManager.m; sourceTree = "<group>"; };
+		29CA1FAB1954CF1F00B5C3AF /* MIKMIDIMappingXMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIMappingXMLParser.h; sourceTree = "<group>"; };
+		29CA1FAC1954CF1F00B5C3AF /* MIKMIDIMappingXMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIMappingXMLParser.m; sourceTree = "<group>"; };
+		29CA1FAD1954CF1F00B5C3AF /* MIKMIDINoteOffCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDINoteOffCommand.h; sourceTree = "<group>"; };
+		29CA1FAE1954CF1F00B5C3AF /* MIKMIDINoteOffCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDINoteOffCommand.m; sourceTree = "<group>"; };
+		29CA1FAF1954CF1F00B5C3AF /* MIKMIDINoteOnCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDINoteOnCommand.h; sourceTree = "<group>"; };
+		29CA1FB01954CF1F00B5C3AF /* MIKMIDINoteOnCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDINoteOnCommand.m; sourceTree = "<group>"; };
+		29CA1FB11954CF1F00B5C3AF /* MIKMIDIObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIObject.h; sourceTree = "<group>"; };
+		29CA1FB21954CF1F00B5C3AF /* MIKMIDIObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIObject.m; sourceTree = "<group>"; };
+		29CA1FB31954CF1F00B5C3AF /* MIKMIDIObject_SubclassMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIObject_SubclassMethods.h; sourceTree = "<group>"; };
+		29CA1FB41954CF1F00B5C3AF /* MIKMIDIOutputPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIOutputPort.h; sourceTree = "<group>"; };
+		29CA1FB51954CF1F00B5C3AF /* MIKMIDIOutputPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIOutputPort.m; sourceTree = "<group>"; };
+		29CA1FB61954CF1F00B5C3AF /* MIKMIDIPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIPort.h; sourceTree = "<group>"; };
+		29CA1FB71954CF2000B5C3AF /* MIKMIDIPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIPort.m; sourceTree = "<group>"; };
+		29CA1FB81954CF2000B5C3AF /* MIKMIDIPort_SubclassMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIPort_SubclassMethods.h; sourceTree = "<group>"; };
+		29CA1FB91954CF2000B5C3AF /* MIKMIDIPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIPrivate.h; sourceTree = "<group>"; };
+		29CA1FBA1954CF2000B5C3AF /* MIKMIDIPrivateUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIPrivateUtilities.h; sourceTree = "<group>"; };
+		29CA1FBB1954CF2000B5C3AF /* MIKMIDIPrivateUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIPrivateUtilities.m; sourceTree = "<group>"; };
+		29CA1FBC1954CF2000B5C3AF /* MIKMIDIResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIResponder.h; sourceTree = "<group>"; };
+		29CA1FBD1954CF2000B5C3AF /* MIKMIDISourceEndpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDISourceEndpoint.h; sourceTree = "<group>"; };
+		29CA1FBE1954CF2000B5C3AF /* MIKMIDISourceEndpoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDISourceEndpoint.m; sourceTree = "<group>"; };
+		29CA1FBF1954CF2000B5C3AF /* MIKMIDISystemExclusiveCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDISystemExclusiveCommand.h; sourceTree = "<group>"; };
+		29CA1FC01954CF2000B5C3AF /* MIKMIDISystemExclusiveCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDISystemExclusiveCommand.m; sourceTree = "<group>"; };
+		29CA1FC11954CF2000B5C3AF /* MIKMIDISystemMessageCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDISystemMessageCommand.h; sourceTree = "<group>"; };
+		29CA1FC21954CF2000B5C3AF /* MIKMIDISystemMessageCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDISystemMessageCommand.m; sourceTree = "<group>"; };
+		29CA1FC31954CF2000B5C3AF /* MIKMIDIUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIUtilities.h; sourceTree = "<group>"; };
+		29CA1FC41954CF2000B5C3AF /* MIKMIDIUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIUtilities.m; sourceTree = "<group>"; };
+		29CA1FC51954CF2000B5C3AF /* NSUIApplication+MIKMIDI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUIApplication+MIKMIDI.h"; sourceTree = "<group>"; };
+		29CA1FC61954CF2000B5C3AF /* NSUIApplication+MIKMIDI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUIApplication+MIKMIDI.m"; sourceTree = "<group>"; };
+		29CA1FFD1954D0F300B5C3AF /* NKMidiManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKMidiManager.h; sourceTree = "<group>"; };
+		29CA1FFE1954D0F300B5C3AF /* NKMidiManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKMidiManager.m; sourceTree = "<group>"; };
+		29CA20011954D4F300B5C3AF /* NKMatrixStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKMatrixStack.h; sourceTree = "<group>"; };
+		29CA20021954D4F300B5C3AF /* NKMatrixStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKMatrixStack.m; sourceTree = "<group>"; };
+		29CA20061954E67E00B5C3AF /* ball_Texture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ball_Texture.png; sourceTree = "<group>"; };
+		29CA20071954E67E00B5C3AF /* bokeh.cubemap.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bokeh.cubemap.jpg; sourceTree = "<group>"; };
+		29CA20081954E67E00B5C3AF /* bokeh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bokeh.png; sourceTree = "<group>"; };
+		29CA20091954E67E00B5C3AF /* earthmap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = earthmap.png; sourceTree = "<group>"; };
+		29CA200A1954E67E00B5C3AF /* h-alpha-a.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "h-alpha-a.jpg"; sourceTree = "<group>"; };
+		29CA200B1954E67E00B5C3AF /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
+		29CA200C1954E67E00B5C3AF /* spark2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark2.png; sourceTree = "<group>"; };
 		29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cvTextureProgram.nks.txt; sourceTree = "<group>"; };
 		29CC5D79194E174400614265 /* textureProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = textureProgram.nks.txt; sourceTree = "<group>"; };
 		29DACA59194B403300F382E4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
@@ -3751,6 +3889,8 @@
 				2970D6E5194A6DAF00EEAC2B /* NKVertexBuffer.m */,
 				2970D6E6194A6DAF00EEAC2B /* perlin.c */,
 				2970D6E7194A6DAF00EEAC2B /* perlin.h */,
+				29CA20011954D4F300B5C3AF /* NKMatrixStack.h */,
+				29CA20021954D4F300B5C3AF /* NKMatrixStack.m */,
 			);
 			path = Geometry;
 			sourceTree = "<group>";
@@ -3867,15 +4007,14 @@
 		2971B856194C0521001BE97F /* ExampleAssets */ = {
 			isa = PBXGroup;
 			children = (
+				29CA20051954E67E00B5C3AF /* Images */,
 				29462CBF194F64E8007F9652 /* 3DS */,
 				293E7AA8194E7A4400A84EF7 /* carousel_360-640.mov */,
 				293E7AAE194E7BE400A84EF7 /* carousel1_640-360.mov */,
 				293E7AA9194E7A4400A84EF7 /* slitscan-fall-640-360.mov */,
-				2971B857194C0521001BE97F /* ball_Texture.png */,
 				2971B858194C0521001BE97F /* BLEND */,
 				2971B85D194C0521001BE97F /* blender */,
 				2971B864194C0521001BE97F /* collada */,
-				2971B872194C0521001BE97F /* earthmap.png */,
 				2971B873194C0521001BE97F /* FBX */,
 				2971B89D194C0521001BE97F /* LWO */,
 				2971B8B0194C0521001BE97F /* MD5 */,
@@ -4119,12 +4258,15 @@
 		2974443D194B8F6E009B3CD0 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				29CA1F881954CF1F00B5C3AF /* MIKMidi */,
 				292E582D194D356B002B6D43 /* assimp */,
 				297446CD194B8F70009B3CD0 /* bullet */,
 				29744814194B8F71009B3CD0 /* NKBulletWorld.h */,
 				29744815194B8F72009B3CD0 /* NKBulletWorld.mm */,
 				294FC4A6194BA1CC000F6F54 /* NKAssimpLoader.h */,
 				294FC4A7194BA1CC000F6F54 /* NKAssimpLoader.mm */,
+				29CA1FFD1954D0F300B5C3AF /* NKMidiManager.h */,
+				29CA1FFE1954D0F300B5C3AF /* NKMidiManager.m */,
 			);
 			path = Dependencies;
 			sourceTree = "<group>";
@@ -4462,6 +4604,96 @@
 			path = bullet;
 			sourceTree = "<group>";
 		};
+		29CA1F881954CF1F00B5C3AF /* MIKMidi */ = {
+			isa = PBXGroup;
+			children = (
+				29CA1F891954CF1F00B5C3AF /* Source */,
+			);
+			path = MIKMidi;
+			sourceTree = "<group>";
+		};
+		29CA1F891954CF1F00B5C3AF /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				29CA1F8A1954CF1F00B5C3AF /* MIKMIDI.h */,
+				29CA1F8B1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.h */,
+				29CA1F8C1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.m */,
+				29CA1F8D1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand_SubclassMethods.h */,
+				29CA1F8E1954CF1F00B5C3AF /* MIKMIDICommand.h */,
+				29CA1F8F1954CF1F00B5C3AF /* MIKMIDICommand.m */,
+				29CA1F901954CF1F00B5C3AF /* MIKMIDICommand_SubclassMethods.h */,
+				29CA1F911954CF1F00B5C3AF /* MIKMIDICommandThrottler.h */,
+				29CA1F921954CF1F00B5C3AF /* MIKMIDICommandThrottler.m */,
+				29CA1F931954CF1F00B5C3AF /* MIKMIDIControlChangeCommand.h */,
+				29CA1F941954CF1F00B5C3AF /* MIKMIDIControlChangeCommand.m */,
+				29CA1F951954CF1F00B5C3AF /* MIKMIDIDestinationEndpoint.h */,
+				29CA1F961954CF1F00B5C3AF /* MIKMIDIDestinationEndpoint.m */,
+				29CA1F971954CF1F00B5C3AF /* MIKMIDIDevice.h */,
+				29CA1F981954CF1F00B5C3AF /* MIKMIDIDevice.m */,
+				29CA1F991954CF1F00B5C3AF /* MIKMIDIDeviceManager.h */,
+				29CA1F9A1954CF1F00B5C3AF /* MIKMIDIDeviceManager.m */,
+				29CA1F9B1954CF1F00B5C3AF /* MIKMIDIEndpoint.h */,
+				29CA1F9C1954CF1F00B5C3AF /* MIKMIDIEndpoint.m */,
+				29CA1F9D1954CF1F00B5C3AF /* MIKMIDIEndpointSynthesizer.h */,
+				29CA1F9E1954CF1F00B5C3AF /* MIKMIDIEndpointSynthesizer.m */,
+				29CA1F9F1954CF1F00B5C3AF /* MIKMIDIEntity.h */,
+				29CA1FA01954CF1F00B5C3AF /* MIKMIDIEntity.m */,
+				29CA1FA11954CF1F00B5C3AF /* MIKMIDIErrors.h */,
+				29CA1FA21954CF1F00B5C3AF /* MIKMIDIErrors.m */,
+				29CA1FA31954CF1F00B5C3AF /* MIKMIDIInputPort.h */,
+				29CA1FA41954CF1F00B5C3AF /* MIKMIDIInputPort.m */,
+				29CA1FA51954CF1F00B5C3AF /* MIKMIDIMapping.h */,
+				29CA1FA61954CF1F00B5C3AF /* MIKMIDIMapping.m */,
+				29CA1FA71954CF1F00B5C3AF /* MIKMIDIMappingGenerator.h */,
+				29CA1FA81954CF1F00B5C3AF /* MIKMIDIMappingGenerator.m */,
+				29CA1FA91954CF1F00B5C3AF /* MIKMIDIMappingManager.h */,
+				29CA1FAA1954CF1F00B5C3AF /* MIKMIDIMappingManager.m */,
+				29CA1FAB1954CF1F00B5C3AF /* MIKMIDIMappingXMLParser.h */,
+				29CA1FAC1954CF1F00B5C3AF /* MIKMIDIMappingXMLParser.m */,
+				29CA1FAD1954CF1F00B5C3AF /* MIKMIDINoteOffCommand.h */,
+				29CA1FAE1954CF1F00B5C3AF /* MIKMIDINoteOffCommand.m */,
+				29CA1FAF1954CF1F00B5C3AF /* MIKMIDINoteOnCommand.h */,
+				29CA1FB01954CF1F00B5C3AF /* MIKMIDINoteOnCommand.m */,
+				29CA1FB11954CF1F00B5C3AF /* MIKMIDIObject.h */,
+				29CA1FB21954CF1F00B5C3AF /* MIKMIDIObject.m */,
+				29CA1FB31954CF1F00B5C3AF /* MIKMIDIObject_SubclassMethods.h */,
+				29CA1FB41954CF1F00B5C3AF /* MIKMIDIOutputPort.h */,
+				29CA1FB51954CF1F00B5C3AF /* MIKMIDIOutputPort.m */,
+				29CA1FB61954CF1F00B5C3AF /* MIKMIDIPort.h */,
+				29CA1FB71954CF2000B5C3AF /* MIKMIDIPort.m */,
+				29CA1FB81954CF2000B5C3AF /* MIKMIDIPort_SubclassMethods.h */,
+				29CA1FB91954CF2000B5C3AF /* MIKMIDIPrivate.h */,
+				29CA1FBA1954CF2000B5C3AF /* MIKMIDIPrivateUtilities.h */,
+				29CA1FBB1954CF2000B5C3AF /* MIKMIDIPrivateUtilities.m */,
+				29CA1FBC1954CF2000B5C3AF /* MIKMIDIResponder.h */,
+				29CA1FBD1954CF2000B5C3AF /* MIKMIDISourceEndpoint.h */,
+				29CA1FBE1954CF2000B5C3AF /* MIKMIDISourceEndpoint.m */,
+				29CA1FBF1954CF2000B5C3AF /* MIKMIDISystemExclusiveCommand.h */,
+				29CA1FC01954CF2000B5C3AF /* MIKMIDISystemExclusiveCommand.m */,
+				29CA1FC11954CF2000B5C3AF /* MIKMIDISystemMessageCommand.h */,
+				29CA1FC21954CF2000B5C3AF /* MIKMIDISystemMessageCommand.m */,
+				29CA1FC31954CF2000B5C3AF /* MIKMIDIUtilities.h */,
+				29CA1FC41954CF2000B5C3AF /* MIKMIDIUtilities.m */,
+				29CA1FC51954CF2000B5C3AF /* NSUIApplication+MIKMIDI.h */,
+				29CA1FC61954CF2000B5C3AF /* NSUIApplication+MIKMIDI.m */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		29CA20051954E67E00B5C3AF /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				29CA20061954E67E00B5C3AF /* ball_Texture.png */,
+				29CA20071954E67E00B5C3AF /* bokeh.cubemap.jpg */,
+				29CA20081954E67E00B5C3AF /* bokeh.png */,
+				29CA20091954E67E00B5C3AF /* earthmap.png */,
+				29CA200A1954E67E00B5C3AF /* h-alpha-a.jpg */,
+				29CA200B1954E67E00B5C3AF /* spark.png */,
+				29CA200C1954E67E00B5C3AF /* spark2.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -4582,7 +4814,6 @@
 				292E5C95194D356D002B6D43 /* Makefile.in in Resources */,
 				292E5C11194D356D002B6D43 /* AUTHORS in Resources */,
 				2971B939194C0521001BE97F /* jeep1b.fbx in Resources */,
-				2971B8D1194C0521001BE97F /* ball_Texture.png in Resources */,
 				292E5C15194D356D002B6D43 /* ChangeLog in Resources */,
 				2971B97B194C0521001BE97F /* guard1_helmet.png in Resources */,
 				292E5C6F194D356D002B6D43 /* Makefile.am in Resources */,
@@ -4609,6 +4840,7 @@
 				2971B8D9194C0521001BE97F /* fleurOptonl.source.txt in Resources */,
 				2971B90F194C0521001BE97F /* Granate.fbx in Resources */,
 				292E5D29194D356E002B6D43 /* AUTHORS in Resources */,
+				29CA200D1954E67E00B5C3AF /* ball_Texture.png in Resources */,
 				2971B8F9194C0521001BE97F /* seymourplane.dae in Resources */,
 				292E5CC5194D356E002B6D43 /* Makefile.in in Resources */,
 				2971B99B194C0521001BE97F /* ReadMe!.txt in Resources */,
@@ -4695,9 +4927,9 @@
 				29462CE2194F64E8007F9652 /* mp5_sil.source.txt in Resources */,
 				2971B8F1194C0521001BE97F /* planeDiffuse.tga in Resources */,
 				292E5C69194D356D002B6D43 /* other_documentation.dox in Resources */,
+				29CA200F1954E67E00B5C3AF /* bokeh.cubemap.jpg in Resources */,
 				292E5D37194D356E002B6D43 /* README in Resources */,
 				2971B945194C0521001BE97F /* mp5_sil.fbx in Resources */,
-				2971B8FD194C0521001BE97F /* earthmap.png in Resources */,
 				2971B92D194C0521001BE97F /* Cinema4D.fbx in Resources */,
 				292E5C5F194D356D002B6D43 /* footer.html in Resources */,
 				2971B965194C0521001BE97F /* QuickDraw--Wheels-Front.lwo in Resources */,
@@ -4715,6 +4947,7 @@
 				292E5C43194D356D002B6D43 /* CppUnit.WWTpl in Resources */,
 				2971B975194C0521001BE97F /* bob.source.txt in Resources */,
 				2971B941194C0521001BE97F /* mar_rifle.fbx in Resources */,
+				29CA20111954E67E00B5C3AF /* bokeh.png in Resources */,
 				293E7AAA194E7A4400A84EF7 /* carousel_360-640.mov in Resources */,
 				292E5C81194D356D002B6D43 /* Makefile.in in Resources */,
 				293E7AAF194E7BE400A84EF7 /* carousel1_640-360.mov in Resources */,
@@ -4731,6 +4964,7 @@
 				2971B97F194C0521001BE97F /* round_grill.png in Resources */,
 				2971B913194C0521001BE97F /* jeep1.fbx.readme.txt in Resources */,
 				2971B991194C0521001BE97F /* shroom.tif in Resources */,
+				29CA20131954E67E00B5C3AF /* earthmap.png in Resources */,
 				2971B963194C0521001BE97F /* QuickDraw--Wheels-Back.lwo in Resources */,
 				2971B929194C0521001BE97F /* pyramob.fbx.readme.txt in Resources */,
 				292E5BD1194D356D002B6D43 /* assimp.rc in Resources */,
@@ -4784,7 +5018,9 @@
 				29462CDA194F64E8007F9652 /* m_rifl.bmp in Resources */,
 				292E5CA3194D356D002B6D43 /* README in Resources */,
 				2971B987194C0521001BE97F /* skin.tif in Resources */,
+				29CA20191954E67E00B5C3AF /* spark2.png in Resources */,
 				2971B8E5194C0521001BE97F /* COLLADA.dae in Resources */,
+				29CA20151954E67E00B5C3AF /* h-alpha-a.jpg in Resources */,
 				2971B967194C0521001BE97F /* QuickDraw.source.txt in Resources */,
 				2971B915194C0521001BE97F /* jeep1.jpg in Resources */,
 				292E5C45194D356D002B6D43 /* readme.txt in Resources */,
@@ -4795,6 +5031,7 @@
 				2970D864194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt in Resources */,
 				292E5C63194D356D002B6D43 /* Makefile.am in Resources */,
 				292E5D17194D356E002B6D43 /* CppUnitLibraries.sln in Resources */,
+				29CA20171954E67E00B5C3AF /* spark.png in Resources */,
 				292E5C8F194D356D002B6D43 /* Makefile.am in Resources */,
 				2971B995194C0521001BE97F /* ReadMe!.txt in Resources */,
 				292E5C75194D356D002B6D43 /* Makefile.in in Resources */,
@@ -4848,7 +5085,6 @@
 				292E5C96194D356D002B6D43 /* Makefile.in in Resources */,
 				292E5C12194D356D002B6D43 /* AUTHORS in Resources */,
 				2971B93A194C0521001BE97F /* jeep1b.fbx in Resources */,
-				2971B8D2194C0521001BE97F /* ball_Texture.png in Resources */,
 				292E5C16194D356D002B6D43 /* ChangeLog in Resources */,
 				2971B97C194C0521001BE97F /* guard1_helmet.png in Resources */,
 				292E5C70194D356D002B6D43 /* Makefile.am in Resources */,
@@ -4875,6 +5111,7 @@
 				2971B8DA194C0521001BE97F /* fleurOptonl.source.txt in Resources */,
 				2971B910194C0521001BE97F /* Granate.fbx in Resources */,
 				292E5D2A194D356E002B6D43 /* AUTHORS in Resources */,
+				29CA200E1954E67E00B5C3AF /* ball_Texture.png in Resources */,
 				2971B8FA194C0521001BE97F /* seymourplane.dae in Resources */,
 				292E5CC6194D356E002B6D43 /* Makefile.in in Resources */,
 				2971B99C194C0521001BE97F /* ReadMe!.txt in Resources */,
@@ -4961,9 +5198,9 @@
 				29462CE3194F64E8007F9652 /* mp5_sil.source.txt in Resources */,
 				2971B8F2194C0521001BE97F /* planeDiffuse.tga in Resources */,
 				292E5C6A194D356D002B6D43 /* other_documentation.dox in Resources */,
+				29CA20101954E67E00B5C3AF /* bokeh.cubemap.jpg in Resources */,
 				292E5D38194D356E002B6D43 /* README in Resources */,
 				2971B946194C0521001BE97F /* mp5_sil.fbx in Resources */,
-				2971B8FE194C0521001BE97F /* earthmap.png in Resources */,
 				2971B92E194C0521001BE97F /* Cinema4D.fbx in Resources */,
 				292E5C60194D356D002B6D43 /* footer.html in Resources */,
 				2971B966194C0521001BE97F /* QuickDraw--Wheels-Front.lwo in Resources */,
@@ -4981,6 +5218,7 @@
 				292E5C44194D356D002B6D43 /* CppUnit.WWTpl in Resources */,
 				2971B976194C0521001BE97F /* bob.source.txt in Resources */,
 				2971B942194C0521001BE97F /* mar_rifle.fbx in Resources */,
+				29CA20121954E67E00B5C3AF /* bokeh.png in Resources */,
 				293E7AAB194E7A4400A84EF7 /* carousel_360-640.mov in Resources */,
 				292E5C82194D356D002B6D43 /* Makefile.in in Resources */,
 				293E7AB0194E7BE400A84EF7 /* carousel1_640-360.mov in Resources */,
@@ -4997,6 +5235,7 @@
 				2971B980194C0521001BE97F /* round_grill.png in Resources */,
 				2971B914194C0521001BE97F /* jeep1.fbx.readme.txt in Resources */,
 				2971B992194C0521001BE97F /* shroom.tif in Resources */,
+				29CA20141954E67E00B5C3AF /* earthmap.png in Resources */,
 				2971B964194C0521001BE97F /* QuickDraw--Wheels-Back.lwo in Resources */,
 				2971B92A194C0521001BE97F /* pyramob.fbx.readme.txt in Resources */,
 				292E5BD2194D356D002B6D43 /* assimp.rc in Resources */,
@@ -5050,7 +5289,9 @@
 				29462CDB194F64E8007F9652 /* m_rifl.bmp in Resources */,
 				292E5CA4194D356D002B6D43 /* README in Resources */,
 				2971B988194C0521001BE97F /* skin.tif in Resources */,
+				29CA201A1954E67E00B5C3AF /* spark2.png in Resources */,
 				2971B8E6194C0521001BE97F /* COLLADA.dae in Resources */,
+				29CA20161954E67E00B5C3AF /* h-alpha-a.jpg in Resources */,
 				2971B968194C0521001BE97F /* QuickDraw.source.txt in Resources */,
 				2971B916194C0521001BE97F /* jeep1.jpg in Resources */,
 				292E5C46194D356D002B6D43 /* readme.txt in Resources */,
@@ -5061,6 +5302,7 @@
 				2970D865194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt in Resources */,
 				292E5C64194D356D002B6D43 /* Makefile.am in Resources */,
 				292E5D18194D356E002B6D43 /* CppUnitLibraries.sln in Resources */,
+				29CA20181954E67E00B5C3AF /* spark.png in Resources */,
 				292E5C90194D356D002B6D43 /* Makefile.am in Resources */,
 				2971B996194C0521001BE97F /* ReadMe!.txt in Resources */,
 				292E5C76194D356D002B6D43 /* Makefile.in in Resources */,
@@ -5133,6 +5375,7 @@
 				29744AE8194B8F72009B3CD0 /* btGImpactShape.cpp in Sources */,
 				29744AE6194B8F72009B3CD0 /* btGImpactQuantizedBvh.cpp in Sources */,
 				292E5D47194D356E002B6D43 /* deflate.c in Sources */,
+				29CA20031954D4F300B5C3AF /* NKMatrixStack.m in Sources */,
 				2970D84C194A6DAF00EEAC2B /* NKEmitterNode.m in Sources */,
 				292E5AFB194D356D002B6D43 /* BlenderBMesh.cpp in Sources */,
 				29744AD8194B8F72009B3CD0 /* btGeneric6DofConstraint.cpp in Sources */,
@@ -5145,6 +5388,7 @@
 				29744B28194B8F72009B3CD0 /* btSimpleDynamicsWorld.cpp in Sources */,
 				292E5CBB194D356D002B6D43 /* DllMain.cpp in Sources */,
 				292E5B4F194D356D002B6D43 /* FixNormalsStep.cpp in Sources */,
+				29CA1FCD1954CF2000B5C3AF /* MIKMIDIControlChangeCommand.m in Sources */,
 				292E5B3B194D356D002B6D43 /* FBXMeshGeometry.cpp in Sources */,
 				29744AB8194B8F72009B3CD0 /* btConvexHullShape.cpp in Sources */,
 				29744AF0194B8F72009B3CD0 /* btGjkPairDetector.cpp in Sources */,
@@ -5154,6 +5398,7 @@
 				292E5AEB194D356D002B6D43 /* ASEParser.cpp in Sources */,
 				2970D533194A6D8C00EEAC2B /* AppDelegate.m in Sources */,
 				29744B06194B8F72009B3CD0 /* btMultiSphereShape.cpp in Sources */,
+				29CA1FD31954CF2000B5C3AF /* MIKMIDIDeviceManager.m in Sources */,
 				292E5CE5194D356E002B6D43 /* TestDecorator.cpp in Sources */,
 				29744A94194B8F72009B3CD0 /* btCollisionShape.cpp in Sources */,
 				29744AD6194B8F72009B3CD0 /* btEmptyShape.cpp in Sources */,
@@ -5180,6 +5425,7 @@
 				292E5B35194D356D002B6D43 /* FBXDocumentUtil.cpp in Sources */,
 				29744B4C194B8F72009B3CD0 /* btTetrahedronShape.cpp in Sources */,
 				292E5BE3194D356D002B6D43 /* SplitByBoneCountProcess.cpp in Sources */,
+				29CA1FDB1954CF2000B5C3AF /* MIKMIDIErrors.m in Sources */,
 				292E5CEF194D356E002B6D43 /* TestPath.cpp in Sources */,
 				29744B04194B8F72009B3CD0 /* btMultiSapBroadphase.cpp in Sources */,
 				29744A74194B8F72009B3CD0 /* btActivatingCollisionAlgorithm.cpp in Sources */,
@@ -5187,6 +5433,7 @@
 				292E5B1D194D356D002B6D43 /* CSMLoader.cpp in Sources */,
 				2970D884194A6DAF00EEAC2B /* NKFont+CoreText.m in Sources */,
 				29744AC0194B8F72009B3CD0 /* btConvexPolyhedron.cpp in Sources */,
+				29CA1FEB1954CF2000B5C3AF /* MIKMIDIObject.m in Sources */,
 				292E5B33194D356D002B6D43 /* FBXDocument.cpp in Sources */,
 				292E5D51194D356E002B6D43 /* trees.c in Sources */,
 				292E5BFF194D356D002B6D43 /* VertexTriangleAdjacency.cpp in Sources */,
@@ -5214,6 +5461,7 @@
 				29744B42194B8F72009B3CD0 /* btSphereSphereCollisionAlgorithm.cpp in Sources */,
 				292E5B97194D356D002B6D43 /* MS3DLoader.cpp in Sources */,
 				292E5CA5194D356D002B6D43 /* AdditionalMessage.cpp in Sources */,
+				29CA1FD51954CF2000B5C3AF /* MIKMIDIEndpoint.m in Sources */,
 				292E5B11194D356D002B6D43 /* COBLoader.cpp in Sources */,
 				292E5BBB194D356D002B6D43 /* PostStepRegistry.cpp in Sources */,
 				29744AA2194B8F72009B3CD0 /* btContactConstraint.cpp in Sources */,
@@ -5236,8 +5484,10 @@
 				292E5BFD194D356D002B6D43 /* ValidateDataStructure.cpp in Sources */,
 				292E5B89194D356D002B6D43 /* MD2Loader.cpp in Sources */,
 				2970D852194A6DAF00EEAC2B /* NKMeshNode.m in Sources */,
+				29CA1FE91954CF2000B5C3AF /* MIKMIDINoteOnCommand.m in Sources */,
 				292E5B85194D356D002B6D43 /* MakeVerboseFormat.cpp in Sources */,
 				29744AC2194B8F72009B3CD0 /* btConvexShape.cpp in Sources */,
+				29CA1FD11954CF2000B5C3AF /* MIKMIDIDevice.m in Sources */,
 				292E5B8B194D356D002B6D43 /* MD3Loader.cpp in Sources */,
 				292E5BB3194D356D002B6D43 /* OptimizeMeshes.cpp in Sources */,
 				292E5AF9194D356D002B6D43 /* Bitmap.cpp in Sources */,
@@ -5252,6 +5502,7 @@
 				292E5D4D194D356E002B6D43 /* inftrees.c in Sources */,
 				29744B0C194B8F72009B3CD0 /* btPersistentManifold.cpp in Sources */,
 				29744A96194B8F72009B3CD0 /* btCollisionWorld.cpp in Sources */,
+				29CA1FED1954CF2000B5C3AF /* MIKMIDIOutputPort.m in Sources */,
 				292E5BDF194D356D002B6D43 /* SortByPTypeProcess.cpp in Sources */,
 				292E5B77194D356D002B6D43 /* LimitBoneWeightsProcess.cpp in Sources */,
 				292E5B71194D356D002B6D43 /* IRRMeshLoader.cpp in Sources */,
@@ -5268,6 +5519,7 @@
 				29744AE0194B8F72009B3CD0 /* btGhostObject.cpp in Sources */,
 				29744ACC194B8F72009B3CD0 /* btDefaultCollisionConfiguration.cpp in Sources */,
 				292E5B39194D356D002B6D43 /* FBXMaterial.cpp in Sources */,
+				29CA1FD91954CF2000B5C3AF /* MIKMIDIEntity.m in Sources */,
 				292E5B7B194D356D002B6D43 /* LWOBLoader.cpp in Sources */,
 				292E5BEB194D356D002B6D43 /* STEPFileReader.cpp in Sources */,
 				2970D842194A6DAF00EEAC2B /* perlin.c in Sources */,
@@ -5277,6 +5529,7 @@
 				292E5C05194D356D002B6D43 /* XGLLoader.cpp in Sources */,
 				292E5AF1194D356D002B6D43 /* AssimpPCH.cpp in Sources */,
 				29744A6E194B8F72009B3CD0 /* bChunk.cpp in Sources */,
+				29CA1FEF1954CF2000B5C3AF /* MIKMIDIPort.m in Sources */,
 				292E5BE1194D356D002B6D43 /* SpatialSort.cpp in Sources */,
 				29744B34194B8F72009B3CD0 /* btSoftBodyRigidBodyCollisionConfiguration.cpp in Sources */,
 				292E5CD5194D356E002B6D43 /* SourceLine.cpp in Sources */,
@@ -5294,8 +5547,11 @@
 				292E5BF1194D356D002B6D43 /* Subdivision.cpp in Sources */,
 				292E5CD3194D356E002B6D43 /* ShlDynamicLibraryManager.cpp in Sources */,
 				29744B68194B8F72009B3CD0 /* gim_box_set.cpp in Sources */,
+				29CA1FF11954CF2000B5C3AF /* MIKMIDIPrivateUtilities.m in Sources */,
+				29CA1FE11954CF2000B5C3AF /* MIKMIDIMappingGenerator.m in Sources */,
 				29744B20194B8F72009B3CD0 /* btSequentialImpulseConstraintSolver.cpp in Sources */,
 				292E5CDF194D356E002B6D43 /* TestCase.cpp in Sources */,
+				29CA1FE31954CF2000B5C3AF /* MIKMIDIMappingManager.m in Sources */,
 				292E5B91194D356D002B6D43 /* MDCLoader.cpp in Sources */,
 				292E5BB9194D356D002B6D43 /* PlyParser.cpp in Sources */,
 				29744A8E194B8F72009B3CD0 /* btCollisionAlgorithm.cpp in Sources */,
@@ -5315,6 +5571,7 @@
 				292E5B65194D356D002B6D43 /* IFCReaderGen.cpp in Sources */,
 				292E5CEB194D356E002B6D43 /* TestLeaf.cpp in Sources */,
 				29744B70194B8F72009B3CD0 /* SphereTriangleDetector.cpp in Sources */,
+				29CA1FFF1954D0F300B5C3AF /* NKMidiManager.m in Sources */,
 				2970D850194A6DAF00EEAC2B /* NKLightNode.m in Sources */,
 				292E5BB7194D356D002B6D43 /* PlyLoader.cpp in Sources */,
 				292E5D79194D4B3E002B6D43 /* NKGLManager.m in Sources */,
@@ -5329,6 +5586,8 @@
 				292E5D05194D356E002B6D43 /* TextTestResult.cpp in Sources */,
 				292E5CA7194D356D002B6D43 /* Asserter.cpp in Sources */,
 				292E5AF3194D356D002B6D43 /* B3DImporter.cpp in Sources */,
+				29CA1FE51954CF2000B5C3AF /* MIKMIDIMappingXMLParser.m in Sources */,
+				29CA1FCB1954CF2000B5C3AF /* MIKMIDICommandThrottler.m in Sources */,
 				292E5B1B194D356D002B6D43 /* ConvertToLHProcess.cpp in Sources */,
 				292E5CDB194D356E002B6D43 /* Test.cpp in Sources */,
 				292E5BEF194D356D002B6D43 /* STLLoader.cpp in Sources */,
@@ -5343,10 +5602,13 @@
 				29744B3C194B8F72009B3CD0 /* btSolve2LinearConstraint.cpp in Sources */,
 				292E5BC5194D356D002B6D43 /* Q3BSPZipArchive.cpp in Sources */,
 				29744B56194B8F72009B3CD0 /* btTriangleMesh.cpp in Sources */,
+				29CA1FC71954CF2000B5C3AF /* MIKMIDIChannelVoiceCommand.m in Sources */,
 				292E5B3D194D356D002B6D43 /* FBXModel.cpp in Sources */,
+				29CA1FD71954CF2000B5C3AF /* MIKMIDIEndpointSynthesizer.m in Sources */,
 				292E5B13194D356D002B6D43 /* ColladaExporter.cpp in Sources */,
 				29744B2A194B8F72009B3CD0 /* btSimulationIslandManager.cpp in Sources */,
 				29744AA6194B8F72009B3CD0 /* btContinuousConvexCollision.cpp in Sources */,
+				29CA1FF71954CF2000B5C3AF /* MIKMIDISystemMessageCommand.m in Sources */,
 				292E5BA1194D356D002B6D43 /* ObjFileMtlImporter.cpp in Sources */,
 				29744A76194B8F72009B3CD0 /* btAlignedAllocator.cpp in Sources */,
 				29744AEE194B8F72009B3CD0 /* btGjkEpaPenetrationDepthSolver.cpp in Sources */,
@@ -5390,6 +5652,7 @@
 				29744B66194B8F72009B3CD0 /* btWheelInfo.cpp in Sources */,
 				2970D85A194A6DAF00EEAC2B /* NKSceneNode.m in Sources */,
 				29744AAE194B8F72009B3CD0 /* btConvexCast.cpp in Sources */,
+				29CA1FF31954CF2000B5C3AF /* MIKMIDISourceEndpoint.m in Sources */,
 				292E5B55194D356D002B6D43 /* HMPLoader.cpp in Sources */,
 				292E5C07194D356D002B6D43 /* clipper.cpp in Sources */,
 				29744AF2194B8F72009B3CD0 /* btHeightfieldTerrainShape.cpp in Sources */,
@@ -5409,6 +5672,7 @@
 				29744B44194B8F72009B3CD0 /* btSphereTriangleCollisionAlgorithm.cpp in Sources */,
 				292E5D0D194D356E002B6D43 /* Win32DynamicLibraryManager.cpp in Sources */,
 				292E5B3F194D356D002B6D43 /* FBXNodeAttribute.cpp in Sources */,
+				29CA1FDF1954CF2000B5C3AF /* MIKMIDIMapping.m in Sources */,
 				29744B1C194B8F72009B3CD0 /* btRigidBody.cpp in Sources */,
 				2970D85E194A6DAF00EEAC2B /* NKSoundManager.m in Sources */,
 				29744A70194B8F72009B3CD0 /* bDNA.cpp in Sources */,
@@ -5424,13 +5688,17 @@
 				29744AC6194B8F72009B3CD0 /* btCylinderShape.cpp in Sources */,
 				2970D84A194A6DAF00EEAC2B /* NKCoreTextNode.m in Sources */,
 				29744B72194B8F72009B3CD0 /* NKBulletWorld.mm in Sources */,
+				29CA1FDD1954CF2000B5C3AF /* MIKMIDIInputPort.m in Sources */,
 				292E5CED194D356E002B6D43 /* TestNamer.cpp in Sources */,
 				292E5CC9194D356E002B6D43 /* PlugInManager.cpp in Sources */,
 				29744B18194B8F72009B3CD0 /* btRaycastCallback.cpp in Sources */,
 				292E5B4B194D356D002B6D43 /* FindInstancesProcess.cpp in Sources */,
+				29CA1FE71954CF2000B5C3AF /* MIKMIDINoteOffCommand.m in Sources */,
 				29744B5C194B8F72009B3CD0 /* btTypedConstraint.cpp in Sources */,
 				2970D858194A6DAF00EEAC2B /* NKPickerNode.m in Sources */,
+				29CA1FCF1954CF2000B5C3AF /* MIKMIDIDestinationEndpoint.m in Sources */,
 				29744B12194B8F72009B3CD0 /* btPolyhedralConvexShape.cpp in Sources */,
+				29CA1FF91954CF2000B5C3AF /* MIKMIDIUtilities.m in Sources */,
 				292E5BF9194D356D002B6D43 /* TriangulateProcess.cpp in Sources */,
 				292E5BFB194D356D002B6D43 /* UnrealLoader.cpp in Sources */,
 				292E5CBF194D356E002B6D43 /* DynamicLibraryManagerException.cpp in Sources */,
@@ -5463,6 +5731,7 @@
 				292E5BAB194D356D002B6D43 /* OgreMaterial.cpp in Sources */,
 				292E5BC1194D356D002B6D43 /* Q3BSPFileImporter.cpp in Sources */,
 				2970D886194A6DAF00EEAC2B /* NKImage+Utils.m in Sources */,
+				29CA1FF51954CF2000B5C3AF /* MIKMIDISystemExclusiveCommand.m in Sources */,
 				29744A7A194B8F72009B3CD0 /* btBox2dBox2dCollisionAlgorithm.cpp in Sources */,
 				29744ACE194B8F72009B3CD0 /* btDefaultSoftBodySolver.cpp in Sources */,
 				2970D52F194A6D8C00EEAC2B /* main.m in Sources */,
@@ -5470,6 +5739,7 @@
 				292E5D07194D356E002B6D43 /* TextTestRunner.cpp in Sources */,
 				29744A9C194B8F72009B3CD0 /* btConcaveShape.cpp in Sources */,
 				292E5B2B194D356D002B6D43 /* FBXAnimation.cpp in Sources */,
+				29CA1FC91954CF2000B5C3AF /* MIKMIDICommand.m in Sources */,
 				29744B6A194B8F72009B3CD0 /* gim_contact.cpp in Sources */,
 				292E5B87194D356D002B6D43 /* MaterialSystem.cpp in Sources */,
 				29744AD4194B8F72009B3CD0 /* btEmptyCollisionAlgorithm.cpp in Sources */,
@@ -5486,6 +5756,7 @@
 				292E5D2F194D356E002B6D43 /* advancing_front.cc in Sources */,
 				29744ADA194B8F72009B3CD0 /* btGeneric6DofSpringConstraint.cpp in Sources */,
 				292E5BF7194D356D002B6D43 /* TextureTransform.cpp in Sources */,
+				29CA1FFB1954CF2000B5C3AF /* NSUIApplication+MIKMIDI.m in Sources */,
 				292E5B6D194D356D002B6D43 /* ImproveCacheLocality.cpp in Sources */,
 				292E5B5D194D356D002B6D43 /* IFCLoader.cpp in Sources */,
 				292E5BAF194D356D002B6D43 /* OgreXmlSerializer.cpp in Sources */,
@@ -5508,11 +5779,13 @@
 			files = (
 				292E5B70194D356D002B6D43 /* IRRLoader.cpp in Sources */,
 				292E5AEC194D356D002B6D43 /* ASEParser.cpp in Sources */,
+				29CA1FEE1954CF2000B5C3AF /* MIKMIDIOutputPort.m in Sources */,
 				29744B57194B8F72009B3CD0 /* btTriangleMesh.cpp in Sources */,
 				292E5BA8194D356D002B6D43 /* OgreBinarySerializer.cpp in Sources */,
 				2970D86B194A6DAF00EEAC2B /* NKShaderProgram.m in Sources */,
 				292E5B9E194D356D002B6D43 /* ObjExporter.cpp in Sources */,
 				29744AFD194B8F72009B3CD0 /* btManifoldResult.cpp in Sources */,
+				29CA1FE01954CF2000B5C3AF /* MIKMIDIMapping.m in Sources */,
 				29744B4D194B8F72009B3CD0 /* btTetrahedronShape.cpp in Sources */,
 				2970D885194A6DAF00EEAC2B /* NKFont+CoreText.m in Sources */,
 				2970D83D194A6DAF00EEAC2B /* NKStaticDraw.m in Sources */,
@@ -5536,6 +5809,7 @@
 				29744B6B194B8F72009B3CD0 /* gim_contact.cpp in Sources */,
 				29744ABF194B8F72009B3CD0 /* btConvexPointCloudShape.cpp in Sources */,
 				292E5B08194D356D002B6D43 /* BlenderTessellator.cpp in Sources */,
+				29CA1FD81954CF2000B5C3AF /* MIKMIDIEndpointSynthesizer.m in Sources */,
 				292E5B3C194D356D002B6D43 /* FBXMeshGeometry.cpp in Sources */,
 				29744ADD194B8F72009B3CD0 /* btGenericPoolAllocator.cpp in Sources */,
 				292E5BC2194D356D002B6D43 /* Q3BSPFileImporter.cpp in Sources */,
@@ -5545,6 +5819,7 @@
 				29744A91194B8F72009B3CD0 /* btCollisionDispatcher.cpp in Sources */,
 				29744B11194B8F72009B3CD0 /* btPolyhedralContactClipping.cpp in Sources */,
 				2970D869194A6DAF00EEAC2B /* NKShaderManager.m in Sources */,
+				29CA1FC81954CF2000B5C3AF /* MIKMIDIChannelVoiceCommand.m in Sources */,
 				292E5B68194D356D002B6D43 /* IFCUtil.cpp in Sources */,
 				292E5B64194D356D002B6D43 /* IFCProfile.cpp in Sources */,
 				292E5CCE194D356E002B6D43 /* Protector.cpp in Sources */,
@@ -5573,6 +5848,7 @@
 				292E5B1E194D356D002B6D43 /* CSMLoader.cpp in Sources */,
 				292E5BD6194D356D002B6D43 /* ScenePreprocessor.cpp in Sources */,
 				292E5CF0194D356E002B6D43 /* TestPath.cpp in Sources */,
+				29CA1FD01954CF2000B5C3AF /* MIKMIDIDestinationEndpoint.m in Sources */,
 				2970D88D194A6DAF00EEAC2B /* NKView.m in Sources */,
 				29744A79194B8F72009B3CD0 /* btAxisSweep3.cpp in Sources */,
 				292E5BC4194D356D002B6D43 /* Q3BSPFileParser.cpp in Sources */,
@@ -5633,6 +5909,7 @@
 				292E5B88194D356D002B6D43 /* MaterialSystem.cpp in Sources */,
 				292E5BAE194D356D002B6D43 /* OgreStructs.cpp in Sources */,
 				29744AAD194B8F72009B3CD0 /* btConvex2dShape.cpp in Sources */,
+				29CA1FD61954CF2000B5C3AF /* MIKMIDIEndpoint.m in Sources */,
 				29744AAF194B8F72009B3CD0 /* btConvexCast.cpp in Sources */,
 				292E5D30194D356E002B6D43 /* advancing_front.cc in Sources */,
 				292E5B9A194D356D002B6D43 /* NDOLoader.cpp in Sources */,
@@ -5685,17 +5962,21 @@
 				292E5B38194D356D002B6D43 /* FBXImporter.cpp in Sources */,
 				292E5BFA194D356D002B6D43 /* TriangulateProcess.cpp in Sources */,
 				29744A75194B8F72009B3CD0 /* btActivatingCollisionAlgorithm.cpp in Sources */,
+				29CA20001954D0F300B5C3AF /* NKMidiManager.m in Sources */,
 				29744AF1194B8F72009B3CD0 /* btGjkPairDetector.cpp in Sources */,
+				29CA1FF61954CF2000B5C3AF /* MIKMIDISystemExclusiveCommand.m in Sources */,
 				29744A7B194B8F72009B3CD0 /* btBox2dBox2dCollisionAlgorithm.cpp in Sources */,
 				292E5BEE194D356D002B6D43 /* STLExporter.cpp in Sources */,
 				292E5B42194D356D002B6D43 /* FBXParser.cpp in Sources */,
 				292E5B8A194D356D002B6D43 /* MD2Loader.cpp in Sources */,
 				2970D847194A6DAF00EEAC2B /* NKBatchNode.m in Sources */,
+				29CA1FE21954CF2000B5C3AF /* MIKMIDIMappingGenerator.m in Sources */,
 				292E5BCA194D356D002B6D43 /* RawLoader.cpp in Sources */,
 				292E5B34194D356D002B6D43 /* FBXDocument.cpp in Sources */,
 				29744A77194B8F72009B3CD0 /* btAlignedAllocator.cpp in Sources */,
 				292E5BDA194D356D002B6D43 /* SkeletonMeshBuilder.cpp in Sources */,
 				2970D851194A6DAF00EEAC2B /* NKLightNode.m in Sources */,
+				29CA1FD41954CF2000B5C3AF /* MIKMIDIDeviceManager.m in Sources */,
 				292E5AF6194D356D002B6D43 /* BaseImporter.cpp in Sources */,
 				29744AD3194B8F72009B3CD0 /* btDispatcher.cpp in Sources */,
 				292E5CD2194D356E002B6D43 /* RepeatedTest.cpp in Sources */,
@@ -5706,28 +5987,37 @@
 				292E5CBA194D356D002B6D43 /* DefaultProtector.cpp in Sources */,
 				29744AB5194B8F72009B3CD0 /* btConvexHull.cpp in Sources */,
 				29744AA5194B8F72009B3CD0 /* btContactProcessing.cpp in Sources */,
+				29CA1FDE1954CF2000B5C3AF /* MIKMIDIInputPort.m in Sources */,
 				292E5CE6194D356E002B6D43 /* TestDecorator.cpp in Sources */,
+				29CA1FD21954CF2000B5C3AF /* MIKMIDIDevice.m in Sources */,
 				29744B65194B8F72009B3CD0 /* btVoronoiSimplexSolver.cpp in Sources */,
 				292E5BEA194D356D002B6D43 /* STEPFileEncoding.cpp in Sources */,
 				29744AF9194B8F72009B3CD0 /* btInternalEdgeUtility.cpp in Sources */,
 				29744B6D194B8F72009B3CD0 /* gim_memory.cpp in Sources */,
+				29CA1FE81954CF2000B5C3AF /* MIKMIDINoteOffCommand.m in Sources */,
 				29744A85194B8F72009B3CD0 /* btBroadphaseProxy.cpp in Sources */,
 				292E5AE8194D356D002B6D43 /* ACLoader.cpp in Sources */,
 				29744AE9194B8F72009B3CD0 /* btGImpactShape.cpp in Sources */,
 				292E5CA6194D356D002B6D43 /* AdditionalMessage.cpp in Sources */,
+				29CA1FDC1954CF2000B5C3AF /* MIKMIDIErrors.m in Sources */,
 				292E5B94194D356D002B6D43 /* MDLLoader.cpp in Sources */,
 				29744AA1194B8F72009B3CD0 /* btConeTwistConstraint.cpp in Sources */,
 				292E5D4C194D356E002B6D43 /* inflate.c in Sources */,
 				2970D573194A6D9A00EEAC2B /* AppDelegate.m in Sources */,
 				292E5B74194D356D002B6D43 /* IRRShared.cpp in Sources */,
+				29CA1FEC1954CF2000B5C3AF /* MIKMIDIObject.m in Sources */,
 				2970D855194A6DAF00EEAC2B /* NKNode.m in Sources */,
 				292E5C08194D356D002B6D43 /* clipper.cpp in Sources */,
+				29CA1FFC1954CF2000B5C3AF /* NSUIApplication+MIKMIDI.m in Sources */,
 				292E5D0C194D356E002B6D43 /* UnixDynamicLibraryManager.cpp in Sources */,
 				2970D891194A6DAF00EEAC2B /* ExampleScene.m in Sources */,
 				29744B73194B8F72009B3CD0 /* NKBulletWorld.mm in Sources */,
+				29CA1FF41954CF2000B5C3AF /* MIKMIDISourceEndpoint.m in Sources */,
 				2970D84F194A6DAF00EEAC2B /* NKLabelNode.m in Sources */,
+				29CA1FEA1954CF2000B5C3AF /* MIKMIDINoteOnCommand.m in Sources */,
 				292E5B48194D356D002B6D43 /* FBXUtil.cpp in Sources */,
 				292E5CBC194D356D002B6D43 /* DllMain.cpp in Sources */,
+				29CA1FCA1954CF2000B5C3AF /* MIKMIDICommand.m in Sources */,
 				292E5BFE194D356D002B6D43 /* ValidateDataStructure.cpp in Sources */,
 				292E5CF8194D356E002B6D43 /* TestRunner.cpp in Sources */,
 				292E5B3A194D356D002B6D43 /* FBXMaterial.cpp in Sources */,
@@ -5738,9 +6028,11 @@
 				29744ACB194B8F72009B3CD0 /* btDbvtBroadphase.cpp in Sources */,
 				29744B5D194B8F72009B3CD0 /* btTypedConstraint.cpp in Sources */,
 				292E5BE8194D356D002B6D43 /* StandardShapes.cpp in Sources */,
+				29CA1FF81954CF2000B5C3AF /* MIKMIDISystemMessageCommand.m in Sources */,
 				292E5B7E194D356D002B6D43 /* LWOLoader.cpp in Sources */,
 				292E5B6E194D356D002B6D43 /* ImproveCacheLocality.cpp in Sources */,
 				29744B59194B8F72009B3CD0 /* btTriangleMeshShape.cpp in Sources */,
+				29CA1FDA1954CF2000B5C3AF /* MIKMIDIEntity.m in Sources */,
 				292E5C0C194D356D002B6D43 /* ConvertUTF.c in Sources */,
 				292E5D46194D356E002B6D43 /* crc32.c in Sources */,
 				29744B49194B8F72009B3CD0 /* btStridingMeshInterface.cpp in Sources */,
@@ -5790,6 +6082,7 @@
 				292E5B8C194D356D002B6D43 /* MD3Loader.cpp in Sources */,
 				292E5D06194D356E002B6D43 /* TextTestResult.cpp in Sources */,
 				292E5D2E194D356E002B6D43 /* shapes.cc in Sources */,
+				29CA1FFA1954CF2000B5C3AF /* MIKMIDIUtilities.m in Sources */,
 				292E5D4A194D356E002B6D43 /* inffast.c in Sources */,
 				292E5BE0194D356D002B6D43 /* SortByPTypeProcess.cpp in Sources */,
 				29744AB9194B8F72009B3CD0 /* btConvexHullShape.cpp in Sources */,
@@ -5804,17 +6097,21 @@
 				292E5CC2194D356E002B6D43 /* Exception.cpp in Sources */,
 				292E5AE4194D356D002B6D43 /* 3DSConverter.cpp in Sources */,
 				292E5B6A194D356D002B6D43 /* Importer.cpp in Sources */,
+				29CA1FCE1954CF2000B5C3AF /* MIKMIDIControlChangeCommand.m in Sources */,
 				292E5D36194D356E002B6D43 /* sweep_context.cc in Sources */,
 				29744A8B194B8F72009B3CD0 /* btBvhTriangleMeshShape.cpp in Sources */,
+				29CA1FF01954CF2000B5C3AF /* MIKMIDIPort.m in Sources */,
 				292E5B22194D356D002B6D43 /* DefaultIOStream.cpp in Sources */,
 				29744A9F194B8F72009B3CD0 /* btConeShape.cpp in Sources */,
 				292E5BBE194D356D002B6D43 /* PretransformVertices.cpp in Sources */,
 				292E5BF4194D356D002B6D43 /* TargetAnimation.cpp in Sources */,
+				29CA1FE41954CF2000B5C3AF /* MIKMIDIMappingManager.m in Sources */,
 				292E5B2A194D356D002B6D43 /* Exporter.cpp in Sources */,
 				292E5BA4194D356D002B6D43 /* ObjFileParser.cpp in Sources */,
 				29744A73194B8F72009B3CD0 /* bFile.cpp in Sources */,
 				29744A7F194B8F72009B3CD0 /* btBoxBoxCollisionAlgorithm.cpp in Sources */,
 				292E5B04194D356D002B6D43 /* BlenderModifier.cpp in Sources */,
+				29CA1FCC1954CF2000B5C3AF /* MIKMIDICommandThrottler.m in Sources */,
 				292E5B78194D356D002B6D43 /* LimitBoneWeightsProcess.cpp in Sources */,
 				29744B43194B8F72009B3CD0 /* btSphereSphereCollisionAlgorithm.cpp in Sources */,
 				29744B4B194B8F72009B3CD0 /* btSubSimplexConvexCast.cpp in Sources */,
@@ -5830,10 +6127,12 @@
 				29744AE5194B8F72009B3CD0 /* btGImpactCollisionAlgorithm.cpp in Sources */,
 				29744AA3194B8F72009B3CD0 /* btContactConstraint.cpp in Sources */,
 				29744AC7194B8F72009B3CD0 /* btCylinderShape.cpp in Sources */,
+				29CA1FE61954CF2000B5C3AF /* MIKMIDIMappingXMLParser.m in Sources */,
 				29744B5F194B8F72009B3CD0 /* btUniformScalingShape.cpp in Sources */,
 				292E5CD0194D356E002B6D43 /* ProtectorChain.cpp in Sources */,
 				292E5B6C194D356D002B6D43 /* ImporterRegistry.cpp in Sources */,
 				292E5CCC194D356E002B6D43 /* PlugInParameters.cpp in Sources */,
+				29CA1FF21954CF2000B5C3AF /* MIKMIDIPrivateUtilities.m in Sources */,
 				292E5CE0194D356E002B6D43 /* TestCase.cpp in Sources */,
 				292E5BB8194D356D002B6D43 /* PlyLoader.cpp in Sources */,
 				292E5BC6194D356D002B6D43 /* Q3BSPZipArchive.cpp in Sources */,
@@ -5856,6 +6155,7 @@
 				292E5BDC194D356D002B6D43 /* SMDLoader.cpp in Sources */,
 				29744A8F194B8F72009B3CD0 /* btCollisionAlgorithm.cpp in Sources */,
 				29744B1D194B8F72009B3CD0 /* btRigidBody.cpp in Sources */,
+				29CA20041954D4F300B5C3AF /* NKMatrixStack.m in Sources */,
 				292E5D52194D356E002B6D43 /* trees.c in Sources */,
 				292E5B36194D356D002B6D43 /* FBXDocumentUtil.cpp in Sources */,
 				29744B39194B8F72009B3CD0 /* btSoftRigidDynamicsWorld.cpp in Sources */,

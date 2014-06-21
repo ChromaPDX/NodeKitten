@@ -60,45 +60,43 @@
 #pragma mark - Node Hierarchy
 
 -(NSArray*)children {
-    return intChildren;
+    return _children;
 }
 
 -(void)setChildren:(NSArray *)children {
-    intChildren = [[NSMutableArray alloc] initWithArray:children];
+    _children = children;
 }
 
 - (void)addChild:(NKNode *)child {
     
-    if (!intChildren) {
-        intChildren = [[NSMutableArray alloc]init];
+    NSMutableArray *temp;
+    if (!_children) {
+        temp = [[NSMutableArray alloc]initWithCapacity:1];
     }
-    
-    NSMutableArray *temp = [intChildren mutableCopy];
+    else {
+        temp = [_children mutableCopy];
+    }
     
     if (![temp containsObject:child]) {
         [temp addObject:child];
         [child setParent:self];
     }
     
-    intChildren = temp;
-    
+    _children = temp;
 }
 
 
 
 - (void)insertChild:(NKNode *)child atIndex:(NSInteger)index {
-    if (!intChildren) {
-        intChildren = [[NSMutableArray alloc]init];
-    }
     
-    NSMutableArray *temp = [intChildren mutableCopy];
+    NSMutableArray *temp = [_children mutableCopy];
     
     if (![temp containsObject:child]) {
         [temp insertObject:child atIndex:0];
         [child setParent:self];
     }
     
-    intChildren = temp;
+    _children = temp;
 }
 
 - (void)fadeInChild:(NKNode*)child duration:(NSTimeInterval)seconds{
@@ -228,7 +226,7 @@
     
     int count = 0;
     
-    for (NKNode* child in intChildren) {
+    for (NKNode* child in _children) {
         count += [child numNodes];
         count++;
     }
@@ -241,7 +239,7 @@
     
     int count = 0;
     
-    for (NKNode* child in intChildren) {
+    for (NKNode* child in _children) {
         if (!child.isHidden) {
             count += [child numVisibleNodes];
             count++;
@@ -256,7 +254,7 @@
     
     R4t rect = [self getDrawFrame];
     
-    for (NKNode* child in intChildren) {
+    for (NKNode* child in _children) {
         
         R4t childFrame = [child getDrawFrame];
         
@@ -284,13 +282,13 @@
 }
 
 - (void)removeChildrenInArray:(NSArray *)nodes{
-    NSMutableArray *childMut = [intChildren mutableCopy];
+    NSMutableArray *childMut = [_children mutableCopy];
     [childMut removeObjectsInArray:nodes];
-    intChildren = childMut;
+    _children = childMut;
 }
 
 - (void)removeAllChildren{
-    [intChildren removeAllObjects];
+    _children = nil;
 }
 
 -(void)removeChild:(NKNode *)node {
@@ -298,7 +296,7 @@
 }
 
 -(void)removeChildNamed:(NSString *)name {
-    for (NKNode *n in intChildren) {
+    for (NKNode *n in _children) {
         if ([n.name isEqualToString:name]) {
             [n removeFromParent];
             return;
@@ -307,7 +305,7 @@
 }
 
 -(NKNode*)childNodeWithName:(NSString *)name {
-    for (NKNode *n in intChildren) {
+    for (NKNode *n in _children) {
         if ([n.name isEqualToString:name]) {
             return n;
         }
@@ -316,15 +314,15 @@
 }
 
 -(NKNode*)randomChild {
-    if (!intChildren.count) {
+    if (!_children.count) {
         return self;
     }
-    return intChildren[arc4random() % intChildren.count];
+    return _children[arc4random() % _children.count];
 }
 
 -(NKNode*)randomLeaf {
     
-    if (intChildren.count) {
+    if (_children.count) {
         return [[self randomChild] randomLeaf];
     }
     
@@ -336,7 +334,7 @@
     
     NSMutableArray* allChildren = [[NSMutableArray alloc] init];
     
-    for (NKNode*child in intChildren) {
+    for (NKNode*child in _children) {
         [allChildren addObject:child];
         [allChildren addObjectsFromArray:child.children];
     }
@@ -399,7 +397,7 @@
     
     [animationHandler updateWithTimeSinceLast:dt];
     
-    for (NKNode *child in intChildren) {
+    for (NKNode *child in _children) {
         [child updateWithTimeSinceLast:dt];
     }
 }
@@ -432,7 +430,7 @@
     //
     //    [self customDraw];
     //
-    //    for (NKNode *child in intChildren) {
+    //    for (NKNode *child in _children) {
     //        if (!child.isHidden) {
     //            [child draw];
     //        }
@@ -574,7 +572,7 @@
     
     NSMutableSet *transparentChildren;
     
-    for (NKNode *child in intChildren) {
+    for (NKNode *child in _children) {
         if (child.alpha == 1.) {
               [child draw];
         }
@@ -604,7 +602,7 @@
          [self customdrawWithHitShader];
     }
     
-    for (NKNode *child in intChildren) {
+    for (NKNode *child in _children) {
         [child drawWithHitShader];
     }
 }
@@ -617,48 +615,7 @@
     // OVERRIDE IN SUB CLASS
 }
 
--(void)end {
-    [self.scene popMatrix];
-}
-
-//+(void)drawRectangle:(S2t)size {
-//
-//    NKMeshNode *node = [[NKStaticDraw meshesCache]objectForKey:[NKStaticDraw stringForPrimitive:NKPrimitiveRect]];
-//
-//    if (!node) {
-//        node = [[NKMeshNode alloc] initWithPrimitive:NKPrimitiveRect texture:nil color:NKWHITE size:V3Make(size.width, size.height, 0)];
-//    }
-//
-//    if (NK_GL_VERSION == 2) {
-//        [node customDraw];
-//    }
-//    else {
-//
-//        glPushMatrix();
-//        glScalef(size.width, size.height, 0);
-//        [node customDraw];
-//        glPopMatrix();
-//
-//    }
-//
-//}
-
 #pragma mark - GEOMETRY
-
-// this sucks, needs work
-//-(P2t)transformedPoint:(P2t)location {
-//
-//    M16t inverse = M16InvertColumnMajor([self globalTransform], NULL);
-//    //M16t inverse = [self globalTransform];
-//
-//    V3t transformed = V3MultiplyM16(inverse, V3Make(location.x, location.y, V3GetM16Translation(inverse).z));
-//
-//    P2tp = P2Make(transformed.x / 100., transformed.y / 100.);
-//
-//    NSLog(@"%f %f node transformed %f, %f", location.x, location.y, p.x, p.y);
-//
-//    return p;
-//}
 
 -(P2t)inverseProjectedPoint:(P2t)location {
     
@@ -719,7 +676,7 @@
 
 -(R4t)getWorldFrame{
     V3t g = [self globalPosition];
-    return R4Make(g.x - _size.x * _anchorPoint3d.x, g.y - _size.y *_anchorPoint3d.y, _size.x, _size.y);
+    return R4Make(g.x - _size.x * _anchorPoint.x, g.y - _size.y *_anchorPoint.y, _size.x, _size.y);
     
 }
 
@@ -728,22 +685,12 @@
     //[self logCoords];
     //V3t g = node->getPosition();
     //return R4Make(g.x - _size.width * _anchorPoint.x, g.y - _size.height *_anchorPoint.y, _size.width, _size.height);
-    return R4Make(-_size.x * _anchorPoint3d.x, -_size.y *_anchorPoint3d.y, _size.x, _size.y);
+    return R4Make(-_size.x * _anchorPoint.x, -_size.y *_anchorPoint.y, _size.x, _size.y);
 }
 
 
 -(bool)shouldCull {
     return 0;
-}
-
--(P2t)childLocationIncludingRotation:(NKNode*)child {
-    
-    P2t polar = carToPol(child.position.point);
-    polar.y += self.zRotation;
-    
-    //NSLog(@"zRotation: %f", self.zRotation);
-    return polToCar(polar);
-    
 }
 
 #pragma mark - MATH
@@ -766,24 +713,11 @@
     
 }
 
-//-(M16t)tranformMatrixInNode:(NKNode*)n{
-//    
-//    if (_parent == n || !_parent) {
-//        return localTransform;
-//    }
-//    else {
-//        // recursive add
-//        return M16Multiply([_parent tranformMatrixInNode:n],localTransform);
-//    }
-//    
-//}
-
 -(M16t)globalTransform {
     
     if (_dirty) {
-        //NSLog(@"cache global matrix");
         _dirty = false;
-        if (!_parent || _parent == self.scene) {
+        if (!_parent) {
             return _cachedGlobalTransform = _localTransform;
         }
         return _cachedGlobalTransform = M16Multiply([_parent globalTransform],_localTransform);
@@ -796,12 +730,11 @@
 
 #pragma mark - POSITION
 
-// BASE, all should refer to this:
-
--(void)setPosition2d:(V2t)position {
-    [self setPosition:V3Make(position.x, position.y, _position.z)];
+-(V3t)position {
+    return _position;
 }
 
+// BASE, all position methods should call this:
 -(void)setPosition:(V3t)position {
     _position = position;
     M16SetV3Translation(&_localTransform, _position);
@@ -813,24 +746,21 @@
     }
 }
 
--(V3t)position {
-    return _position;
+-(void)setPosition2d:(V2t)position {
+    [self setPosition:V3Make(position.x, position.y, _position.z)];
 }
 
--(void)setDirty:(bool)dirty {
-    
-        _dirty = dirty;
-        
-        if (dirty) {
-            for (NKNode *n in intChildren) {
-                [n setDirty:dirty];
-            }
-        }
-    
+-(void)setXPosition:(float)position {
+    _position.x = position;
+    self.position = _position;
 }
-
--(void)setZPosition:(int)zPosition {
-    [self setPosition:V3Make(_position.x,_position.y, zPosition)];
+-(void)setYPosition:(float)position {
+    _position.y = position;
+    self.position = _position;
+}
+-(void)setZPosition:(float)position {
+    _position.z = position;
+    self.position = _position;
 }
 
 -(void) setGlobalPosition:(const V3t)p {
@@ -843,6 +773,15 @@
 	}
 }
 
+-(void)setDirty:(bool)dirty {
+        _dirty = dirty;
+        if (dirty) {
+            for (NKNode *n in _children) {
+                [n setDirty:dirty];
+            }
+        }
+}
+
 
 -(M16t)tranformMatrixInNode:(NKNode*)n{
     
@@ -853,12 +792,9 @@
         // recursive add
         return M16Multiply([_parent tranformMatrixInNode:n], _localTransform);
     }
-    
 }
 
 -(P2t)positionInNode:(NKNode *)n {
-    //    V3t p = self.node->globalPosition() - n.node->globalPosition();
-    //
     V3t p = [self convertPoint3d:V3Make(0,0,0) toNode:n];
     return P2Make(p.x, p.y);
 }
@@ -869,13 +805,21 @@
 
 #pragma mark - ANCHOR
 
--(void)setAnchorPoint:(P2t)anchorPoint {
-    _anchorPoint3d.x = anchorPoint.x;
-    _anchorPoint3d.y = anchorPoint.y;
+-(void)setAnchorPoint:(V3t)anchorPoint {
+    _anchorPoint = anchorPoint;
 }
 
--(P2t)anchorPoint {
-    return P2Make(_anchorPoint3d.x, _anchorPoint3d.y);
+-(V3t)anchorPoint {
+    return _anchorPoint;
+}
+
+-(void)setAnchorPoint2d:(P2t)anchorPoint {
+    _anchorPoint.x = anchorPoint.x;
+    _anchorPoint.y = anchorPoint.y;
+}
+
+-(P2t)anchorPoint2d {
+    return P2Make(_anchorPoint.x, _anchorPoint.y);
 }
 
 #pragma mark - Orientation
@@ -943,10 +887,10 @@
     _latitude = orbit.y;
     _radius = orbit.z;
     
-    if (_latitude >= 360) _latitude-=360.;
-    else if (_latitude <= -360) _latitude+=360.;
-    if (_longitude >= 360) _longitude-=360.;
-    else if (_longitude <= -360) _longitude+=360.;
+//    if (_latitude >= 360) _latitude-=360.;
+//    else if (_latitude <= -360) _latitude+=360.;
+//    if (_longitude >= 360) _longitude-=360.;
+//    else if (_longitude <= -360) _longitude+=360.;
 }
 
 -(V3t)currentOrbit {
@@ -1042,7 +986,7 @@
 -(void)recursiveAlpha:(F1t)alpha{
     _alpha = intAlpha * alpha;
     
-    for (NKNode* n in intChildren) {
+    for (NKNode* n in _children) {
         [n recursiveAlpha:(_alpha)];
     }
 }
