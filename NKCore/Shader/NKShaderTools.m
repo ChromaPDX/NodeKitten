@@ -110,7 +110,8 @@ NSString* nksString(NKS_ENUM string) {
             return @"texture";
         case NKS_S2D_TEXTURE_RECT:
             return @"textureRect";
-            
+        case NKS_TEXTURE_RECT_SCALE:
+            return @"textureScale";
             // GL BUILT IN
         case NKS_V3_GL_POSITION:
             return @"gl_position";
@@ -318,6 +319,13 @@ NSString *textureFragmentFunction(NSDictionary *shaderDict){
     glUniform1i(_glLocation, data);
 }
 
+-(void)bindV2:(V2t)data {
+#ifdef NK_USE_ARB_EXT
+    glUniform2fvARB(_glLocation, 1, data.v);
+#else
+    glUniform2fv(_glLocation, 1, data.v);
+#endif
+}
 -(void)bindV3:(V3t)data {
 #ifdef NK_USE_ARB_EXT
     glUniform3fvARB(_glLocation, 1, data.v);

@@ -379,8 +379,22 @@
     
 }
 
+//-(void)chooseShader {
+//#if NK_USE_GLES
+//    self.shader = [NKShaderProgram newShaderNamed:@"videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:1 numLights:1 withBatchSize:0];
+//#else
+//    self.shader = [NKShaderProgram newShaderNamed:@"videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:0];
+//#endif
+//}
+
 -(void)chooseShader {
     if (_numTextures) {
+#if !NK_USE_GLES
+        if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
+            self.shader = [NKShaderProgram newShaderNamed:@"videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:0];
+            return;
+        }
+#endif
         self.shader = [NKShaderProgram newShaderNamed:@"uColorTextureLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:_numTextures numLights:1 withBatchSize:0];
     }
     else {
@@ -400,7 +414,6 @@
 
 -(void)setColor:(NKByteColor *)color {
     _color = color;
-    [self chooseShader];
 }
 
 -(void)setDrawMode:(GLenum)drawMode {
@@ -460,6 +473,19 @@
     
 }
 
+-(void)bindTextures {
+    if (_numTextures) {
+        if (self.scene.boundTexture != _textures[0]) {
+            [_textures[0] bind];
+            if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
+                //NSLog(@"binding tex scale: %f %f", [(NKVideoTexture*)_textures[0] size].x, [(NKVideoTexture*)_textures[0] size].y);
+                [[self.scene.activeShader uniformNamed:NKS_TEXTURE_RECT_SCALE] bindV2:[(NKVideoTexture*)_textures[0] size]];
+            }
+            self.scene.boundTexture = _textures[0];
+        }
+    }
+}
+
 -(void)customDraw {
     
     if (self.color || _numTextures) {
@@ -478,14 +504,7 @@
             }
         }
         
-        if ([self.scene.activeShader uniformNamed:NKS_S2D_TEXTURE]) {
-            if (_numTextures) {
-                if (self.scene.boundTexture != _textures[0]) {
-                    [_textures[0] bind];
-                    self.scene.boundTexture = _textures[0];
-                }
-            }
-        }
+        [self bindTextures];
         
         if (self.scene.boundVertexBuffer != _vertexBuffer) {
             [_vertexBuffer bind];

@@ -46,6 +46,7 @@ static inline float cblend(F1t col, F1t bl){
 -(instancetype)initWithVertexBuffer:(NKVertexBuffer*)buffer drawMode:(GLenum)drawMode texture:(NKTexture*)texture color:(NKByteColor *)color size:(V3t)size;
 
 -(void)setTexture:(NKTexture *)texture;
+-(void)bindTextures;
 -(void)setDrawMode:(GLenum)drawMode;
 
 @end

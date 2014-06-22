@@ -20,6 +20,7 @@ union _V2t {
     struct { F1t min, max; };
     struct { F1t s, t; };
     struct { F1t width, height; };
+    F1t v[2];
 };
 typedef union _V2t V2t;
 

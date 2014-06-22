@@ -208,9 +208,11 @@
     
     if (numTex == -1){ // quick vid fix
         [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_2D_RECT, NKS_S2D_TEXTURE_RECT)];
+        [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_TEXTURE_RECT_SCALE)];
         [shaderDict[NKS_VARYINGS] addObject: nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_V2_TEXCOORD)];
         [shaderDict[NKS_FRAG_INLINE] addObject:nksi(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_V4_TEX_COLOR)];
     }
+    
     else if (numTex) {
         [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_2D, NKS_S2D_TEXTURE)];
         [shaderDict[NKS_VARYINGS] addObject: nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_V2_TEXCOORD)];
@@ -233,6 +235,7 @@
             [shaderDict[NKS_VERTEX_MAIN] addObject:shaderLineWithArray(@[[shaderDict varyingNamed:NKS_V4_COLOR],@"=",[shaderDict uniformNamed:NKS_V4_COLOR]])];
         }
     }
+    
     else if (colorMode == NKS_COLOR_MODE_VERTEX){
             [shaderDict[NKS_VERTEX_MAIN] addObject:shaderLineWithArray(@[[shaderDict varyingNamed:NKS_V4_COLOR],@"=",[shaderDict attributeNamed:NKS_V4_COLOR]])];
     }

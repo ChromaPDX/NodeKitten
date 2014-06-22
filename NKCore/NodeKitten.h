@@ -56,6 +56,7 @@
 
 #import "NKTextureManager.h"
 #import "NKTexture.h"
+#import "NKVideoTexture.h"
 #import "NKColor.h"
 
 // SHADERS

@@ -819,9 +819,9 @@
             
             [self addChild:videoNode2];
             
+            NKMeshNode *videoNode3 = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveSphere texture:[NKVideoTexture textureWithVideoNamed:@"carousel1_640-360.mov"] color:NKWHITE size:V3MakeF(4.)];
             
-            NKVideoNode *videoNode3 = [[NKVideoNode alloc]initWithVideoNamed:@"carousel1_640-360.mov" size:V3Make(12., 8., 1.)];
-            
+            [videoNode3 repeatAction:[NKAction rotateByAngles:V3Make(0, 20, 0) duration:.1]];
             [videoNode3 setPosition:V3Make(0, 0, 0)];
             
             
@@ -847,12 +847,14 @@
                 }];
             }];
 
+            //
+                //[NKTexture textureWithImageNamed:@"spark.png"]
             
-            NKBatchNode* emitter = [[NKBatchNode alloc]initWithPrimitive:NKPrimitiveRect texture:[NKTexture textureWithImageNamed:@"spark.png"] color:NKWHITE size:V3MakeF(.1)];
+            NKBatchNode* emitter = [[NKBatchNode alloc]initWithPrimitive:NKPrimitiveRect texture:[NKVideoTexture textureWithVideoNamed:@"slitscan-fall-640-360.mov"] color:NKWHITE size:V3MakeF(.1)];
             
             [self addChild:emitter];
             
-            emitter.cullFace = NKCullFaceNone;
+            //emitter.cullFace = NKCullFaceNone;
             emitter.blendMode = NKBlendModeAdd;
             
             for (int i = 0; i < 2000; i++) {

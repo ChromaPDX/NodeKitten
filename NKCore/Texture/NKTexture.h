@@ -8,7 +8,6 @@
 
 #import "NKpch.h"
 
-
 @class NKLabelNode;
 
 typedef NS_OPTIONS(UInt8, NKTextureMapStyle) {
@@ -30,7 +29,6 @@ typedef NS_OPTIONS(UInt8, NKTextureMapStyle) {
 @property (nonatomic) S2t size;
 @property (nonatomic) bool shouldResizeToTexture;
 @property (nonatomic) NKTextureMapStyle textureMapStyle;
-
 
 +(instancetype) textureWithImageNamed:(NSString*)name;
 +(instancetype) textureWithImage:(NKImage*)image;

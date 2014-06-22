@@ -1,13 +1,12 @@
 //
-//  NKVideoNode.h
+//  NKVideoTexture.h
 //  NodeKittenIOS
 //
-//  Created by Leif Shackelford on 6/14/14.
+//  Created by Leif Shackelford on 6/21/14.
 //  Copyright (c) 2014 chroma. All rights reserved.
 //
 
-#import "NKSpriteNode.h"
-
+#import "NKTexture.h"
 #import <CoreVideo/CoreVideo.h>
 #import <AVFoundation/AVFoundation.h>
 
@@ -15,8 +14,9 @@
 # define LUMA_SLIDER_TAG 0
 # define CHROMA_SLIDER_TAG 1
 
+static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 
-@interface NKVideoNode : NKSpriteNode
+@interface NKVideoTexture : NKTexture
 {
     AVPlayer *_player;
 	dispatch_queue_t _myVideoOutputQueue;
@@ -35,8 +35,8 @@
     CVOpenGLTextureRef _lumaTexture;
     CVOpenGLTextureRef _chromaTexture;
 	CVOpenGLTextureCacheRef _videoTextureCache;
-//    CVOpenGLBufferRef _buffer;
-//    CVPixelBufferPoolRef pool;
+    //    CVOpenGLBufferRef _buffer;
+    //    CVPixelBufferPoolRef pool;
 #endif
 	
     CGSize videoSize;
@@ -48,14 +48,14 @@
 	const GLfloat *_preferredConversion;
 }
 
++(instancetype) textureWithVideoNamed:(NSString*)name;
+    
 @property AVPlayerItemVideoOutput *videoOutput;
 
 @property GLfloat preferredRotation;
 @property CGSize presentationRect;
 @property GLfloat chromaThreshold;
 @property GLfloat lumaThreshold;
-
--(instancetype)initWithVideoNamed:(NSString*)name size:(V3t)size;
 
 - (void)setupBuffers;
 - (void)cleanUpTextures;

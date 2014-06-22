@@ -50,6 +50,12 @@
         self.hitShader = [NKShaderProgram newShaderNamed:@"b_HitShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:0 numLights:0 withBatchSize:NK_BATCH_SIZE];
     }
     if (_numTextures) {
+#if !NK_USE_GLES
+        if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
+            self.shader = [NKShaderProgram newShaderNamed:@"b_videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:NK_BATCH_SIZE];
+            return;
+        }
+#endif
         self.shader = [NKShaderProgram newShaderNamed:@"b_colorTextureLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:_numTextures numLights:1 withBatchSize:NK_BATCH_SIZE];
     }
     else {
@@ -81,13 +87,19 @@
     if ([self.scene.activeShader uniformNamed:NKS_V4_COLOR]) {
         useColor = true;
     }
-    
-    if ([self.scene.activeShader uniformNamed:NKS_S2D_TEXTURE]) {
-        if (self.scene.boundTexture != _textures[0]) {
-            [_textures[0] bind];
-            self.scene.boundTexture = _textures[0];
-        }
-    }
+//    
+//    if (_numTextures) {
+//        if (self.scene.boundTexture != _textures[0]) {
+//            [_textures[0] bind];
+//            if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
+//                NSLog(@"binding tex scale: %f %f", [(NKVideoTexture*)_textures[0] size].x, [(NKVideoTexture*)_textures[0] size].y);
+//                [[self.scene.activeShader uniformNamed:NKS_TEXTURE_RECT_SCALE] bindV2:[(NKVideoTexture*)_textures[0] size]];
+//            }
+//            self.scene.boundTexture = _textures[0];
+//        }
+//    }
+//    
+    [self bindTextures];
     
     [_mvpStack reset];
     [_mvStack reset];
@@ -202,7 +214,6 @@
     }
     
     if (_primitiveType == NKPrimitiveLODSphere) {
-        
 #if TARGET_OS_IPHONE
         glDrawArraysInstancedEXT(_drawMode, _vertexBuffer.elementOffset[0], _vertexBuffer.elementSize[0], spritesInBatch);
 #else
@@ -212,7 +223,6 @@
         glDrawArraysInstanced(_drawMode, _vertexBuffer.elementOffset[0], _vertexBuffer.elementSize[0], spritesInBatch);
 #endif
 #endif
-        
     }
     else {
 #if TARGET_OS_IPHONE

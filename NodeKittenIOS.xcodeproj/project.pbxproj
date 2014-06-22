@@ -1344,6 +1344,8 @@
 		29CA2C16195637F300B5C3AF /* SphereTriangleDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29CA2B10195637F300B5C3AF /* SphereTriangleDetector.cpp */; };
 		29CA2C17195637F300B5C3AF /* SphereTriangleDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29CA2B10195637F300B5C3AF /* SphereTriangleDetector.cpp */; };
 		29CA2C191956382D00B5C3AF /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 29CA2C181956382D00B5C3AF /* libxml2.2.dylib */; };
+		29CA2C1C1956451B00B5C3AF /* NKVideoTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA2C1B1956451B00B5C3AF /* NKVideoTexture.m */; };
+		29CA2C1D1956451B00B5C3AF /* NKVideoTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA2C1B1956451B00B5C3AF /* NKVideoTexture.m */; };
 		29CC5D77194E14B200614265 /* cvTextureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */; };
 		29CC5D78194E14B200614265 /* cvTextureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */; };
 		29CC5D7A194E174400614265 /* textureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D79194E174400614265 /* textureProgram.nks.txt */; };
@@ -2675,6 +2677,8 @@
 		29CA2B10195637F300B5C3AF /* SphereTriangleDetector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SphereTriangleDetector.cpp; sourceTree = "<group>"; };
 		29CA2B11195637F300B5C3AF /* SphereTriangleDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereTriangleDetector.h; sourceTree = "<group>"; };
 		29CA2C181956382D00B5C3AF /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = usr/lib/libxml2.2.dylib; sourceTree = SDKROOT; };
+		29CA2C1A1956451B00B5C3AF /* NKVideoTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKVideoTexture.h; sourceTree = "<group>"; };
+		29CA2C1B1956451B00B5C3AF /* NKVideoTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKVideoTexture.m; sourceTree = "<group>"; };
 		29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cvTextureProgram.nks.txt; sourceTree = "<group>"; };
 		29CC5D79194E174400614265 /* textureProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = textureProgram.nks.txt; sourceTree = "<group>"; };
 		29DACA59194B403300F382E4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
@@ -3976,6 +3980,8 @@
 				2970D71A194A6DAF00EEAC2B /* NKFrameBuffer.m */,
 				2970D71B194A6DAF00EEAC2B /* NKTexture.h */,
 				2970D71C194A6DAF00EEAC2B /* NKTexture.m */,
+				29CA2C1A1956451B00B5C3AF /* NKVideoTexture.h */,
+				29CA2C1B1956451B00B5C3AF /* NKVideoTexture.m */,
 				2970D71D194A6DAF00EEAC2B /* NKTextureManager.h */,
 				2970D71E194A6DAF00EEAC2B /* NKTextureManager.m */,
 				2970D71F194A6DAF00EEAC2B /* skysphere.png */,
@@ -5429,6 +5435,7 @@
 				292E5CE5194D356E002B6D43 /* TestDecorator.cpp in Sources */,
 				292E5CE9194D356E002B6D43 /* TestFailure.cpp in Sources */,
 				292E5BBD194D356D002B6D43 /* PretransformVertices.cpp in Sources */,
+				29CA2C1C1956451B00B5C3AF /* NKVideoTexture.m in Sources */,
 				29CA2C04195637F300B5C3AF /* btUniformScalingShape.cpp in Sources */,
 				292E5CF3194D356E002B6D43 /* TestResult.cpp in Sources */,
 				2970D88A194A6DAF00EEAC2B /* NKUIViewController.m in Sources */,
@@ -5894,6 +5901,7 @@
 				29CA2B53195637F300B5C3AF /* btConvex2dShape.cpp in Sources */,
 				292E5B72194D356D002B6D43 /* IRRMeshLoader.cpp in Sources */,
 				29CA2BFD195637F300B5C3AF /* btTriangleMesh.cpp in Sources */,
+				29CA2C1D1956451B00B5C3AF /* NKVideoTexture.m in Sources */,
 				292E5D54194D356E002B6D43 /* zutil.c in Sources */,
 				292E5B62194D356D002B6D43 /* IFCOpenings.cpp in Sources */,
 				292E5B24194D356D002B6D43 /* DefaultIOSystem.cpp in Sources */,

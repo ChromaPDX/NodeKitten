@@ -116,7 +116,7 @@ typedef NS_ENUM(GLuint, NKS_ENUM)
     // SAMPLER
     NKS_S2D_TEXTURE,
     NKS_S2D_TEXTURE_RECT,
-    
+    NKS_TEXTURE_RECT_SCALE,
     // LIGHT
     NKS_LIGHT,
     NKS_I1_NUM_LIGHTS,
@@ -233,6 +233,7 @@ typedef union _NKS_SCALAR NKS_SCALAR;
 
 -(void)bindI1:(int)data;
 
+-(void)bindV2:(V2t)data;
 -(void)bindV3:(V3t)data;
 -(void)bindV4:(V4t)data;
 -(void)bindM9:(M9t)data;
