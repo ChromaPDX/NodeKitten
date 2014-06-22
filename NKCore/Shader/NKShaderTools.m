@@ -56,9 +56,14 @@ NSString* nksString(NKS_ENUM string) {
             return @"bool";
         case NKS_TYPE_SAMPLER_2D:
             return @"sampler2D";
-        case NKS_TYPE_SAMPLER_2D_RECT:
+//        case NKS_TYPE_SAMPLER_2D_RECT:
+//            return @"sampler2DRect";
+        case NKS_TYPE_SAMPLER_CORE_VIDEO:
+#if TARGET_OS_IPHONE
+            return @"sampler2D";
+#else
             return @"sampler2DRect";
-            
+#endif
         case NKS_STRUCT_LIGHT:
             return @"LightProperties";
         case NKS_STRUCT_MATERIAL:
@@ -109,7 +114,7 @@ NSString* nksString(NKS_ENUM string) {
         case NKS_S2D_TEXTURE:
             return @"texture";
         case NKS_S2D_TEXTURE_RECT:
-            return @"textureRect";
+            return @"texture";
         case NKS_TEXTURE_RECT_SCALE:
             return @"textureScale";
             // GL BUILT IN

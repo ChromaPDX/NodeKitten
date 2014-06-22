@@ -167,10 +167,9 @@
 }
 
 -(void)setScene:(NKSceneNode *)scene {
-    if (!_uidColor) {
+    if (_userInteractionEnabled && !_uidColor) {
         [NKShaderManager newUIDColorForNode:self];
     }
-    
     _scene = scene;
 }
 

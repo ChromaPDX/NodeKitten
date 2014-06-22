@@ -1,13 +1,13 @@
 //
-//  NKEmiiterNode.h
-//  NodeKittenExample
+//  NKEmitterNode.h
+//  NodeKittenIOS
 //
-//  Created by Chroma Developer on 3/18/14.
-//  Copyright (c) 2014 Chroma. All rights reserved.
+//  Created by Leif Shackelford on 6/22/14.
+//  Copyright (c) 2014 chroma. All rights reserved.
 //
 
-#import "NKNode.h"
+#import "NKMeshNode.h"
 
-@interface NKEmitterNode : NKNode
+@interface NKEmitterNode : NKMeshNode
 
 @end

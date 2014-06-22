@@ -731,8 +731,6 @@
 		2970D849194A6DAF00EEAC2B /* NKCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D6F1194A6DAF00EEAC2B /* NKCamera.m */; };
 		2970D84A194A6DAF00EEAC2B /* NKCoreTextNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D6F3194A6DAF00EEAC2B /* NKCoreTextNode.m */; };
 		2970D84B194A6DAF00EEAC2B /* NKCoreTextNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D6F3194A6DAF00EEAC2B /* NKCoreTextNode.m */; };
-		2970D84C194A6DAF00EEAC2B /* NKEmitterNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D6F5194A6DAF00EEAC2B /* NKEmitterNode.m */; };
-		2970D84D194A6DAF00EEAC2B /* NKEmitterNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D6F5194A6DAF00EEAC2B /* NKEmitterNode.m */; };
 		2970D84E194A6DAF00EEAC2B /* NKLabelNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D6F7194A6DAF00EEAC2B /* NKLabelNode.m */; };
 		2970D84F194A6DAF00EEAC2B /* NKLabelNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D6F7194A6DAF00EEAC2B /* NKLabelNode.m */; };
 		2970D850194A6DAF00EEAC2B /* NKLightNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D6F9194A6DAF00EEAC2B /* NKLightNode.m */; };
@@ -1344,10 +1342,12 @@
 		29CA2C191956382D00B5C3AF /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 29CA2C181956382D00B5C3AF /* libxml2.2.dylib */; };
 		29CA2C1C1956451B00B5C3AF /* NKVideoTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA2C1B1956451B00B5C3AF /* NKVideoTexture.m */; };
 		29CA2C1D1956451B00B5C3AF /* NKVideoTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA2C1B1956451B00B5C3AF /* NKVideoTexture.m */; };
-		29CC5D77194E14B200614265 /* cvTextureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */; };
-		29CC5D78194E14B200614265 /* cvTextureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */; };
 		29CC5D7A194E174400614265 /* textureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D79194E174400614265 /* textureProgram.nks.txt */; };
 		29CC5D7B194E174400614265 /* textureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D79194E174400614265 /* textureProgram.nks.txt */; };
+		29D6FCD319577E8900223511 /* NKEmitterNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D6FCD219577E8900223511 /* NKEmitterNode.m */; };
+		29D6FCD419577E8900223511 /* NKEmitterNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D6FCD219577E8900223511 /* NKEmitterNode.m */; };
+		29D6FCD619577FF300223511 /* particleFountain.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29D6FCD519577FF300223511 /* particleFountain.nks.txt */; };
+		29D6FCD719577FF300223511 /* particleFountain.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29D6FCD519577FF300223511 /* particleFountain.nks.txt */; };
 		29DACA5C194B42E000F382E4 /* NKEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 29DACA5B194B42E000F382E4 /* NKEvent.m */; };
 		29DACA5D194B42E000F382E4 /* NKEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 29DACA5B194B42E000F382E4 /* NKEvent.m */; };
 /* End PBXBuildFile section */
@@ -2105,8 +2105,6 @@
 		2970D6F1194A6DAF00EEAC2B /* NKCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKCamera.m; sourceTree = "<group>"; };
 		2970D6F2194A6DAF00EEAC2B /* NKCoreTextNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKCoreTextNode.h; sourceTree = "<group>"; };
 		2970D6F3194A6DAF00EEAC2B /* NKCoreTextNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKCoreTextNode.m; sourceTree = "<group>"; };
-		2970D6F4194A6DAF00EEAC2B /* NKEmitterNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKEmitterNode.h; sourceTree = "<group>"; };
-		2970D6F5194A6DAF00EEAC2B /* NKEmitterNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKEmitterNode.m; sourceTree = "<group>"; };
 		2970D6F6194A6DAF00EEAC2B /* NKLabelNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKLabelNode.h; sourceTree = "<group>"; };
 		2970D6F7194A6DAF00EEAC2B /* NKLabelNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKLabelNode.m; sourceTree = "<group>"; };
 		2970D6F8194A6DAF00EEAC2B /* NKLightNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKLightNode.h; sourceTree = "<group>"; };
@@ -2675,8 +2673,10 @@
 		29CA2C181956382D00B5C3AF /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = usr/lib/libxml2.2.dylib; sourceTree = SDKROOT; };
 		29CA2C1A1956451B00B5C3AF /* NKVideoTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKVideoTexture.h; sourceTree = "<group>"; };
 		29CA2C1B1956451B00B5C3AF /* NKVideoTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKVideoTexture.m; sourceTree = "<group>"; };
-		29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cvTextureProgram.nks.txt; sourceTree = "<group>"; };
 		29CC5D79194E174400614265 /* textureProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = textureProgram.nks.txt; sourceTree = "<group>"; };
+		29D6FCD119577E8900223511 /* NKEmitterNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKEmitterNode.h; sourceTree = "<group>"; };
+		29D6FCD219577E8900223511 /* NKEmitterNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKEmitterNode.m; sourceTree = "<group>"; };
+		29D6FCD519577FF300223511 /* particleFountain.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = particleFountain.nks.txt; sourceTree = "<group>"; };
 		29DACA59194B403300F382E4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		29DACA5A194B42E000F382E4 /* NKEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKEvent.h; sourceTree = "<group>"; };
 		29DACA5B194B42E000F382E4 /* NKEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKEvent.m; sourceTree = "<group>"; };
@@ -3912,12 +3912,12 @@
 				2970D6ED194A6DAF00EEAC2B /* NKAlertSprite.m */,
 				2970D6EE194A6DAF00EEAC2B /* NKBatchNode.h */,
 				2970D6EF194A6DAF00EEAC2B /* NKBatchNode.m */,
+				29D6FCD119577E8900223511 /* NKEmitterNode.h */,
+				29D6FCD219577E8900223511 /* NKEmitterNode.m */,
 				2970D6F0194A6DAF00EEAC2B /* NKCamera.h */,
 				2970D6F1194A6DAF00EEAC2B /* NKCamera.m */,
 				2970D6F2194A6DAF00EEAC2B /* NKCoreTextNode.h */,
 				2970D6F3194A6DAF00EEAC2B /* NKCoreTextNode.m */,
-				2970D6F4194A6DAF00EEAC2B /* NKEmitterNode.h */,
-				2970D6F5194A6DAF00EEAC2B /* NKEmitterNode.m */,
 				2970D6F6194A6DAF00EEAC2B /* NKLabelNode.h */,
 				2970D6F7194A6DAF00EEAC2B /* NKLabelNode.m */,
 				2970D6F8194A6DAF00EEAC2B /* NKLightNode.h */,
@@ -3948,11 +3948,11 @@
 			isa = PBXGroup;
 			children = (
 				29CC5D79194E174400614265 /* textureProgram.nks.txt */,
-				29CC5D76194E14B200614265 /* cvTextureProgram.nks.txt */,
 				2970D70B194A6DAF00EEAC2B /* hqLightProgram.nks.txt */,
 				297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */,
 				2970D70C194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt */,
 				2970D70D194A6DAF00EEAC2B /* materialStruct.nks.txt */,
+				29D6FCD519577FF300223511 /* particleFountain.nks.txt */,
 				2970D70E194A6DAF00EEAC2B /* NKShaderManager.h */,
 				2970D70F194A6DAF00EEAC2B /* NKShaderManager.m */,
 				2970D710194A6DAF00EEAC2B /* NKShaderProgram.h */,
@@ -4880,6 +4880,7 @@
 				292E5C53194D356D002B6D43 /* cppunit.pc.in in Resources */,
 				292E5D63194D356E002B6D43 /* vector3.inl in Resources */,
 				2971B903194C0521001BE97F /* COLLADA.fbx in Resources */,
+				29D6FCD619577FF300223511 /* particleFountain.nks.txt in Resources */,
 				2970D539194A6D8C00EEAC2B /* Main_iPad.storyboard in Resources */,
 				292E5D61194D356E002B6D43 /* vector2.inl in Resources */,
 				292E5C71194D356D002B6D43 /* Makefile.in in Resources */,
@@ -5030,7 +5031,6 @@
 				2971B94F194C0521001BE97F /* QuickDraw--Arm-ForeArm.lwo in Resources */,
 				2971B909194C0521001BE97F /* ducka.fbx in Resources */,
 				2971B997194C0521001BE97F /* starfish.obj in Resources */,
-				29CC5D77194E14B200614265 /* cvTextureProgram.nks.txt in Resources */,
 				292E5C5D194D356D002B6D43 /* FAQ in Resources */,
 				2971B99F194C0521001BE97F /* trashbin.mtl in Resources */,
 				292E5C39194D356D002B6D43 /* missing in Resources */,
@@ -5152,6 +5152,7 @@
 				292E5C54194D356D002B6D43 /* cppunit.pc.in in Resources */,
 				292E5D64194D356E002B6D43 /* vector3.inl in Resources */,
 				2971B904194C0521001BE97F /* COLLADA.fbx in Resources */,
+				29D6FCD719577FF300223511 /* particleFountain.nks.txt in Resources */,
 				2970D56A194A6D9A00EEAC2B /* InfoPlist.strings in Resources */,
 				292E5D62194D356E002B6D43 /* vector2.inl in Resources */,
 				292E5C72194D356D002B6D43 /* Makefile.in in Resources */,
@@ -5302,7 +5303,6 @@
 				2971B950194C0521001BE97F /* QuickDraw--Arm-ForeArm.lwo in Resources */,
 				2971B90A194C0521001BE97F /* ducka.fbx in Resources */,
 				2971B998194C0521001BE97F /* starfish.obj in Resources */,
-				29CC5D78194E14B200614265 /* cvTextureProgram.nks.txt in Resources */,
 				292E5C5E194D356D002B6D43 /* FAQ in Resources */,
 				2971B9A0194C0521001BE97F /* trashbin.mtl in Resources */,
 				292E5C3A194D356D002B6D43 /* missing in Resources */,
@@ -5395,7 +5395,6 @@
 				292E5B1F194D356D002B6D43 /* DeboneProcess.cpp in Sources */,
 				292E5D47194D356E002B6D43 /* deflate.c in Sources */,
 				29CA20031954D4F300B5C3AF /* NKMatrixStack.m in Sources */,
-				2970D84C194A6DAF00EEAC2B /* NKEmitterNode.m in Sources */,
 				292E5AFB194D356D002B6D43 /* BlenderBMesh.cpp in Sources */,
 				292E5CC7194D356E002B6D43 /* Message.cpp in Sources */,
 				2970D53C194A6D8C00EEAC2B /* ViewController.m in Sources */,
@@ -5583,6 +5582,7 @@
 				29CA2B94195637F300B5C3AF /* btGjkEpaPenetrationDepthSolver.cpp in Sources */,
 				29CA2B2C195637F300B5C3AF /* btBulletFile.cpp in Sources */,
 				292E5B57194D356D002B6D43 /* IFCBoolean.cpp in Sources */,
+				29D6FCD319577E8900223511 /* NKEmitterNode.m in Sources */,
 				29CA2B5E195637F300B5C3AF /* btConvexHullShape.cpp in Sources */,
 				29CA2B30195637F300B5C3AF /* btBvhTriangleMeshShape.cpp in Sources */,
 				29CA2B26195637F300B5C3AF /* btBoxBoxDetector.cpp in Sources */,
@@ -5921,7 +5921,6 @@
 				29CA2B5D195637F300B5C3AF /* btConvexHullComputer.cpp in Sources */,
 				292E5B50194D356D002B6D43 /* FixNormalsStep.cpp in Sources */,
 				292E5AF4194D356D002B6D43 /* B3DImporter.cpp in Sources */,
-				2970D84D194A6DAF00EEAC2B /* NKEmitterNode.m in Sources */,
 				292E5CC0194D356E002B6D43 /* DynamicLibraryManagerException.cpp in Sources */,
 				29CA2B37195637F300B5C3AF /* btCollisionDispatcher.cpp in Sources */,
 				292E5B88194D356D002B6D43 /* MaterialSystem.cpp in Sources */,
@@ -6155,6 +6154,7 @@
 				292E5BB8194D356D002B6D43 /* PlyLoader.cpp in Sources */,
 				292E5BC6194D356D002B6D43 /* Q3BSPZipArchive.cpp in Sources */,
 				2970D841194A6DAF00EEAC2B /* NKVertexBuffer.m in Sources */,
+				29D6FCD419577E8900223511 /* NKEmitterNode.m in Sources */,
 				292E5D04194D356E002B6D43 /* TextTestProgressListener.cpp in Sources */,
 				292E5B98194D356D002B6D43 /* MS3DLoader.cpp in Sources */,
 				292E5CAE194D356D002B6D43 /* CompilerOutputter.cpp in Sources */,

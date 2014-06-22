@@ -92,8 +92,8 @@
                 break;
                 
             case NKPrimitiveRect:
-                _drawMode = GL_TRIANGLES;
-                self.cullFace = NKCullFaceBack;
+                _drawMode = GL_TRIANGLE_STRIP;
+                self.cullFace = NKCullFaceNone;
                 break;
                 
             case NKPrimitiveAxes:
@@ -389,13 +389,14 @@
 
 -(void)chooseShader {
     if (_numTextures) {
-#if !NK_USE_GLES
-        if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
-            self.shader = [NKShaderProgram newShaderNamed:@"videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:0];
-            return;
+        if (_numTextures) {
+            if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
+                self.shader = [NKShaderProgram newShaderNamed:@"videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:0];
+            }
+            else {
+                self.shader = [NKShaderProgram newShaderNamed:@"uColorTextureLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:_numTextures numLights:1 withBatchSize:0];
+            }
         }
-#endif
-        self.shader = [NKShaderProgram newShaderNamed:@"uColorTextureLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:_numTextures numLights:1 withBatchSize:0];
     }
     else {
         self.shader = [NKShaderProgram newShaderNamed:@"uColorLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:0 numLights:1 withBatchSize:0];
@@ -481,6 +482,9 @@
                 //NSLog(@"binding tex scale: %f %f", [(NKVideoTexture*)_textures[0] size].x, [(NKVideoTexture*)_textures[0] size].y);
                 [[self.scene.activeShader uniformNamed:NKS_TEXTURE_RECT_SCALE] bindV2:[(NKVideoTexture*)_textures[0] size]];
             }
+            else {
+                [[self.scene.activeShader uniformNamed:NKS_TEXTURE_RECT_SCALE] bindV2:P2Make(1, 1)];
+            }
             self.scene.boundTexture = _textures[0];
         }
     }
@@ -539,8 +543,7 @@
 -(void)customdrawWithHitShader {
     
     [self setupViewMatrix];
-//    [[self.scene.activeShader uniformNamed:NKS_M16_MVP] bindM16:M16Multiply(self.scene.camera.viewProjectionMatrix, M16ScaleWithV3(self.scene.stack.currentMatrix, _size))];
-    
+
     [[self.scene.activeShader uniformNamed:NKS_V4_COLOR] bindV4:self.uidColor.C4Color];
     
     if (self.scene.boundVertexBuffer != _vertexBuffer) {

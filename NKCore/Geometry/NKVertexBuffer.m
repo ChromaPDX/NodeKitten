@@ -47,6 +47,7 @@
         0.0f, 0.0f, 1.0f,       0.5f, 0.5f, 1.0f, 1.0f
     };
     
+    
     NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(gCubeVertexData) numberOfElements:sizeof(gCubeVertexData) / (sizeof(F1t)*7.) data:gCubeVertexData setup:newGeometrySetupBlock{
         glEnableVertexAttribArray(NKS_V4_POSITION);
         glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
@@ -63,17 +64,25 @@
 
 +(instancetype)defaultRect { // SPRITE
     
-    GLfloat gCubeVertexData[8*6] =
+//    GLfloat gCubeVertexData[8*6] =
+//    {
+//        0.5f, 0.5f, 0.0f,          1.0f, 0.0f, 0.0f,        1.0f, 1.0f,
+//        -0.5f, 0.5f, 0.0f,         1.0f, 0.0f, 0.0f,        0.0f, 1.0f,
+//        0.5f, -0.5f, 0.0f,         1.0f, 0.0f, 0.0f,        1.0f, 0.0f,
+//        -0.5f, 0.5f, 0.0f,         1.0f, 0.0f, 0.0f,        0.0f, 1.0f,
+//        -0.5f, -0.5f, 0.0f,        1.0f, 0.0f, 0.0f,        0.0f, 0.0f,
+//        0.5f, -0.5f, 0.0f,         1.0f, 0.0f, 0.0f,        1.0f, 0.0f,
+//    };
+    
+    GLfloat gCubeVertexData[8*4] =
     {
-        0.5f, 0.5f, 0.0f,          1.0f, 0.0f, 0.0f,        1.0f, 1.0f,
-        -0.5f, 0.5f, 0.0f,         1.0f, 0.0f, 0.0f,        0.0f, 1.0f,
-        0.5f, -0.5f, 0.0f,         1.0f, 0.0f, 0.0f,        1.0f, 0.0f,
-        -0.5f, 0.5f, 0.0f,         1.0f, 0.0f, 0.0f,        0.0f, 1.0f,
         -0.5f, -0.5f, 0.0f,        1.0f, 0.0f, 0.0f,        0.0f, 0.0f,
+        -0.5f, 0.5f, 0.0f,         1.0f, 0.0f, 0.0f,        0.0f, 1.0f,
         0.5f, -0.5f, 0.0f,         1.0f, 0.0f, 0.0f,        1.0f, 0.0f,
+        0.5f, 0.5f, 0.0f,          1.0f, 0.0f, 0.0f,        1.0f, 1.0f,
     };
     
-    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(gCubeVertexData) numberOfElements:sizeof(gCubeVertexData) / (sizeof(F1t)*8.) data:gCubeVertexData setup:newGeometrySetupBlock{
+    NKVertexBuffer *buf = [[NKVertexBuffer alloc] initWithSize:sizeof(gCubeVertexData) numberOfElements:6 data:gCubeVertexData setup:newGeometrySetupBlock{
         glEnableVertexAttribArray(NKS_V4_POSITION);
         glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
                               sizeof(F1t)*8, BUFFER_OFFSET(0));
@@ -87,6 +96,9 @@
                               sizeof(F1t)*8, BUFFER_OFFSET(sizeof(F1t)*6));
         
     }];
+    
+//    F1t indexBuffer[6] = {0,1,2,1,3,2};
+//    buf.indexBuffer = [[NKIndexBuffer alloc]initWithSize:6 data:indexBuffer];
     
     return buf;
 }

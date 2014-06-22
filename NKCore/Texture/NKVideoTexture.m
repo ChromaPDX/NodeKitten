@@ -449,7 +449,8 @@
     texTarget = CVOpenGLESTextureGetTarget(_lumaTexture);
     glEnable(texTarget);
     glActiveTexture(GL_TEXTURE0);
-    texture = CVOpenGLESTextureGetName(texture);
+    
+    texture = CVOpenGLESTextureGetName(_lumaTexture);
     glBindTexture(texTarget, texture);
     #else
     
@@ -459,7 +460,6 @@
     glActiveTexture(GL_TEXTURE0);
     texture = CVOpenGLTextureGetName(_lumaTexture);
     glBindTexture(texTarget, texture);
-    //NSLog(@"texTarget %d",texTarget);
     
 #endif
     

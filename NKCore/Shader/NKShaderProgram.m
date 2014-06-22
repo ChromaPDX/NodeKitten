@@ -207,13 +207,14 @@
     }
     
     if (numTex == -1){ // quick vid fix
-        [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_2D_RECT, NKS_S2D_TEXTURE_RECT)];
+        [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_CORE_VIDEO, NKS_S2D_TEXTURE_RECT)];
         [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_TEXTURE_RECT_SCALE)];
         [shaderDict[NKS_VARYINGS] addObject: nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_V2_TEXCOORD)];
         [shaderDict[NKS_FRAG_INLINE] addObject:nksi(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_V4_TEX_COLOR)];
     }
     
     else if (numTex) {
+        //[shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_TEXTURE_RECT_SCALE)];
         [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_2D, NKS_S2D_TEXTURE)];
         [shaderDict[NKS_VARYINGS] addObject: nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_V2_TEXCOORD)];
         [shaderDict[NKS_FRAG_INLINE] addObject:nksi(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_V4_TEX_COLOR)];
@@ -240,8 +241,15 @@
             [shaderDict[NKS_VERTEX_MAIN] addObject:shaderLineWithArray(@[[shaderDict varyingNamed:NKS_V4_COLOR],@"=",[shaderDict attributeNamed:NKS_V4_COLOR]])];
     }
     
-    if ([shaderDict uniformNamed:NKS_S2D_TEXTURE] || [shaderDict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
+    if ([shaderDict uniformNamed:NKS_S2D_TEXTURE]) {
         [shaderDict[NKS_VERTEX_MAIN] addObject:shaderLineWithArray(@[[shaderDict varyingNamed:NKS_V2_TEXCOORD],@"=",[shaderDict attributeNamed:NKS_V2_TEXCOORD]])];
+    }
+    else if ([shaderDict uniformNamed:NKS_S2D_TEXTURE_RECT]){ // VIDEO NODE
+#if NK_USE_GLES
+        [shaderDict[NKS_VERTEX_MAIN] addObject:@"v_texCoord0 = vec2(a_texCoord0.x, 1. - a_texCoord0.y);"];
+#else
+        [shaderDict[NKS_VERTEX_MAIN] addObject:@"v_texCoord0 = vec2(a_texCoord0.x, 1. - a_texCoord0.y) * u_textureScale;"];
+#endif
     }
     
     if ([shaderDict uniformNamed:NKS_M9_NORMAL]) {
@@ -408,16 +416,16 @@
     for (NKShaderVariable* v in dict[NKS_FRAG_INLINE]) {
         [shader appendNewLine:[v declarationStringForSection:NKS_FRAGMENT_SHADER]];
     }
-    if ([dict uniformNamed:NKS_S2D_TEXTURE]) {
+    if ([dict uniformNamed:NKS_S2D_TEXTURE] || [dict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
         #if NK_USE_GLES
         [shader appendString:shaderStringWithDirective(@"textureProgram", @"@fragES")];
         #else
         [shader appendString:shaderStringWithDirective(@"textureProgram", @"@frag")];
         #endif
     }
-    else if ([dict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
-        [shader appendString:shaderStringWithDirective(@"cvTextureProgram", @"@frag")];
-    }
+//    else if ([dict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
+//        [shader appendString:shaderStringWithDirective(@"cvTextureProgram", @"@frag")];
+//    }
     
     for (NSString*s in dict[NKS_PROGRAMS]) {
         [shader appendString:shaderStringWithDirective(s, @"@frag")];

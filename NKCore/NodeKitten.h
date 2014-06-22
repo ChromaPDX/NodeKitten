@@ -35,7 +35,6 @@
 #import "NKMeshNode.h"
 #import "NKCamera.h"
 #import "NKLightNode.h"
-#import "NKVideoNode.h"
 
 // MESH NODE SUBS
 #import "NKSpriteNode.h"
@@ -43,6 +42,7 @@
 #import "NKLabelNode.h"
 #import "NKScrollNode.h"
 #import "NKAlertSprite.h"
+#import "NKEmitterNode.h"
 
 // SCOLL NODE SUBS
 #import "NKPickerNode.h"

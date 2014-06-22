@@ -167,7 +167,7 @@
             V3t camCoords = V3Make(sceneCoords.x + 0 ,sceneCoords.y + 0 , sceneCoords.z + 800);
             [self.camera setPosition:camCoords];
             
-            NKScrollNode *table = [[NKScrollNode alloc] initWithColor:NKCLEAR size:P2Make(400, 600)];
+            NKScrollNode *table = [[NKScrollNode alloc] initWithColor:NKCLEAR size:P2Make(600, 600)];
             [self addChild:table];
             table.delegate = self;
             table.name = @"root table";
@@ -308,7 +308,7 @@
 #endif
             
 #if TARGET_OS_IPHONE
-            int numSpheres = 200;
+            int numSpheres = 100;
 #else
             int numSpheres = 1000;
 #endif
@@ -834,14 +834,29 @@
             
             
             self.camera.position = V3Make(0, 0, 4);
-            
-            NKBatchNode* emitter = [[NKBatchNode alloc]initWithPrimitive:NKPrimitiveLODSphere texture:[NKVideoTexture textureWithVideoNamed:@"slitscan-fall-640-360.mov"] color:NKWHITE size:V3MakeF(.1)];
+            //[NKTexture textureWithImageNamed:@"spark.png"]
+            //
+            NKBatchNode* emitter = [[NKBatchNode alloc]initWithPrimitive:NKPrimitiveRect texture:[NKVideoTexture textureWithVideoNamed:@"slitscan-fall-640-360.mov"] color:NKWHITE size:V3MakeF(.1)];
             
             [self addChild:emitter];
             
             //emitter.cullFace = NKCullFaceNone;
             emitter.blendMode = NKBlendModeAdd;
+
+#if TARGET_OS_IPHONE
+            int num = 100;
+#else
+            int num = 500;
+#endif
             
+            for (int i = 0; i < num; i++){
+                NKNode *s = [[NKNode alloc] initWithSize:V3MakeF((arc4random() % 10 * .05 + .25))];
+                s.color = NKWHITE;
+                [emitter addChild:s];
+                [s runAction:[NKAction enterOrbitAtLongitude:arc4random() % 360 latitude:arc4random() % 360 radius:(arc4random() % 5)*.1 + 1  duration:.1] completion:^{
+                    [s repeatAction:[NKAction maintainOrbitDeltaLongitude:50 latitude:20. radius:0.0 duration:(arc4random() % 20+4) * .1]];
+                }];
+            }
 
             self.midiReceivedBlock = newMidiReceivedBlock {
                 

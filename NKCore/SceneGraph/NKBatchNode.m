@@ -50,13 +50,14 @@
         self.hitShader = [NKShaderProgram newShaderNamed:@"b_HitShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:0 numLights:0 withBatchSize:NK_BATCH_SIZE];
     }
     if (_numTextures) {
-#if !NK_USE_GLES
-        if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
-            self.shader = [NKShaderProgram newShaderNamed:@"b_videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:NK_BATCH_SIZE];
-            return;
+        if (_numTextures) {
+            if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
+                self.shader = [NKShaderProgram newShaderNamed:@"b_videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:NK_BATCH_SIZE];
+            }
+            else {
+                self.shader = [NKShaderProgram newShaderNamed:@"b_ColorTextureLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:_numTextures numLights:1 withBatchSize:NK_BATCH_SIZE];
+            }
         }
-#endif
-        self.shader = [NKShaderProgram newShaderNamed:@"b_colorTextureLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:_numTextures numLights:1 withBatchSize:NK_BATCH_SIZE];
     }
     else {
         self.shader = [NKShaderProgram newShaderNamed:@"b_colorLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:0 numLights:1 withBatchSize:NK_BATCH_SIZE];
