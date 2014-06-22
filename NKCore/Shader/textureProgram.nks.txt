@@ -1,13 +1,13 @@
 @frag
 
     texColor =  texture(u_texture,v_texCoord0.xy); //
-   // if (texColor.a < .05) discard;
+    if (texColor.a < .01) discard;
 
 @frag
 
 @fragES
 
     texColor =  texture2D(u_texture,v_texCoord0.xy); //
-    //if (texColor.a < .05) discard;
+    if (texColor.a < .01) discard;
 
 @fragES

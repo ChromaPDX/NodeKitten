@@ -127,14 +127,15 @@
 				[videoTrack loadValuesAsynchronouslyForKeys:@[@"preferredTransform"] completionHandler:^{
 					
 					if ([videoTrack statusOfValueForKey:@"preferredTransform" error:nil] == AVKeyValueStatusLoaded) {
-						//CGAffineTransform preferredTransform = [videoTrack preferredTransform];
+						CGAffineTransform preferredTransform = [videoTrack preferredTransform];
 						
 						/*
                          The orientation of the camera while recording affects the orientation of the images received from an AVPlayerItemVideoOutput. Here we compute a rotation that is used to correctly orientate the video.
                          */
 						//self.playerView.preferredRotation = -1 * atan2(preferredTransform.b, preferredTransform.a);
 						
-                        videoSize = [videoTrack naturalSize];
+                        //M9t tras =
+                        videoSize = CGSizeApplyAffineTransform([videoTrack naturalSize], preferredTransform);
                         
                         self.size = P2Make(videoSize.width, videoSize.height);
                         

@@ -649,8 +649,6 @@
 		292E5D62194D356E002B6D43 /* vector2.inl in Resources */ = {isa = PBXBuildFile; fileRef = 292E5ADE194D356D002B6D43 /* vector2.inl */; };
 		292E5D63194D356E002B6D43 /* vector3.inl in Resources */ = {isa = PBXBuildFile; fileRef = 292E5AE0194D356D002B6D43 /* vector3.inl */; };
 		292E5D64194D356E002B6D43 /* vector3.inl in Resources */ = {isa = PBXBuildFile; fileRef = 292E5AE0194D356D002B6D43 /* vector3.inl */; };
-		292E5D67194D3727002B6D43 /* NKVideoNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 292E5D66194D3727002B6D43 /* NKVideoNode.m */; };
-		292E5D68194D3727002B6D43 /* NKVideoNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 292E5D66194D3727002B6D43 /* NKVideoNode.m */; };
 		292E5D75194D4A39002B6D43 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 292E5D74194D4A39002B6D43 /* AVFoundation.framework */; };
 		292E5D76194D4A69002B6D43 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 292E5D69194D3A84002B6D43 /* CoreVideo.framework */; };
 		292E5D79194D4B3E002B6D43 /* NKGLManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 292E5D78194D4B3E002B6D43 /* NKGLManager.m */; };
@@ -2025,8 +2023,6 @@
 		292E5AE0194D356D002B6D43 /* vector3.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vector3.inl; sourceTree = "<group>"; };
 		292E5AE1194D356D002B6D43 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
 		292E5AE2194D356D002B6D43 /* revision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = revision.h; sourceTree = "<group>"; };
-		292E5D65194D3727002B6D43 /* NKVideoNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKVideoNode.h; sourceTree = "<group>"; };
-		292E5D66194D3727002B6D43 /* NKVideoNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKVideoNode.m; sourceTree = "<group>"; };
 		292E5D69194D3A84002B6D43 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		292E5D74194D4A39002B6D43 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		292E5D77194D4B3E002B6D43 /* NKGLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKGLManager.h; sourceTree = "<group>"; };
@@ -3944,8 +3940,6 @@
 				29DACA5B194B42E000F382E4 /* NKEvent.m */,
 				2970D708194A6DAF00EEAC2B /* NKSpriteNode.h */,
 				2970D709194A6DAF00EEAC2B /* NKSpriteNode.m */,
-				292E5D65194D3727002B6D43 /* NKVideoNode.h */,
-				292E5D66194D3727002B6D43 /* NKVideoNode.m */,
 			);
 			path = SceneGraph;
 			sourceTree = "<group>";
@@ -5649,7 +5643,6 @@
 				292E5BD5194D356D002B6D43 /* ScenePreprocessor.cpp in Sources */,
 				292E5B23194D356D002B6D43 /* DefaultIOSystem.cpp in Sources */,
 				292E5B7D194D356D002B6D43 /* LWOLoader.cpp in Sources */,
-				292E5D67194D3727002B6D43 /* NKVideoNode.m in Sources */,
 				29CA2C14195637F300B5C3AF /* gim_tri_collision.cpp in Sources */,
 				292E5D45194D356E002B6D43 /* crc32.c in Sources */,
 				292E5D3F194D356E002B6D43 /* adler32.c in Sources */,
@@ -6083,7 +6076,6 @@
 				292E5B52194D356D002B6D43 /* GenFaceNormalsProcess.cpp in Sources */,
 				29CA2B81195637F300B5C3AF /* btGeneric6DofSpringConstraint.cpp in Sources */,
 				292E5B40194D356D002B6D43 /* FBXNodeAttribute.cpp in Sources */,
-				292E5D68194D3727002B6D43 /* NKVideoNode.m in Sources */,
 				292E5CD6194D356E002B6D43 /* SourceLine.cpp in Sources */,
 				292E5D0E194D356E002B6D43 /* Win32DynamicLibraryManager.cpp in Sources */,
 				292E5B16194D356D002B6D43 /* ColladaLoader.cpp in Sources */,

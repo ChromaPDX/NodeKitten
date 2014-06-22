@@ -798,20 +798,20 @@
 //            
 //            [self addChild:_omni];
             
-            NKVideoNode *videoNode = [[NKVideoNode alloc]initWithVideoNamed:@"slitscan-fall-640-360.mov" size:V3Make(12., 8., 1.)];
+            NKMeshNode *videoNode = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:[NKVideoTexture textureWithVideoNamed:@"carousel_360-640.mov"] color:NKWHITE size:V3Make(6.,8.,1.)];
             
             videoNode.cullFace = NKCullFaceNone;
             
-            [videoNode setPosition:V3Make(0, 8, 0)];
+            [videoNode setPosition:V3Make(0, 7, 0)];
             
-            [videoNode repeatAction:[NKAction rotateByAngles:V3Make(13, 12, 20) duration:1.]];
+            //[videoNode repeatAction:[NKAction rotateByAngles:V3Make(13, 12, 20) duration:1.]];
 
             [self addChild:videoNode];
     
             
-            NKVideoNode *videoNode2 = [[NKVideoNode alloc]initWithVideoNamed:@"carousel_360-640.mov" size:V3Make(12., 8., 1.)];
+             NKMeshNode *videoNode2 = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveCube texture:[NKVideoTexture textureWithVideoNamed:@"slitscan-fall-640-360.mov"] color:NKWHITE size:V3MakeF(3.)];
             
-            [videoNode2 setPosition:V3Make(0, -8, 0)];
+            [videoNode2 setPosition:V3Make(0, -7, 0)];
             
             [videoNode2 repeatAction:[NKAction rotateByAngles:V3Make(30, 12, 20) duration:1.]];
             
@@ -819,9 +819,9 @@
             
             [self addChild:videoNode2];
             
-            NKMeshNode *videoNode3 = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveSphere texture:[NKVideoTexture textureWithVideoNamed:@"carousel1_640-360.mov"] color:NKWHITE size:V3MakeF(4.)];
+            NKMeshNode *videoNode3 = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveSphere texture:[NKVideoTexture textureWithVideoNamed:@"carousel1_640-360.mov"] color:NKWHITE size:V3MakeF(3.)];
             
-            [videoNode3 repeatAction:[NKAction rotateByAngles:V3Make(0, 20, 0) duration:.1]];
+            [videoNode3 repeatAction:[NKAction rotateByAngles:V3Make(0, 20, 0) duration:1.]];
             [videoNode3 setPosition:V3Make(0, 0, 0)];
             
             
@@ -835,51 +835,29 @@
             
             self.camera.position = V3Make(0, 0, 4);
             
-            _omni = [[NKLightNode alloc] initWithDefaultProperties];
-            
-            [self addChild:_omni];
-            
-            [_omni runAction:[NKAction moveTo:V3MakeF(1) duration:2.] completion:^{
-                [_omni runAction:[NKAction delayFor:.4] completion:^{
-                    [_omni runAction:[NKAction enterOrbitAtLongitude:0 latitude:0 radius:2 offset:(V3Make(0, 0, 3)) duration:1.] completion:^{
-                        [_omni repeatAction:[NKAction maintainOrbitDeltaLongitude:30 latitude:11 radius:.0 offset:(V3Make(0, 0, 3)) duration:.3]];
-                    }];
-                }];
-            }];
-
-            //
-                //[NKTexture textureWithImageNamed:@"spark.png"]
-            
-            NKBatchNode* emitter = [[NKBatchNode alloc]initWithPrimitive:NKPrimitiveRect texture:[NKVideoTexture textureWithVideoNamed:@"slitscan-fall-640-360.mov"] color:NKWHITE size:V3MakeF(.1)];
+            NKBatchNode* emitter = [[NKBatchNode alloc]initWithPrimitive:NKPrimitiveLODSphere texture:[NKVideoTexture textureWithVideoNamed:@"slitscan-fall-640-360.mov"] color:NKWHITE size:V3MakeF(.1)];
             
             [self addChild:emitter];
             
             //emitter.cullFace = NKCullFaceNone;
             emitter.blendMode = NKBlendModeAdd;
             
-            for (int i = 0; i < 2000; i++) {
-                NKNode *s = [[NKNode alloc] initWithSize:V3MakeF((arc4random() % 20 + .01)*.01)];
-                s.color = NKWHITE;
-                [emitter addChild:s];
-                [s runAction:[NKAction enterOrbitAtLongitude:arc4random() % 360 latitude:arc4random() % 360 radius:(arc4random() % 10)*.1+1  duration:4.] completion:^{
-                    [s repeatAction:[NKAction maintainOrbitDeltaLongitude:50 latitude:20. radius:0.0 duration:(arc4random() % 20+4) * .1]];
-                }];
-            }
-            
+
             self.midiReceivedBlock = newMidiReceivedBlock {
                 
                 if (command.commandType == MIKMIDICommandTypeNoteOn){
                     
-                    //NSLog(@"add node");
-                    
-                    NKNode *s = [[NKNode alloc] initWithSize:V3MakeF((arc4random() % 100 + 1)*.01)];
+                    NKNode *s = [[NKNode alloc] initWithSize:V3MakeF((arc4random() % 10 * .1 + .25))];
                     s.color = NKWHITE;
                     [emitter addChild:s];
-                    
-                    [s runAction:[NKAction enterOrbitAtLongitude:arc4random() % 360 latitude:arc4random() % 360 radius:(arc4random() % 10)*.1  duration:4.] completion:^{
-                        [s repeatAction:[NKAction maintainOrbitDeltaLongitude:50 latitude:20. radius:0.0 duration:(arc4random() % 20+4) * .2]];
+                    [s runAction:[NKAction enterOrbitAtLongitude:arc4random() % 360 latitude:arc4random() % 360 radius:(arc4random() % 5)*.1+1  duration:.1] completion:^{
+                        [s repeatAction:[NKAction maintainOrbitDeltaLongitude:50 latitude:20. radius:0.0 duration:(arc4random() % 20+4) * .1]];
+                        [s runAction:[NKAction delayFor:.2] completion:^{
+                            [s runAction: [NKAction fadeAlphaTo:0 duration:.3]completion:^{
+                                [s removeFromParent];
+                            }];
+                        }];
                     }];
-                    
                     
                 }
             };
