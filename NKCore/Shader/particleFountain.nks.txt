@@ -10,14 +10,13 @@ uniform float elapsed_system_time; // system time in seconds
 // the fragment shader can use this for it's output colour's alpha component
 out float opacity;
 
-@interface
-
 v_normal = normalize(u_normalMatrix * a_normal); 
 v_position = u_modelViewMatrix * a_position; 
 gl_Position = u_modelViewProjectionMatrix * a_position; 
 
-@vertex
+@interface
 
+@vertex
     // work out the elapsed time for _this particle_ after its start time
     float t = elapsed_system_time - start_time;
     // allow time to loop around so particle emitter keeps going
@@ -37,7 +36,6 @@ gl_Position = u_modelViewProjectionMatrix * a_position;
     gl_Position = u_modelViewProjectionMatrix * vec4(p, 1.0);
     gl_PointSize = 10.0; // size in pixels
 }
-
 @vertex
 
 @frag

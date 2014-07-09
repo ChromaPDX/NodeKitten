@@ -42,37 +42,43 @@ typedef NS_ENUM(NSInteger, NKActionTimingMode) {
 } NS_ENUM_AVAILABLE(10_9, 7_0);
 
 @interface NKAction : NSObject
+{
+    U1t numFrames;
+    U1t nFrames;
+}
 
-//@property (nonatomic,weak) NKNode *node;
+// TIMING
 
 @property (nonatomic) NKActionTimingMode timingMode;
-@property (nonatomic) CGFloat speed;
 @property (nonatomic, copy) ActionBlock actionBlock;
 @property (nonatomic, copy) void (^completionBlock)(void);
-@property (nonatomic) F1t progress;
 @property (nonatomic) F1t duration;
+@property (nonatomic) U1t frameCount;
+@property (nonatomic) U1t subDivide;
+@property (nonatomic) U1t currentSubdivision;
 @property (nonatomic) NSInteger repeats;
 @property (nonatomic) bool serial;
 
+// NODE / HIERATCHY
 @property (nonatomic, weak) NKAction *parentAction;
 @property (nonatomic, weak) NodeAnimationHandler *handler;
-@property (nonatomic, strong) NSArray *children;
-@property (nonatomic, strong) NSMutableArray *actions;
+@property (nonatomic, strong) NSArray *children; // THESE STAY FOR REPEATS
+@property (nonatomic, strong) NSMutableArray *actions; // THESE COPY FROM CHILDREN ON EACH REPEAT
 
 @property (nonatomic, weak) NKNode *target;
 
+// TWEEN STORAGE
 @property (nonatomic) V3t startPos;
 @property (nonatomic) V3t endPos;
 @property (nonatomic) Q4t startOrientation;
 @property (nonatomic) Q4t endOrientation;
 
-@property (nonatomic) M16t startMatrix;
-@property (nonatomic) M16t endMatrix;
-
 @property (nonatomic) F1t startFloat;
 @property (nonatomic) F1t endFloat;
 
-@property (nonatomic) bool reset;
+// STATE
+@property (nonatomic) U1t mode;
+@property (nonatomic) bool flag;
 
 
 - (NKAction *)reversedAction;
@@ -130,11 +136,18 @@ typedef NS_ENUM(NSInteger, NKActionTimingMode) {
 
 + (NKAction *)repeatAction:(NKAction *)action count:(NSUInteger)count;
 + (NKAction *)repeatActionForever:(NKAction *)action;
-//
-//+ (NKAction *)fadeInWithDuration:(F1t)sec;
-//+ (NKAction *)fadeOutWithDuration:(F1t)sec;
+
++ (NKAction *)fadeByEnvelopeWithWaitTime:(int)waitTime inTime:(int)inTime holdTime:(int)holdTime outTime:(int)outTime;
+
++ (NKAction *)fadeInWithDuration:(F1t)sec;
++ (NKAction *)fadeBlendTo:(F1t)alpha duration:(F1t)sec;
++ (NKAction *)fadeColorTo:(NKByteColor*)color duration:(F1t)sec;
+
++ (NKAction *)fadeOutWithDuration:(F1t)sec;
 + (NKAction *)fadeAlphaBy:(F1t)factor duration:(F1t)sec;
 + (NKAction *)fadeAlphaTo:(F1t)alpha duration:(F1t)sec;
++ (NKAction *)strobeAlpha:(U1t)onFrames offFrames:(U1t)offFrames duration:(F1t)sec;
+
 //
 //+ (NKAction *)setTexture:(ofTexture *)texture;
 //+ (NKAction *)animateWithTextures:(NSArray *)textures timePerFrame:(F1t)sec;
@@ -164,7 +177,7 @@ typedef NS_ENUM(NSInteger, NKActionTimingMode) {
 //
 //+ (NKAction *)runAction:(NKAction *)action onChildWithName:(NSString*)name;
 //
-+ (NKAction *)customActionWithDuration:(F1t)seconds actionBlock:(void (^)(NKNode *node, CGFloat elapsedTime))block;
++(NKAction*)customActionWithDuration:(F1t)seconds actionBlock:(ActionBlock)block;
 
 // SCROLL NODE
 

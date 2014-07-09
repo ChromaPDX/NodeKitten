@@ -26,6 +26,7 @@
         if (texture) {
             _textures = [@[texture] mutableCopy];
             _numTextures = 1;
+            [NKTextureManager addNode:self forTexture:texture];
         }
         
         _color = color;
@@ -35,8 +36,6 @@
         }
         
         _primitiveType = primitive;
-        
-        self.cullFace = NKCullFaceFront;
         
         NSString *pstring = [NKStaticDraw stringForPrimitive:primitive];
         
@@ -76,7 +75,7 @@
             
             [[NKStaticDraw meshesCache] setObject:_vertexBuffer forKey:pstring];
             
-            NSLog(@"add primitive: %@ to mesh cache with %lu vertices", pstring, (unsigned long)_vertexBuffer.numberOfElements);
+            NSLog(@"add primitive: %@ to mesh cache with %lu vertices", pstring, (unsigned long)_vertexBuffer.numVertices);
             
         }
         
@@ -84,6 +83,7 @@
                 
             case NKPrimitiveSphere: case NKPrimitiveLODSphere:
                 _drawMode = GL_TRIANGLE_STRIP;
+                self.cullFace = NKCullFaceFront;
                 break;
                 
             case NKPrimitiveCube:
@@ -93,7 +93,8 @@
                 
             case NKPrimitiveRect:
                 _drawMode = GL_TRIANGLE_STRIP;
-                self.cullFace = NKCullFaceNone;
+                self.cullFace = NKCullFaceFront;
+                //self.cullFace = NKCullFaceBoth;
                 break;
                 
             case NKPrimitiveAxes:
@@ -127,14 +128,13 @@
         if (texture) {
             _textures = [@[texture] mutableCopy];
             _numTextures = 1;
+            [NKTextureManager addNode:self forTexture:texture];
         }
         
         _color = color;
-        
+        self.cullFace = NKCullFaceNone;
         _vertexBuffer = buffer;
         _drawMode = drawMode;
-        
-        self.cullFace = NKCullFaceFront;
         
     }
     return self;
@@ -426,15 +426,25 @@
 }
 
 -(void)setTexture:(NKTexture *)texture {
+    
+     NSArray *oldTex = [_textures copy];
+    
+    for (NKTexture *t in oldTex) {
+        [NKTextureManager removeNode:self forTexture:t];
+    }
+    
     if (texture) {
         _textures = [@[texture] mutableCopy];
         _numTextures = 1;
+        [NKTextureManager addNode:self forTexture:texture];
     }
+    
     else {
         [_textures removeAllObjects];
         _textures = nil;
         _numTextures = 0;
     }
+    
     [self chooseShader];
 }
 
@@ -450,7 +460,7 @@
         
         float diff = (distance - size) / distance;
         
-        lod = diff * ((float)_vertexBuffer.numberOfElements);
+        lod = diff * ((float)_vertexBuffer.numVertices);
     }
     
     return lod;
@@ -490,15 +500,37 @@
     }
 }
 
+
+//-(void)pushStyle {
+//    
+//    [super pushStyle];
+//    
+//    if (_lineWidth != 0) {
+//#if NK_USE_GL3
+//        [[self.scene.activeShader uniformNamed:NKS_F1_GL_LINEWIDTH] bindF1:_lineWidth];
+//#else
+//        glLineWidth(_lineWidth);
+//#endif
+//    }
+//    if (_pointSize) {
+//        glPointSize(_pointSize);
+//    }
+//    
+//}
+
 -(void)customDraw {
     
     if (self.color || _numTextures) {
+        
+        
         
         if (self.shader) {
             self.scene.activeShader = self.shader;
         }
         
         [self setupViewMatrix];
+        
+        [self pushStyle];
         
         if ([self.scene.activeShader uniformNamed:NKS_V4_COLOR]){
             if (!_color) {
@@ -515,25 +547,25 @@
             self.scene.boundVertexBuffer = _vertexBuffer;
         }
         
-        if (_primitiveType == NKPrimitiveLODSphere) {
+        if (_usesLOD) {
             int lod = [self lodForDistance];
             glDrawArrays(_drawMode, _vertexBuffer.elementOffset[lod], _vertexBuffer.elementSize[lod]);
         }
+        
         else {
             if (_vertexBuffer.indexBuffer){
                 [_vertexBuffer.indexBuffer bind];
-                //NSLog(@"draw indexed");
-                glDrawElements(_drawMode, _vertexBuffer.numberOfElements, GL_UNSIGNED_INT, 0);
+                glDrawElements(_drawMode, _vertexBuffer.indexBuffer.numElements, GL_UNSIGNED_INT, 0);
                 [_vertexBuffer.indexBuffer unbind];
             }
             else
-                glDrawArrays(_drawMode, 0, _vertexBuffer.numberOfElements);
+                glDrawArrays(_drawMode, 0, _vertexBuffer.numVertices);
         }
         
         if (_drawBoundingBox) {
             NKVertexBuffer*v = [NKStaticDraw cachedPrimitive:NKPrimitiveCube];
             [v bind];
-            glDrawArrays(GL_LINES, 0, v.numberOfElements);
+            glDrawArrays(GL_LINES, 0, v.numVertices);
         }
         
     }
@@ -551,14 +583,22 @@
         self.scene.boundVertexBuffer = _vertexBuffer;
     }
     
-    if (_primitiveType == NKPrimitiveLODSphere) {
+    if (_usesLOD) {
         int lod = [self lodForDistance];
         glDrawArrays(_drawMode, _vertexBuffer.elementOffset[lod], _vertexBuffer.elementSize[lod] );
     }
     else {
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexBuffer.numberOfElements);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertexBuffer.numVertices);
         
     }
+}
+
+-(void)unload {
+    
+    for (NKTexture *t in _textures) {
+        [NKTextureManager removeNode:self forTexture:t];
+    }
+    [super unload];
 }
 
 @end

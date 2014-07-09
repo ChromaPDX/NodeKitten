@@ -23,15 +23,18 @@ typedef NS_OPTIONS(UInt8, NKTextureMapStyle) {
 
 @interface NKTexture : NSObject
 {
-    GLuint		texture;
+    GLuint		glName;
+    GLuint      target;
 }
 
+@property (nonatomic, strong) NSString *name;
 @property (nonatomic) S2t size;
 @property (nonatomic) bool shouldResizeToTexture;
 @property (nonatomic) NKTextureMapStyle textureMapStyle;
 
 +(instancetype) textureWithImageNamed:(NSString*)name;
 +(instancetype) textureWithImage:(NKImage*)image;
++(instancetype) textureWithFrameBuffer:(NKFrameBuffer*)frameBuffer;
 
 +(instancetype) textureWithString:(NSString *)string ForLabelNode:(NKLabelNode*)node;
 +(instancetype) textureWithString:(NSString *)string ForLabelNode:(NKLabelNode *)node inBackGroundWithCompletionBlock:(void (^)())block;
@@ -51,7 +54,9 @@ typedef NS_OPTIONS(UInt8, NKTextureMapStyle) {
 
 +(NKTexture*)blankTexture;
 
--(GLuint)glTexLocation;
--(void)setGlTexLocation:(GLuint)loc;
+-(GLuint)glName;
+-(void)setGlName:(GLuint)loc;
+
+-(void)unload;
 
 @end

@@ -56,8 +56,9 @@
         _hitQueue = [NSMutableArray array];
         _lights = [NSMutableArray array];
         
-        self.blendMode = -1;
-        self.cullFace = -1;
+        self.blendMode = 0;
+        self.cullFace = 0;
+        self.usesDepth = 0;
         
         _camera = [[NKCamera alloc]initWithScene:self];
         
@@ -68,12 +69,14 @@
         self.useColorDetection = true;
         _hitDetectBuffer = [[NKFrameBuffer alloc] initWithWidth:self.size.width height:self.size.height];
         _hitDetectShader = [NKShaderProgram newShaderNamed:@"hitShaderSingle" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:0 numLights:0 withBatchSize:0];
+        
 #if NK_LOG_METRICS
         metricsTimer = [NSTimer timerWithTimeInterval:1. target:self selector:@selector(logMetricsPerSecond) userInfo:nil repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:metricsTimer forMode:NSDefaultRunLoopMode];
 #endif
         NSLog(@"init scene with size, %f %f", size.width, size.height);
         
+        GetGLError();
         
     }
     return self;
@@ -92,6 +95,8 @@
     frames++;
 #endif
     
+   
+        
     [NKSoundManager updateWithTimeSinceLast:dt];
     
     [NKGLManager updateWithTimeSinceLast:dt];
@@ -101,9 +106,8 @@
     [self setDirty:false];
     
     [super updateWithTimeSinceLast:dt];
-    
+//
     [_camera setDirty:true];
-//        
     [_camera updateCameraWithTimeSinceLast:dt];
         
     }
@@ -210,16 +214,124 @@
     _boundVertexBuffer = nil;
 }
 
--(void)setDepthTest:(bool)depthTest {
-    if (depthTest && !_depthTest) {
-        glEnable(GL_DEPTH_TEST);
-        //NSLog(@"enable depth");
+-(void)setCullFace:(NKCullFaceMode)cullFace {
+    
+    if (cullFace != self.cullFace) {
+        
+        switch (cullFace) {
+
+            case NKCullFaceNone:
+                glDisable(GL_CULL_FACE);
+                break;
+                
+            case NKCullFaceFront:
+                if (self.cullFace < 1) {
+                    glEnable(GL_CULL_FACE);
+                }
+                glCullFace(GL_FRONT);
+                break;
+                
+            case NKCullFaceBack:
+                if (self.cullFace < 1) {
+                    glEnable(GL_CULL_FACE);
+                }
+                glCullFace(GL_BACK);
+                break;
+                
+            case NKCullFaceBoth:
+                if (self.cullFace < 1) {
+                    glEnable(GL_CULL_FACE);
+                }
+                glCullFace(GL_FRONT_AND_BACK);
+                break;
+                
+            default:
+                break;
+        }
+        
+        [super setCullFace:cullFace];
     }
-    else if (!depthTest && _depthTest){
-        glDisable(GL_DEPTH_TEST);
-        //NSLog(@"disable depth");
+    
+}
+
+-(void)setBlendMode:(NKBlendMode)blendMode {
+    
+    if (self.blendMode != blendMode) {
+        
+        switch (blendMode){
+            case NKBlendModeNone:
+                glDisable(GL_BLEND);
+                break;
+                
+            case NKBlendModeAlpha:{
+                glEnable(GL_BLEND);
+                //#ifndef TARGET_OPENGLES
+                //				glBlendEquation(GL_FUNC_ADD);
+                //#endif
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                break;
+            }
+                
+            case NKBlendModeAdd:{
+                glEnable(GL_BLEND);
+                //#ifndef TARGET_OPENGLES
+                //				glBlendEquation(GL_FUNC_ADD);
+                //#endif
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                break;
+            }
+                
+            case NKBlendModeMultiply:{
+                glEnable(GL_BLEND);
+                //#ifndef TARGET_OPENGLES
+                //				glBlendEquation(GL_FUNC_ADD);
+                //#endif
+                glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA /* GL_ZERO or GL_ONE_MINUS_SRC_ALPHA */);
+                break;
+            }
+                
+            case NKBlendModeScreen:{
+                glEnable(GL_BLEND);
+                //#ifndef TARGET_OPENGLES
+                //				glBlendEquation(GL_FUNC_ADD);
+                //#endif
+                glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+                break;
+            }
+                
+            case NKBlendModeSubtract:{
+                glEnable(GL_BLEND);
+                //#ifndef TARGET_OPENGLES
+                //                glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
+                //#else
+                //                NSLog(@"OF_BLENDMODE_SUBTRACT not currently supported on OpenGL ES");
+                //#endif
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                break;
+            }
+                
+            default:
+                break;
+        }
+        
+        [super setBlendMode:blendMode];
     }
-    _depthTest = depthTest;
+    
+}
+
+-(void)setUsesDepth:(bool)usesDepth {
+    if (self.usesDepth != usesDepth) {
+        if (usesDepth) {
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LEQUAL);
+        }
+        else {
+             glDisable(GL_DEPTH_TEST);
+        }
+        
+        [super setUsesDepth:usesDepth];
+    }
+    
 }
 
 -(void)setUniformIdentity {
@@ -461,7 +573,7 @@
 #endif
     
     
-    for (NKNode* c in self.allChildren) {
+    for (NKNode* c in _children) {
         [c removeFromParent];
     }
     
@@ -478,7 +590,7 @@
         _midiReceivedBlock(command);
     }
     else {
-        NSLog(@"received midi, provide scene a MidiReceivedBlock, or instead, implement: -(void)handleMidiCommand:(MIKMIDICommand *)command in subclass");
+       // NSLog(@"received midi, provide scene a MidiReceivedBlock, or instead, implement: -(void)handleMidiCommand:(MIKMIDICommand *)command in subclass");
     }
 }
 #endif

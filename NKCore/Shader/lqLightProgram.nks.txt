@@ -23,7 +23,6 @@ struct LightProperties {
 
 @vertex
 
-
 v_eyeDirection = v_position.xyz;
 
 if (u_light.isLocal) {
@@ -46,7 +45,7 @@ else {
 
 @vertex
 
-@frag
+@fragmain
 //
 // LIGHT PROGRAM
 //
@@ -77,5 +76,5 @@ else {
 lightColor = vec4(1.0);
 }
 
-@frag
+@fragmain
 

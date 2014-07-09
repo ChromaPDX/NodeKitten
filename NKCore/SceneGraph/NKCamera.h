@@ -11,6 +11,11 @@
 
 @class NKSceneNode;
 
+typedef NS_ENUM(U1t, NKProjectionMode) {
+    NKProjectionModePerspective,
+    NKProjectionModeOrthographic
+} NS_ENUM_AVAILABLE(10_9, 7_0);
+
 @interface NKCamera : NKNode {
     M16t viewMatrix;
     M16t projectionMatrix;
@@ -21,6 +26,7 @@
     bool vpDirty;
 }
 
+@property NKProjectionMode projectionMode;
 @property F1t fovVertRadians;
 @property F1t aspect;
 @property F1t nearZ;

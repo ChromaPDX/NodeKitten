@@ -36,6 +36,11 @@ static inline float cblend(F1t col, F1t bl){
 @property (nonatomic, strong) NSDictionary *animations;
 @property (nonatomic) bool drawBoundingBox;
 
+
+@property (nonatomic) float pointSize;
+@property (nonatomic) float lineWidth;
+@property (nonatomic) bool usesLOD;
+
 -(NKVertexBuffer*)vertexBuffer;
 
 -(instancetype)initWithObjNamed:(NSString *)name;

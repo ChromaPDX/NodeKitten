@@ -50,6 +50,7 @@
     [super setDirty:dirty];
     vpDirty = dirty;
     vDirty = dirty;
+    pDirty = dirty;
 }
 
 - (M16t)viewProjectionMatrix
@@ -80,12 +81,21 @@
 -(M16t)projectionMatrix {
     if (pDirty) {
         pDirty = false;
-        return projectionMatrix = M16MakePerspective(self.fovVertRadians,
-                                                     self.aspect,
-                                                     self.nearZ,
-                                                     self.farZ);
+        if (_projectionMode == NKProjectionModeOrthographic) {
+            return projectionMatrix = M16MakeOrtho(-self.scene.size.width*.5, self.scene.size.width*.5, -self.scene.size.height*.5, self.scene.size.height*.5, self.nearZ, self.farZ);
+        }
+        else {
+            return projectionMatrix = M16MakePerspective(self.fovVertRadians,
+                                                         self.aspect,
+                                                         self.nearZ,
+                                                         self.farZ);
+        }
     }
     return projectionMatrix;
+}
+
+-(M16t)perspectiveMatrix {
+    return M16MakeOrtho(-self.scene.size.width*.5, self.scene.size.width*.5, -self.scene.size.height*.5, self.scene.size.height*.5, self.nearZ, self.farZ);
 }
 
 -(M16t)orthographicMatrix {
@@ -94,9 +104,26 @@
 
 -(void)initGL {
     glEnable(GL_BLEND);
-    [self.scene setDepthTest:true];
+    
+    [self.scene setUsesDepth:true];
+    
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, .01);
+    
     glLineWidth(1.0f);
-    glGetError(); // Clear error codes
+    
+    glEnable( GL_POLYGON_SMOOTH );
+    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+    glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
+
+    glEnable(GL_MULTISAMPLE_ARB);
+    glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+    
+    float gran;
+    glGetFloatv(GL_SMOOTH_LINE_WIDTH_GRANULARITY, &gran);
+    NSLog(@"smooth line gran: %f",gran);
+    
+    GetGLError();
 }
 
 

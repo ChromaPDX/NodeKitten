@@ -47,7 +47,7 @@
 {
 	if ([self.internalData length] < 1) return 0;
 	UInt8 *data = (UInt8 *)[self.internalData mutableBytes];
-	return data[0] & 0x0F;
+	return (data[0] & 0x0F) + 1;
 }
 
 - (void)setChannel:(UInt8)channel

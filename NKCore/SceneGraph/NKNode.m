@@ -34,10 +34,11 @@
         _hidden = false;
         intAlpha = 1.;
         _alpha = 1.;
+        parentAlpha = 1.;
         _colorBlendFactor = 1.;
+        _usesDepth = true;
         
         _blendMode = NKBlendModeAlpha;
-        _cullFace = NKCullFaceFront;
         
         _userInteractionEnabled = false;
         
@@ -343,6 +344,30 @@
 }
 
 - (void)removeFromParent{
+    
+    for (NKNode *child in _children) {
+        [child removeFromParent];
+    }
+    
+    [self unload];
+    
+    if (_parent){
+        [_parent removeChildrenInArray:@[self]];
+    }
+    
+    if (_scene){
+        [_scene removeChildrenInArray:@[self]];
+    }
+}
+
+-(void)unload {
+    
+    for (NKNode* node in _children) {
+        [node unload];
+    }
+    
+    [animationHandler removeAllActions];
+    
     if (_body) {
         [[NKBulletWorld sharedInstance]removeNode:self];
     }
@@ -351,11 +376,11 @@
         [[NKShaderManager uidColors] removeObjectForKey:_uidColor];
     }
     
-    if (_parent){
-        [_parent removeChildrenInArray:@[self]];
+    if (self.uidColor) {
+        [[NKShaderManager uidColors] removeObjectForKey:self.uidColor];
     }
+    
 }
-
 #pragma mark - Actions
 
 -(int)hasActions {
@@ -401,171 +426,20 @@
     }
 }
 
-
-
--(void)drawToDepthBuffer {
-    
-    //    if (!_depthFbo){
-    //        _depthFbo = [NKNode customFbo:self.size];
-    //
-    //    }
-    //    if (!depthShader){
-    //        NSLog(@"init drawDepth shader");
-    //        depthShader = [[NKDrawDepthShader alloc] initWithNode:self paramBlock:nil];
-    //    }
-    //
-    //     [_scene.camera end];
-    //
-    // //   _depthFbo->begin();
-    //
-    //    ofClear(0,0,0,255);
-    //    glPushMatrix();
-    //    ofTranslate(_depthFbo->getWidth()*.5, _depthFbo->getHeight()*.5);
-    //
-    //    [_scene.camera begin];
-    //    //_scene.camera.node->transformGL();
-    //
-    //    [depthShader begin];
-    //
-    //    [self customDraw];
-    //
-    //    for (NKNode *child in _children) {
-    //        if (!child.isHidden) {
-    //            [child draw];
-    //        }
-    //    }
-    //
-    //    [depthShader end];
-    //
-    //
-    //
-    //   // _scene.camera.node->restoreTransformGL();
-    //
-    //
-    //    [_scene.camera end];
-    //
-    //    glPopMatrix();
-    //
-    // //   _depthFbo->end();
-    //
-    //    [_scene.camera begin];
-    
-    
-}
-
 -(void)pushStyle{
-    //return;
-    // CULL
-    
-    if (self.scene.cullFace != _cullFace) {
-        
-        switch (_cullFace) {
-                
-            case NKCullFaceNone:
-                glDisable(GL_CULL_FACE);
-                break;
-                
-            case NKCullFaceFront:
-                if (_scene.cullFace < 1) {
-                    glEnable(GL_CULL_FACE);
-                }
-                glCullFace(GL_FRONT);
-                break;
-                
-            case NKCullFaceBack:
-                if (_scene.cullFace < 1) {
-                    glEnable(GL_CULL_FACE);
-                }
-                glCullFace(GL_BACK);
-                break;
-                
-            case NKCullFaceBoth:
-                if (_scene.cullFace < 1) {
-                    glEnable(GL_CULL_FACE);
-                }
-                glCullFace(GL_FRONT_AND_BACK);
-                break;
-                
-            default:
-                break;
-        }
-        
-        
-        self.scene.scene.cullFace = _cullFace;
-        
-    }
-    
-    // SMOOTHING
-    
-    // BLEND MODE
-    
-    if (_blendMode != self.scene.blendMode) {
-        
-        switch (_blendMode){
-            case -1: case NKBlendModeNone:
-                glDisable(GL_BLEND);
-                break;
-                
-            case NKBlendModeAlpha:{
-                glEnable(GL_BLEND);
-                //#ifndef TARGET_OPENGLES
-                //				glBlendEquation(GL_FUNC_ADD);
-                //#endif
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                break;
-            }
-                
-            case NKBlendModeAdd:{
-                glEnable(GL_BLEND);
-                //#ifndef TARGET_OPENGLES
-                //				glBlendEquation(GL_FUNC_ADD);
-                //#endif
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-                break;
-            }
-                
-            case NKBlendModeMultiply:{
-                glEnable(GL_BLEND);
-                //#ifndef TARGET_OPENGLES
-                //				glBlendEquation(GL_FUNC_ADD);
-                //#endif
-                glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA /* GL_ZERO or GL_ONE_MINUS_SRC_ALPHA */);
-                break;
-            }
-                
-            case NKBlendModeScreen:{
-                glEnable(GL_BLEND);
-                //#ifndef TARGET_OPENGLES
-                //				glBlendEquation(GL_FUNC_ADD);
-                //#endif
-                glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
-                break;
-            }
-                
-            case NKBlendModeSubtract:{
-                glEnable(GL_BLEND);
-                //#ifndef TARGET_OPENGLES
-                //                glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
-                //#else
-                //                NSLog(@"OF_BLENDMODE_SUBTRACT not currently supported on OpenGL ES");
-                //#endif
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-                break;
-            }
-                
-            default:
-                break;
-        }
-        
-        _scene.blendMode = _blendMode;
-    }
+    _scene.cullFace = _cullFace;
+    _scene.blendMode = _blendMode;
+    _scene.usesDepth = _usesDepth;
 }
-
 
 -(void)draw {
-   // [self begin];
-    
-    [self pushStyle];
+//    
+    if (_framebuffer) {
+        [_framebuffer bind];
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glViewport(0, 0, _framebuffer.size.width, _framebuffer.size.height);
+        //NSLog(@"binding fb: %f %f", _framebuffer.size.width, _framebuffer.size.height);
+    }
     
     [self customDraw];
     
@@ -573,7 +447,7 @@
     
     for (NKNode *child in _children) {
         if (child.alpha == 1.) {
-              [child draw];
+            [child draw];
         }
         else {
             if (!transparentChildren) {
@@ -587,7 +461,16 @@
         [tc draw];
     }
     
-   // [self end];
+    if (_framebuffer) {
+        if (self.scene.framebuffer) {
+            [self.scene.framebuffer bind];
+        }
+        else {
+            [_framebuffer unbind];
+            //NSLog(@"unbinding to scene");
+        }
+    }
+
 }
 
 
@@ -974,24 +857,39 @@
 
 -(void)setTransparency:(F1t)transparency { // just node
     intAlpha = transparency;
-    _alpha = transparency;
+    _alpha = transparency * parentAlpha;
 }
 
 -(void)setAlpha:(F1t)alpha {
     intAlpha = alpha;
-    [self recursiveAlpha:1.];
-}
-
--(void)recursiveAlpha:(F1t)alpha{
-    _alpha = intAlpha * alpha;
+    _alpha = intAlpha * parentAlpha;
     
     for (NKNode* n in _children) {
         [n recursiveAlpha:(_alpha)];
     }
 }
 
+-(void)recursiveAlpha:(F1t)alpha{
+    parentAlpha = alpha;
+    _alpha = intAlpha * parentAlpha;
+    
+    for (NKNode* n in _children) {
+        [n recursiveAlpha:(_alpha)];
+    }
+}
+
+#pragma mark - COLOR
+
+-(F1t)colorBlendFactor {
+    return _colorBlendFactor;
+}
+
+-(void)setColorBlendFactor:(F1t)colorBlendFactor {
+    _colorBlendFactor = colorBlendFactor;
+}
+
 -(void)setColor:(NKByteColor*)color {
-    _color = color;
+    _color = [color copy];
 }
 
 -(NKByteColor*)color {
@@ -999,7 +897,21 @@
 }
 
 -(C4t)glColor {
-    return [[self color] colorWithBlendFactor:_colorBlendFactor alpha:self.alpha];
+    C4t color;
+    
+    if (_colorBlendFactor == 1.) {
+        color = _color.C4Color;
+    }
+    else if (_colorBlendFactor == 0){
+        color = C4Make(1., 1., 1., 1.);
+    }
+    else {
+        color = [[self color] colorWithBlendFactor:_colorBlendFactor];
+    }
+    
+    color.a *= self.alpha;
+    
+    return color;
 }
 
 #pragma mark - ACTIONS
@@ -1020,17 +932,5 @@
     }
 }
 
-#pragma mark - DEALLOC C++ Objectes
--(void)unload {
-    if (self.uidColor) {
-        [[NKShaderManager uidColors] removeObjectForKey:self.uidColor];
-    }
-    [animationHandler removeAllActions];
-    animationHandler = NULL;
-}
-
--(void)dealloc {
-    [self unload];
-}
 
 @end

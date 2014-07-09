@@ -205,6 +205,22 @@ static NSMutableSet *registeredMIKMIDICommandSubclasses;
 	return result;
 }
 
+-(UInt8)channel {
+   	if ([self.internalData length] < 1) return 0;
+	UInt8 *data = (UInt8 *)[self.internalData bytes];
+    
+	UInt8 status = data[0];
+    UInt8 result = status;
+    
+	if (![[self class] supportsMIDICommandType:result]) {
+		if ([[self class] supportsMIDICommandType:(status | 0x0F)]) {
+			result |= 0x0F;
+		}
+	}
+    
+	return (status - result) + 1;
+}
+
 - (void)setCommandType:(MIKMIDICommandType)commandType
 {
 	if (![[self class] isMutable]) return MIKMIDI_RAISE_MUTATION_ATTEMPT_EXCEPTION;
@@ -213,6 +229,13 @@ static NSMutableSet *registeredMIKMIDICommandSubclasses;
 	
 	UInt8 *data = (UInt8 *)[self.internalData mutableBytes];
 	data[0] = commandType;
+}
+
+- (UInt8)statusByte
+{
+	if ([self.internalData length] < 2) return 0;
+	UInt8 *data = (UInt8 *)[self.internalData bytes];
+	return data[0] & 0xFF;
 }
 
 - (UInt8)dataByte1

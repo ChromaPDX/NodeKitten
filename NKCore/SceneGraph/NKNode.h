@@ -31,10 +31,10 @@
 @class NodeAnimationHandler;
 @class NKSceneNode;
 @class NKDrawDepthShader;
-@class NKFbo;
 @class NKShaderProgram;
 @class NKByteColor;
 @class NKBulletBody;
+@class NKFrameBuffer;
 
 //typedef NS_ENUM(U1t, NKTouchState) {
 //    NKTouchNone,
@@ -94,6 +94,7 @@ typedef void (^CompletionBlock)(void);
     F1t d;
     
     // CACHED PROPS
+    F1t parentAlpha;
     F1t intAlpha;
     F1t _colorBlendFactor;
     
@@ -109,9 +110,11 @@ typedef void (^CompletionBlock)(void);
 @property (nonatomic, strong) NSArray *children;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, strong) NKByteColor *uidColor;
+@property (nonatomic) U1t tag;
 @property (nonatomic) V3t positionRef;
 @property (nonatomic) V3t scalarVelocity;
 @property (nonatomic) M16t modelViewCache;
+@property (nonatomic, strong) NKFrameBuffer *framebuffer;
 
 #pragma mark - POSITION PROPERTIES
 
@@ -123,13 +126,16 @@ typedef void (^CompletionBlock)(void);
 @property (nonatomic, getter = isHidden) BOOL hidden;
 @property (nonatomic) bool userInteractionEnabled;
 
-#pragma mark - BLEND
+#pragma mark - COLOR + BLEND
 
 -(void)setColor:(NKByteColor*)color;
 -(NKByteColor*)color;
 -(C4t)glColor;
+-(F1t)colorBlendFactor;
+-(void)setColorBlendFactor:(F1t)colorBlendFactor;
 
 @property (nonatomic) NKBlendMode blendMode;
+@property (nonatomic) bool usesDepth;
 @property (nonatomic) NKCullFaceMode cullFace;
 
 @property (nonatomic) F1t alpha;
@@ -228,7 +234,6 @@ typedef void (^CompletionBlock)(void);
 #pragma mark - SHADER / FBO
 
 -(void)loadShaderNamed:(NSString*)name;
-+(NKFbo*)customFbo:(S2t)size;
 
 #pragma mark - STATE MAINTENANCE
 

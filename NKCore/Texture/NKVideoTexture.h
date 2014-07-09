@@ -16,7 +16,7 @@
 
 static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 
-@interface NKVideoTexture : NKTexture
+@interface NKVideoTexture : NKTexture <AVPlayerItemOutputPullDelegate>
 {
     AVPlayer *_player;
 	dispatch_queue_t _myVideoOutputQueue;
@@ -27,18 +27,17 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 	GLint _backingWidth;
 	GLint _backingHeight;
     
-#if NK_USE_GLES
+#if TARGET_OS_IPHONE
 	CVOpenGLESTextureRef _lumaTexture;
 	CVOpenGLESTextureRef _chromaTexture;
-	CVOpenGLESTextureCacheRef _videoTextureCache;
+    CVOpenGLESTextureCacheRef _videoTextureCache;
+
 #else
+    NSDictionary *bufferAttributes;
     CVOpenGLTextureRef _lumaTexture;
     CVOpenGLTextureRef _chromaTexture;
-	CVOpenGLTextureCacheRef _videoTextureCache;
-    //    CVOpenGLBufferRef _buffer;
-    //    CVPixelBufferPoolRef pool;
+    CVOpenGLTextureCacheRef _videoTextureCache;
 #endif
-	
     CGSize videoSize;
     CMTime videoDuration;
     
@@ -46,6 +45,8 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 	GLuint _colorBufferHandle;
 	
 	const GLfloat *_preferredConversion;
+    
+    bool playing;
 }
 
 +(instancetype) textureWithVideoNamed:(NSString*)name;
@@ -57,7 +58,7 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 @property GLfloat chromaThreshold;
 @property GLfloat lumaThreshold;
 
-- (void)setupBuffers;
-- (void)cleanUpTextures;
+-(void)play;
+-(void)pause;
 
 @end

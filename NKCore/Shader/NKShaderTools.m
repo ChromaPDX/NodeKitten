@@ -56,8 +56,8 @@ NSString* nksString(NKS_ENUM string) {
             return @"bool";
         case NKS_TYPE_SAMPLER_2D:
             return @"sampler2D";
-//        case NKS_TYPE_SAMPLER_2D_RECT:
-//            return @"sampler2DRect";
+        case NKS_TYPE_SAMPLER_2D_RECT:
+            return @"sampler2DRect";
         case NKS_TYPE_SAMPLER_CORE_VIDEO:
 #if TARGET_OS_IPHONE
             return @"sampler2D";
@@ -121,11 +121,13 @@ NSString* nksString(NKS_ENUM string) {
         case NKS_V3_GL_POSITION:
             return @"gl_position";
         case NKS_V4_GL_FRAG_COLOR:
-#ifdef NK_USE_GL3
+#if NK_USE_GL3
             return @"FragColor";
 #else
             return @"gl_FragColor";
 #endif
+        case NKS_F1_GL_LINEWIDTH:
+            return @"gl_Linewidth";
             
         case NKS_UINT_GL_INSTANCE_ID:
 #if TARGET_OS_IPHONE
@@ -157,8 +159,6 @@ NSString* nksString(NKS_ENUM string) {
             return @"#extension GL_EXT_gpu_shader4 : enable";
 #endif
         default: return @"((NKS_STRING_ENUM_ERROR))";
-            
-            
     }
     
 }
@@ -217,7 +217,7 @@ NSString* operatorString(NSArray* variables, NSString *operator) {
 
 
 NSString *textureFragmentFunction(NSDictionary *shaderDict){
-#ifdef NK_USE_GL3
+#if NK_USE_GL3
         return shaderLineWithArray(@[[shaderDict fragVarNamed:NKS_V4_TEX_COLOR], @" = ", @"texture(",[shaderDict uniformNamed:NKS_S2D_TEXTURE], @",",[shaderDict varyingNamed:NKS_V2_TEXCOORD],@") + vec4(.2)"]);
 #else
     return shaderLineWithArray(@[[shaderDict fragVarNamed:NKS_V4_TEX_COLOR], @" = ", @"texture2D(",[shaderDict uniformNamed:NKS_S2D_TEXTURE], @",",[shaderDict varyingNamed:NKS_V2_TEXCOORD],@")"]);
@@ -281,7 +281,7 @@ NSString *textureFragmentFunction(NSDictionary *shaderDict){
     
     NSMutableString *dec;
     
-#ifdef NK_USE_GL3
+#if NK_USE_GL3
     
     if (_variable == NKS_VARIABLE_VARYING) {
         
@@ -322,6 +322,10 @@ NSString *textureFragmentFunction(NSDictionary *shaderDict){
 
 -(void)bindI1:(int)data {
     glUniform1i(_glLocation, data);
+}
+
+-(void)bindF1:(F1t)f {
+    glUniform1f(_glLocation, f);
 }
 
 -(void)bindV2:(V2t)data {

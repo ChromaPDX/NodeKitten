@@ -186,6 +186,8 @@ static inline V3t  V3MakeF(F1t x)
 	return ret;
 }
 
+
+
 static inline V3t V3Make(F1t x, F1t y, F1t z)
 {
 	V3t  ret = {x,y,z};
@@ -196,6 +198,10 @@ static inline V6t V6Make(F1t minX, F1t minY, F1t minZ,F1t maxX, F1t maxY, F1t ma
 {
 	V6t  ret = {minX,minY,minZ,maxX,maxY,maxZ};
 	return ret;
+}
+
+static inline V3t V3MakeRandomRanged(F1t range) {
+    return V3Make(((rand() % 1000) * .002 * range) - range,((rand() % 1000) * .002 * range) - range,((rand() % 1000) * .002 * range) - range);
 }
 
 static inline V3t V3Origin(){

@@ -32,7 +32,7 @@ static NKGLManager *sharedObject = nil;
     return sharedObject;
 }
 
-#if NK_USE_GLES
+#if TARGET_OS_IPHONE
 
 
 #else
@@ -49,7 +49,6 @@ static NKGLManager *sharedObject = nil;
     if (pixelFormat) {
         NSLog(@"gl manager has valid GL Pixel Format");
     }
-    
 }
 
 

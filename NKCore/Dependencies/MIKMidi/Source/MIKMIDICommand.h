@@ -148,6 +148,16 @@ typedef NS_ENUM(NSUInteger, MIKMIDICommandType) {
 /**
  *  The first byte of the MIDI data (after the command type).
  */
+@property (nonatomic, readonly) UInt8 statusByte;
+
+/**
+ *  The first byte of the MIDI data (after the command type).
+ */
+@property (nonatomic, readonly) UInt8 channel;
+
+/**
+ *  The first byte of the MIDI data (after the command type).
+ */
 @property (nonatomic, readonly) UInt8 dataByte1;
 
 /**

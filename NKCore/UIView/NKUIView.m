@@ -79,6 +79,7 @@
     }
     else {
         NSLog(@"GLES Context && Frame Buffer loaded!");
+        NSLog(@"context: %@", context);
     }
     
     
@@ -128,6 +129,7 @@
 -(void)setScene:(NKSceneNode *)scene {
     _scene = scene;
     scene.nkView = self;
+    scene.framebuffer = frameBuffer;
     
     w = self.bounds.size.width;
     h = self.bounds.size.height;
@@ -153,7 +155,7 @@
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
         //NSLog(@"draw scene");
-        F1t dt = (CFAbsoluteTimeGetCurrent() - lastTime) * 1000.;
+        F1t dt = (CFAbsoluteTimeGetCurrent() - lastTime);
         lastTime = CFAbsoluteTimeGetCurrent();
         
         [_scene updateWithTimeSinceLast:dt];

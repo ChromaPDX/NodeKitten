@@ -40,18 +40,18 @@ typedef NS_ENUM(NSInteger, NKPrimitive) {
 } NS_ENUM_AVAILABLE(10_9, 7_0);
 
 
-typedef void (^GeometrySetupBlock)(GLuint size);
-#define newGeometrySetupBlock (GeometrySetupBlock)^(GLuint size)
+typedef void (^GeometrySetupBlock)();
+#define newGeometrySetupBlock (GeometrySetupBlock)^()
 
 @class NKIndexBuffer;
 
 @interface NKVertexBuffer : NSObject
 
 {
-    V3t *vertices;
+    V3t *_vertices;
     V3t *normals;
     V3t *texCoords;
-    C4t *colors;
+    C4t *_colors;
     V3t *tangents;
     V3t *biNormals;
     F1t *boneWeights;
@@ -69,7 +69,8 @@ typedef void (^GeometrySetupBlock)(GLuint size);
     
     int stride;
     F1t *interlacedData;
-    
+    GeometrySetupBlock _geometrySetupBlock;
+
 }
 
 @property (nonatomic, strong) NKIndexBuffer *indexBuffer;
@@ -81,8 +82,13 @@ typedef void (^GeometrySetupBlock)(GLuint size);
              setup:(GeometrySetupBlock)geometrySetupBlock;
 
 -(V3t*) vertices;
+-(C4t*)colors;
 
--(instancetype)initWithVertexData:(const GLvoid *)data ofSize:(GLsizeiptr)size;
+-(void)setVertices:(V3t*)vertices;
+-(void)setColors:(C4t *)colors;
+
+
+-(instancetype)initWithVertexData:(const GLvoid *)data numberOfElements:(GLuint)numElements ofSize:(GLsizeiptr)size;
 
 +(instancetype)loadObjNamed:(NSString*)name;
 +(instancetype)pointSprite;
@@ -101,22 +107,26 @@ typedef void (^GeometrySetupBlock)(GLuint size);
 +(GeometrySetupBlock)riggedMeshSetupBlock;
 +(GeometrySetupBlock)primitiveSetupBlock;
 
--(void)bufferData;
+- (void)bufferData:(GLenum)bufferModeOrNull;
+- (void)updateBuffer;
 - (void)bind;
 - (void)unbind;
 
-@property (nonatomic) NSUInteger numVertices;
-@property (nonatomic) NSUInteger numberOfElements;
+@property (nonatomic) U1t numVertices;
 @property (nonatomic) int* elementOffset;
 @property (nonatomic) int* elementSize;
 @property (nonatomic) V3t boundingBoxSize;
+
 
 @end
 
 @interface NKIndexBuffer : NSObject
 
-- (id)initWithSize:(GLsizeiptr)size
-              data:(const GLvoid *)data;
+@property (nonatomic) U1t numElements;
+
+- (id)initWithLength:(U1t)length
+                data:(const GLvoid *)data;
+
 - (void)bind;
 - (void)unbind;
 

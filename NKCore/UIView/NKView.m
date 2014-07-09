@@ -46,13 +46,14 @@
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
         
     glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
+       // NSLog(@"viewport %f %f", self.visibleRect.size.width, self.visibleRect.size.height);
+        
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
     
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
         //NSLog(@"draw scene");
-        F1t dt = (CFAbsoluteTimeGetCurrent() - lastTime) * 1000.;
+        F1t dt = (CFAbsoluteTimeGetCurrent() - lastTime);
         lastTime = CFAbsoluteTimeGetCurrent();
         
         [_scene updateWithTimeSinceLast:dt];
@@ -111,11 +112,13 @@
         NSOpenGLPFADoubleBuffer,
 		NSOpenGLPFADepthSize, 24,
 		// Must specify the 3.2 Core Profile to use OpenGL 3.2
-#ifdef NK_USE_GL3
+#if NK_USE_GL3
 		NSOpenGLPFAOpenGLProfile,
 		NSOpenGLProfileVersion3_2Core,
 #endif
-		0
+        //NSOpenGLPFASampleBuffers,4,
+		//NSOpenGLPFASamples, 4,
+        0
 	};
 	
 	NSOpenGLPixelFormat *pf = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
@@ -157,11 +160,11 @@
     GLint maj;
     GLint min;
     
-    
     CGLGetVersion(&maj, &min);
     NSLog(@"NK GLView awake %1.0f %1.0f", self.visibleRect.size.width, self.visibleRect.size.height);
     NSLog(@"NK GLView using GL Version: %d.%d", maj, min);
     
+     GetGLError();
 }
 
 - (void) prepareOpenGL
@@ -255,6 +258,8 @@
     
     wMult = w / self.bounds.size.width;
     hMult = h / self.bounds.size.height;
+    
+    self.scene.size = V3Make(self.bounds.size.width, self.bounds.size.height, 1);
     
 #if SUPPORT_RETINA_RESOLUTION
     

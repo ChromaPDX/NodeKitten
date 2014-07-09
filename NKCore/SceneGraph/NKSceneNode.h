@@ -102,11 +102,9 @@ typedef void (^CallBack)();
 @property (nonatomic) bool useBulletDetection;
 
 // GL STATE MACHINE CONTROL
-@property (nonatomic) bool depthTest;
 @property (nonatomic, weak) NKShaderProgram *activeShader;
 @property (nonatomic, weak) NKVertexBuffer *boundVertexBuffer;
 @property (nonatomic, weak) NKTexture *boundTexture;
-@property (nonatomic) NKBlendMode blendModeState;
 @property (nonatomic) bool fill;
 
 // EXTERNAL MODULES

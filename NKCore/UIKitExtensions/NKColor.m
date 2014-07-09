@@ -8,7 +8,7 @@
 
 #import "NodeKitten.h"
 
-#define div255 *.003921568
+
 
 @implementation NKByteColor
 
@@ -57,12 +57,28 @@
     return [NKByteColor colorWithRed:color.r green:color.g blue:color.b alpha:color.a];
 }
 
+-(void)setRed:(GLubyte)alpha {
+    color.r = alpha;
+}
+-(void)setGreen:(GLubyte)alpha {
+    color.g = alpha;
+}
+-(void)setBlue:(GLubyte)alpha {
+    color.b = alpha;
+}
 -(void)setAlpha:(GLubyte)alpha {
     color.a = alpha;
 }
 
 -(GLubyte)alpha {
     return color.a;
+}
+
+-(void)setC4Color:(C4t)ccolor {
+    color.r = ccolor.r * 255.;
+    color.g = ccolor.g * 255.;
+    color.b = ccolor.b * 255.;
+    color.a = ccolor.a * 255.;
 }
 
 -(UB4t)UB4Color{
@@ -73,11 +89,11 @@
     return &color.r;
 }
 
--(C4t)colorWithBlendFactor:(F1t)blendFactor alpha:(F1t)alpha {
-    C4t col = [self colorWithBlendFactor:blendFactor];
-    col.a *= alpha;
-    return col;
-}
+//-(C4t)colorWithBlendFactor:(F1t)blendFactor alpha:(F1t)alpha {
+//    C4t col = [self colorWithBlendFactor:blendFactor];
+//    col.a *= alpha;
+//    return col;
+//}
 
 -(C4t)C4Color {
     C4t col;

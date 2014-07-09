@@ -22,12 +22,17 @@
 #define NK_AVAILABLE __OSX_AVAILABLE_STARTING
 
 #define NKWHITE [NKByteColor colorWithRed:255 green:255 blue:255 alpha:255]
+#define NKGREY [NKByteColor colorWithRed:155 green:155 blue:155 alpha:255]
+//PRIMARY
 #define NKRED [NKByteColor colorWithRed:255 green:0 blue:0. alpha:255]
 #define NKGREEN [NKByteColor colorWithRed:0 green:255 blue:0 alpha:255]
 #define NKBLUE [NKByteColor colorWithRed:0 green:0. blue:255 alpha:255]
+//SECONDARY
 #define NKYELLOW [NKByteColor colorWithRed:255 green:255 blue:0. alpha:255]
+#define NKPURPLE [NKByteColor colorWithRed:255 green:0 blue:255 alpha:255]
+#define NKAQUA [NKByteColor colorWithRed:0 green:255 blue:255 alpha:255]
+//MORE
 #define NKORANGE [NKByteColor colorWithRed:255 green:150 blue:0 alpha:255]
-#define NKPURPLE [NKByteColor colorWithRed:0 green:255 blue:255 alpha:255]
 #define NKBLACK [NKByteColor colorWithRed:0 green:0 blue:0 alpha:255]
 #define NKCLEAR [NKByteColor colorWithRed:0 green:0 blue:0 alpha:0]
 #define NKCOLOR_RANDOM [NKByteColor colorWithRed:arc4random() % 255 green:arc4random() % 255 blue:arc4random() % 255 alpha:255]
@@ -66,6 +71,12 @@ static inline V3t getTweenPoint(V3t src, V3t dst, F1t d){
                   weightedAverage(src.z, dst.z, d));
 }
 
+static inline V4t getTweenV4(V4t src, V4t dst, F1t d){
+    return V4Make(weightedAverage(src.x, dst.x, d),
+                  weightedAverage(src.y, dst.y, d),
+                  weightedAverage(src.z, dst.z, d),
+                  weightedAverage(src.w, dst.w, d));
+}
 
 static inline P2t polToCar(P2t pol) {
     

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define div255 *.003921568
+
 @interface NKByteColor : NSObject <NSCopying, NSCoding>
 
 {
@@ -16,9 +18,14 @@
 
 +(instancetype)colorWithRed:(U1t)red green:(U1t)green blue:(U1t)blue alpha:(U1t)alpha;
 +(instancetype)colorWithColor:(NKColor*)color;
++(instancetype)colorWithC4Color:(C4t)color;
 
 -(BOOL)isEqual:(id)object;
 
+-(void)setC4Color:(C4t)color;
+-(void)setRed:(GLubyte)red;
+-(void)setGreen:(GLubyte)green;
+-(void)setBlue:(GLubyte)blue;
 -(void)setAlpha:(GLubyte)alpha;
 -(GLubyte)alpha;
 

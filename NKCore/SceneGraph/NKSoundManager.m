@@ -221,10 +221,10 @@ static NKSoundManager *sharedObject = nil;
     
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         
-        if (action.reset) {
+        if (action.frameCount == 0) {
             action.duration = [(NKSoundNode*)node duration];
             [(NKSoundNode*)node play];
-            action.reset = false;
+            
         }
         
     };
@@ -237,11 +237,11 @@ static NKSoundManager *sharedObject = nil;
     
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         
-        if (action.reset) {
+        if (action.frameCount == 0) {
             if (![(NKSoundNode*)node isPlaying]) {
                 [(NKSoundNode*)node play];
             }
-            action.reset = false;
+            
         }
         
        // NSLog(@"fade sound to %1.2f", completion);
@@ -258,8 +258,8 @@ static NKSoundManager *sharedObject = nil;
     
     newAction.actionBlock = (ActionBlock)^(NKAction *action, NKNode* node, F1t completion){
         
-        if (action.reset) {
-            action.reset = false;
+        if (action.frameCount == 0) {
+            
         }
         
         [(NKSoundNode*)node setVolume:(1. - completion) * [(NKSoundNode*)node maxVolume]];

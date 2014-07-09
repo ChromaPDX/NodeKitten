@@ -13,11 +13,12 @@
 #define NK_SUPPRESS_LOGS 0
 
 //** FOR GL RELATED LOGS
-#define NK_LOG_GL 1
+#define NK_LOG_GL 0
+#define NK_LOG_CV 0
 //**
 
 //** LOG / PRINT TIME METRICS
-#define NK_LOG_METRICS 1
+#define NK_LOG_METRICS 0
 //**
 
 // SCENE DEBUG
@@ -35,6 +36,7 @@
 
 #define NK_USE_ASSIMP 1
 #define NK_USE_MIDI 1
+#define NK_LOG_MIDI 0
 
 // SYSTEM MACROS
 
@@ -45,6 +47,7 @@
 #if TARGET_OS_IPHONE
 
 #define NK_USE_GLES 1
+#define NK_USE_GL3 0
 
 #if defined(__ARM_NEON__)
 #import <arm_neon.h>
@@ -72,11 +75,11 @@
 
 #endif
 
-#if NK_USE_GLES
+#if TARGET_OS_IPHONE
 
 #import <OpenGLES/EAGL.h>
 
-#ifdef NK_USE_GL3
+#if NK_USE_GL3
 #import <OpenGLES/ES3/gl.h>
 #import <OpenGLES/ES3/glext.h>
 #else
@@ -86,10 +89,10 @@
 
 #else
 
-#define NK_USE_GL3 1
+#define NK_USE_GL3 0
 
 #import <OpenGL/OpenGL.h>
-#ifdef NK_USE_GL3
+#if NK_USE_GL3
 #import <OpenGl/gl3.h>
 #import <OpenGl/gl3ext.h>
 #else

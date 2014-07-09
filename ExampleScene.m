@@ -103,6 +103,7 @@
 
 -(void)addBallToNode:(NKNode*)n {
     NKNode *s = [[NKNode alloc]initWithSize:V3MakeF(1.5)];
+    
     [s setPosition:V3Make(0, 2, 25)];
     s.color = NKWHITE;
     
@@ -129,14 +130,14 @@
         else if (NKEventPhaseMove == event.phase){
             if (!V3Equal(V3MakeF(0), s.positionRef)) {
                 V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y)), s.positionRef);
-                [s.body setLinearVelocity:V3Multiply(delta, V3MakeF(.25))];
+                [s.body setLinearVelocity:V3Multiply(delta, V3MakeF(.15))];
             }
         }
         
         else if (NKEventPhaseEnd == event.phase){
             if (!V3Equal(V3MakeF(0), s.positionRef)) {
                 V3t delta = V3Subtract(V3MultiplyM16(self.camera.viewMatrix, V3Make(event.screenLocation.x,0,-event.screenLocation.y)), s.positionRef);
-                [s.body applyCentralImpulse:V3Negate(V3Multiply(delta, V3MakeF(50.)))];
+                [s.body applyCentralImpulse:V3Negate(V3Multiply(delta, V3MakeF(10.)))];
                 s.positionRef = V3MakeF(0.);
                 [s runAction:[NKAction delayFor:.5] completion:^{
                     [s runAction:[NKAction fadeAlphaTo:0 duration:1.] completion:^{
@@ -240,8 +241,8 @@
         else if (sceneChoice == 1) {
             
             
-            NKTexture * tex = [NKTexture textureWithImageNamed:@"h-alpha-a.jpg"];
-            //NKTexture*tex;
+           // NKTexture * tex = [NKTexture textureWithImageNamed:@"h-alpha-a.jpg"];
+            NKTexture*tex;
             
             V3t sceneCoords = V3Make(0,0,-30);
             
@@ -298,6 +299,7 @@
             
             NKMeshNode *ax = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveAxes texture:nil color:NKCLEAR size:V3MakeF(10)];
             [self addChild:ax];
+            
             ax.shader = [NKShaderProgram newShaderNamed:@"vertexColor" colorMode:NKS_COLOR_MODE_VERTEX numTextures:0 numLights:0 withBatchSize:0];
             
             ax.userInteractionEnabled = false;
@@ -799,12 +801,8 @@
 //            [self addChild:_omni];
             
             NKMeshNode *videoNode = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:[NKVideoTexture textureWithVideoNamed:@"carousel_360-640.mov"] color:NKWHITE size:V3Make(6.,8.,1.)];
-            
-            videoNode.cullFace = NKCullFaceNone;
-            
+
             [videoNode setPosition:V3Make(0, 7, 0)];
-            
-            //[videoNode repeatAction:[NKAction rotateByAngles:V3Make(13, 12, 20) duration:1.]];
 
             [self addChild:videoNode];
     
@@ -814,8 +812,6 @@
             [videoNode2 setPosition:V3Make(0, -7, 0)];
             
             [videoNode2 repeatAction:[NKAction rotateByAngles:V3Make(30, 12, 20) duration:1.]];
-            
-            videoNode2.cullFace = NKCullFaceNone;
             
             [self addChild:videoNode2];
             
@@ -828,55 +824,16 @@
             [self addChild:videoNode3];
         }
         
-#pragma mark - 7 - MIDI
+#pragma mark - 7 - PARTICLES
         
-        else if (sceneChoice == 7) { // MIDI
+        else if (sceneChoice == 7) { // EMITTERNODE
             
             
             self.camera.position = V3Make(0, 0, 4);
-            //[NKTexture textureWithImageNamed:@"spark.png"]
-            //
-            NKBatchNode* emitter = [[NKBatchNode alloc]initWithPrimitive:NKPrimitiveRect texture:[NKVideoTexture textureWithVideoNamed:@"slitscan-fall-640-360.mov"] color:NKWHITE size:V3MakeF(.1)];
+       
+            NKEmitterNode *emitter = [[NKEmitterNode alloc]initWithSize:V3MakeF(1.)];
             
             [self addChild:emitter];
-            
-            //emitter.cullFace = NKCullFaceNone;
-            emitter.blendMode = NKBlendModeAdd;
-
-#if TARGET_OS_IPHONE
-            int num = 100;
-#else
-            int num = 500;
-#endif
-            
-            for (int i = 0; i < num; i++){
-                NKNode *s = [[NKNode alloc] initWithSize:V3MakeF((arc4random() % 10 * .05 + .25))];
-                s.color = NKWHITE;
-                [emitter addChild:s];
-                [s runAction:[NKAction enterOrbitAtLongitude:arc4random() % 360 latitude:arc4random() % 360 radius:(arc4random() % 5)*.1 + 1  duration:.1] completion:^{
-                    [s repeatAction:[NKAction maintainOrbitDeltaLongitude:50 latitude:20. radius:0.0 duration:(arc4random() % 20+4) * .1]];
-                }];
-            }
-
-            self.midiReceivedBlock = newMidiReceivedBlock {
-                
-                if (command.commandType == MIKMIDICommandTypeNoteOn){
-                    
-                    NKNode *s = [[NKNode alloc] initWithSize:V3MakeF((arc4random() % 10 * .1 + .25))];
-                    s.color = NKWHITE;
-                    [emitter addChild:s];
-                    [s runAction:[NKAction enterOrbitAtLongitude:arc4random() % 360 latitude:arc4random() % 360 radius:(arc4random() % 5)*.1+1  duration:.1] completion:^{
-                        [s repeatAction:[NKAction maintainOrbitDeltaLongitude:50 latitude:20. radius:0.0 duration:(arc4random() % 20+4) * .1]];
-                        [s runAction:[NKAction delayFor:.2] completion:^{
-                            [s runAction: [NKAction fadeAlphaTo:0 duration:.3]completion:^{
-                                [s removeFromParent];
-                            }];
-                        }];
-                    }];
-                    
-                }
-            };
-
             
         }
         

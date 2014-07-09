@@ -104,7 +104,9 @@ static NKMidiManager *sharedObject = nil;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+#if NK_LOG_MIDI
 	NSLog(@"%@'s %@ changed to: %@", object, keyPath, [object valueForKeyPath:keyPath]);
+#endif
     if ([keyPath isEqualToString:@"availableDevices"]) {
         for (MIKMIDIDevice *d in [self availableDevices]) {
             [self addDevice: d];

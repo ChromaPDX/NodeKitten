@@ -85,8 +85,8 @@ struct aiMesh;
         }
         
         // Set up vertex buffer
-        vertices = (V3t*)malloc(sizeof(V3t) * self.numVertices);
-        memcpy(vertices, asset->mVertices, sizeof(V3t) * self.numVertices);
+        _vertices = (V3t*)malloc(sizeof(V3t) * self.numVertices);
+        memcpy(_vertices, asset->mVertices, sizeof(V3t) * self.numVertices);
         
         // Optionally set up the normal buffer.
         if (asset->mNormals)
@@ -107,8 +107,8 @@ struct aiMesh;
         // TODO: Support more than 1 set of colors.
         if (asset->mColors[0])
         {
-            colors = (V4t*)malloc(sizeof(C4t) * self.numVertices);
-            memcpy(colors, asset->mColors[0], sizeof(C4t) * self.numVertices);
+            _colors = (V4t*)malloc(sizeof(C4t) * self.numVertices);
+            memcpy(_colors, asset->mColors[0], sizeof(C4t) * self.numVertices);
             
         }
         
@@ -154,9 +154,9 @@ struct aiMesh;
         //        glDeleteBuffers(numberOfUnusedBones, firstUnusedBone);
         //        memset(firstUnusedBone, 0, numberOfUnusedBones * sizeof(GLuint));
         
-        self.numberOfElements = MAX(self.numVertices, asset->mNumFaces*3);
+        U1t numberOfElements = MAX(self.numVertices, asset->mNumFaces*3);
         
-        self.indexBuffer = [[NKIndexBuffer alloc]initWithSize:self.numberOfElements*sizeof(U1t) data:indices];
+        self.indexBuffer = [[NKIndexBuffer alloc]initWithLength:numberOfElements data:indices];
         
         free(indices);
         
@@ -272,13 +272,13 @@ struct aiMesh;
         
         NKMeshNode *mesh = [[NKMeshNode alloc] initWithVertexBuffer:vbo drawMode:GL_TRIANGLES texture:material.tex color:NKWHITE size:[vbo normalizeForGroupWithSize:normalize groupBoundingBox:boundingSize center:true]];
 
-        [vbo bufferData];
+        [vbo bufferData:GL_STATIC_DRAW];
         
         // DO TEXURES
         mesh.position = mesh.vertexBuffer.center;
         
         mesh.drawMode = GL_TRIANGLES;
-        mesh.cullFace = NKCullFaceNone;
+        mesh.cullFace = NKCullFaceBack;
         //mesh.drawBoundingBox = true;
         
         if (i==0) {

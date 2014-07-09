@@ -48,8 +48,6 @@
 
 @property (nonatomic) int batchSize;
 
--(void)addLight:(NKLightShader*)light;
-
 -(NSArray*)glslExtensions;
 
 -(NKShaderVariable*)uniformNamed:(NKS_ENUM)name;

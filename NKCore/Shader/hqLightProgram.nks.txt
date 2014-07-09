@@ -27,7 +27,7 @@ v_eyeDirection = v_position.xyz;
 
 @vertex
 
-@frag
+@fragmain
 
 //
 // LIGHT PROGRAM
@@ -82,4 +82,4 @@ lightColor = vec4(min(scatteredLight + reflectedLight,vec3(1.0)), 1.0);
 else {
 lightColor = vec4(1.0);
 }
-@frag
+@fragmain

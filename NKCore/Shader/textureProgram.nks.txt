@@ -1,7 +1,7 @@
-@frag
+@330fragmain
     texColor =  texture(u_texture,v_texCoord0);
-@frag
+@330fragmain
 
-@fragES
+@fragmain
     texColor =  texture2D(u_texture,v_texCoord0);
-@fragES
+@fragmain

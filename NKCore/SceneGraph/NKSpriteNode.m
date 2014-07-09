@@ -36,7 +36,7 @@
     self = [super initWithPrimitive:NKPrimitiveRect texture:texture color:color size:V3Make(size.x, size.y, 1)];
     
     if (self) {
-        self.cullFace = NKCullFaceNone;
+        //self.cullFace = NKCullFaceNone;
     }
     
     return self;

@@ -15,23 +15,20 @@
 +(instancetype) textureWithImageNamed:(NSString *)name {
     return [NKVideoTexture textureWithVideoNamed:name];
 }
+
 +(instancetype) textureWithVideoNamed:(NSString*)name {
     
     if  (!name) return nil;
     
-    if (![[NKTextureManager imageCache] objectForKey:name]) {
+    if (![[NKTextureManager textureCache] objectForKey:name]) {
         NKVideoTexture *newTex = [[NKVideoTexture alloc] initWithVideoNamed:name];
         
         if (newTex){
-            NSLog(@"adding video texture to cache named:%@", name);
-            [[NKTextureManager imageCache] setObject:newTex forKey:name];
-        }
-        else {
-            return nil;
+            [[NKTextureManager textureCache] setObject:newTex forKey:name];
         }
     }
     
-    return [[NKTextureManager imageCache] objectForKey:name];
+    return [[NKTextureManager textureCache] objectForKey:name];
     
 }
 
@@ -41,41 +38,17 @@
     
     if (self) {
         
+        self.name = name;
+        
         self.textureMapStyle = NKTextureMapStyleRepeat;
         
-        NKImage* request = [NKImage imageNamed:name];
-        
-        if (!request) {
-            request = [NKImage imageNamed:@"chromeKittenSmall.png"];
-            //NSLog(@"can't load tex, , using default");
-        }
-        
-        NSAssert(request != nil, @"MISSING DEFAULT TEX IMAGE OR SOMETHING ELSE BROKE !!");
-        
         NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:nil];
+        
         if (path) {
-            NSURL *pathURL = [NSURL fileURLWithPath : path];
             
-            // Create CVOpenGLESTextureCacheRef for optimal CVPixelBufferRef to GLES texture conversion.
-            if (!_videoTextureCache) {
-#if NK_USE_GLES
-                CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[NKGLManager sharedInstance] context], NULL, &_videoTextureCache);
-#else
-                CVReturn err = CVOpenGLTextureCacheCreate(kCFAllocatorDefault, NULL,
-                                                          [[[NKGLManager sharedInstance] context] CGLContextObj],
-                                                          [[[NKGLManager sharedInstance] pixelFormat] CGLPixelFormatObj],
-                                                          NULL,
-                                                          &_videoTextureCache);
-#endif
-                if (err != noErr) {
-                    NSLog(@"Error at CVOpenGLESTextureCacheCreate %d", err);
-                    return Nil;
-                }
-                else {
-                    NSLog(@"created CVGLTextureCache successfully");
-                }
-            }
-            //_videoTextureCache = [[NKGLManager sharedInstance] videoTextureCache];
+            NSURL *pathURL = [NSURL fileURLWithPath : path];
+
+            _videoTextureCache = [NKTextureManager videoTextureCache];
             
             _player = [[AVPlayer alloc] init];
             
@@ -83,14 +56,14 @@
             
             self.videoOutput = [[AVPlayerItemVideoOutput alloc] initWithPixelBufferAttributes:[self sourcePixelBufferAttributes]];
             
-            _myVideoOutputQueue = dispatch_queue_create("myVideoOutputQueue", DISPATCH_QUEUE_SERIAL);
+            _myVideoOutputQueue = [NKTextureManager textureThread];
+            
+            //dispatch_queue_create("myVideoOutputQueue", DISPATCH_QUEUE_SERIAL);
             
             [[self videoOutput] setDelegate:self queue:_myVideoOutputQueue];
             
             [self addObserver:self forKeyPath:@"player.currentItem.status" options:NSKeyValueObservingOptionNew context:AVPlayerItemStatusContext];
-            [self addTimeObserverToPlayer];
             
-            [_player play];
         }
         else {
             NSLog(@"NKVideoNode bad file name, %@", name);
@@ -127,6 +100,7 @@
 				[videoTrack loadValuesAsynchronouslyForKeys:@[@"preferredTransform"] completionHandler:^{
 					
 					if ([videoTrack statusOfValueForKey:@"preferredTransform" error:nil] == AVKeyValueStatusLoaded) {
+                        
 						CGAffineTransform preferredTransform = [videoTrack preferredTransform];
 						
 						/*
@@ -134,13 +108,12 @@
                          */
 						//self.playerView.preferredRotation = -1 * atan2(preferredTransform.b, preferredTransform.a);
 						
-                        //M9t tras =
                         videoSize = CGSizeApplyAffineTransform([videoTrack naturalSize], preferredTransform);
                         
                         self.size = P2Make(videoSize.width, videoSize.height);
-                        
-                        NSLog(@"loaded video with size: %f x %f", self.size.width, self.size.height);
-                        
+#if !TARGET_OS_IPHONE
+                        bufferAttributes = @{ (NSString *)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32RGBA), (NSString *)kCVPixelBufferWidthKey : @(videoSize.width), (NSString *)kCVPixelBufferHeightKey : @(videoSize.height), (NSString *)kCVPixelBufferIOSurfacePropertiesKey : @{ } };
+#endif
                         self.shouldResizeToTexture = false;
                         
 						[self addDidPlayToEndTimeNotificationForPlayerItem:item];
@@ -161,29 +134,30 @@
 	
 }
 
--(void)dealloc {
-      [self stop];
-    
-    [self removeObserver:self forKeyPath:@"player.currentItem.status" context:AVPlayerItemStatusContext];
-    [self removeTimeObserverFromPlayer];
-    
-    if (_notificationToken) {
-        [[NSNotificationCenter defaultCenter] removeObserver:_notificationToken name:AVPlayerItemDidPlayToEndTimeNotification object:_player.currentItem];
-        _notificationToken = nil;
-    }
-    
-  
-    
-    [self cleanUpTextures];
-	
-	if(_videoTextureCache) {
-		CFRelease(_videoTextureCache);
-	}
+-(void)unload {
+    [self stop];
+    [[_player currentItem] removeOutput:self.videoOutput];
 }
 
+-(void)dealloc {
+    if (_notificationToken) {
+        [[NSNotificationCenter defaultCenter] removeObserver:_notificationToken name:AVPlayerItemDidPlayToEndTimeNotification object:_player.currentItem];
+        
+        [self removeObserver:self forKeyPath:@"player.currentItem.status" context:AVPlayerItemStatusContext];
+    }
+    
+    if (_timeObserver){
+        [self removeTimeObserverFromPlayer];
+    }
+    
+    NSLog(@"finished unloading");
+}
 
 -(void)play {
-    // Make sure our playback is resumed from any interruption.
+    if (playing) return;
+    
+    playing = true;
+
 	if ([_player currentItem]) {
 		[self addDidPlayToEndTimeNotificationForPlayerItem:[_player currentItem]];
 	}
@@ -192,7 +166,12 @@
 	[_player play];
 }
 
+-(void)pause {
+    if (!playing)   return;
+    [_player pause];
+}
 -(void)stop {
+    if (!playing)   return;
     [_player pause];
 }
 
@@ -237,6 +216,7 @@
 	/*
      Setting actionAtItemEnd to None prevents the movie from getting paused at item end. A very simplistic, and not gapless, looped playback.
      */
+    
 	_player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
 	_notificationToken = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification object:item queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
 		// Simple item playback rewind.
@@ -244,22 +224,22 @@
 	}];
 }
 
-- (void)addTimeObserverToPlayer
-{
-	/*
-	 Adds a time observer to the player to periodically refresh the time label to reflect current time.
-	 */
-    if (_timeObserver)
-        return;
-    /*
-     Use __weak reference to self to ensure that a strong reference cycle is not formed between the view controller, player and notification block.
-     */
-    __weak NKVideoTexture* weakSelf = self;
-    _timeObserver = [_player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, 10) queue:dispatch_get_main_queue() usingBlock:
-                     ^(CMTime time) {
-                         [weakSelf syncTimeLabel];
-                     }];
-}
+//- (void)addTimeObserverToPlayer
+//{
+//	/*
+//	 Adds a time observer to the player to periodically refresh the time label to reflect current time.
+//	 */
+//    if (_timeObserver)
+//        return;
+//    /*
+//     Use __weak reference to self to ensure that a strong reference cycle is not formed between the view controller, player and notification block.
+//     */
+//    __weak NKVideoTexture* weakSelf = self;
+//    _timeObserver = [_player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, 10) queue:dispatch_get_main_queue() usingBlock:
+//                     ^(CMTime time) {
+//                         [weakSelf syncTimeLabel];
+//                     }];
+//}
 
 - (void)syncTimeLabel
 {
@@ -301,37 +281,22 @@
 
 - (void)loadTexturesFromPixelBuffer:(CVPixelBufferRef)pixelBuffer
 {
-	CVReturn err;
-    
-	if (pixelBuffer != NULL) {
-        
-        // CVPixelBufferLockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
-        
+
+#if NK_LOG_CV
 		if (!_videoTextureCache) {
 			NSLog(@"No video texture cache");
 			return;
 		}
+#endif
 		
 		[self cleanUpTextures];
-		
-		/*
-		 Use the color attachment of the pixel buffer to determine the appropriate color conversion matrix.
-		 */
-        //		CFTypeRef colorAttachments = CVBufferGetAttachment(pixelBuffer, kCVImageBufferYCbCrMatrixKey, NULL);
-        //
-        //		if (colorAttachments == kCVImageBufferYCbCrMatrix_ITU_R_601_4) {
-        //			_preferredConversion = kColorConversion601;
-        //		}
-        //		else {
-        //			_preferredConversion = kColorConversion709;
-        //		}
+
+        CVReturn err;
         
-        
+#if TARGET_OS_IPHONE
         int frameWidth = CVPixelBufferGetWidth(pixelBuffer);
 		int frameHeight = CVPixelBufferGetHeight(pixelBuffer);
-        
-#if NK_USE_GLES
-        
+
 		err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
 														   _videoTextureCache,
 														   pixelBuffer,
@@ -345,131 +310,70 @@
 														   0,
 														   &_lumaTexture);
 #else
-        NSDictionary *bufferAttributes = @{ (__bridge NSString *)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32RGBA), (__bridge NSString *)kCVPixelBufferWidthKey : @(frameWidth), (__bridge NSString *)kCVPixelBufferHeightKey : @(frameHeight), (__bridge NSString *)kCVPixelBufferIOSurfacePropertiesKey : @{ } };
-        
         err = CVOpenGLTextureCacheCreateTextureFromImage(kCFAllocatorDefault, _videoTextureCache, pixelBuffer, (__bridge CFDictionaryRef)(bufferAttributes), &_lumaTexture);
 #endif
+        
+        #if NK_LOG_CV
 		if (err) {
 			NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
 		}
+#endif
         
-        //		// UV-plane.
-        //        //glEnable(GL_TEXTURE_2D);
-        //
-        //
-        //#if NK_USE_GLES
-        //		err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
-        //														   _videoTextureCache,
-        //														   pixelBuffer,
-        //														   NULL,
-        //														   GL_TEXTURE_2D,
-        //														   GL_RG_EXT,
-        //														   frameWidth / 2,
-        //														   frameHeight / 2,
-        //														   GL_RG_EXT,
-        //														   GL_UNSIGNED_BYTE,
-        //														   1,
-        //														   &_chromaTexture);
-        //#else
-        //
-        //        err = CVOpenGLTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
-        //                                                         _videoTextureCache,
-        //                                                         pixelBuffer,
-        //                                                         NULL,
-        //                                                         &_chromaTexture);
-        //#endif
-        //
-        //		if (err) {
-        //			NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
-        //		}
-        //
-        //#if NK_USE_GLES
-        //		glBindTexture(CVOpenGLESTextureGetTarget(_chromaTexture), CVOpenGLESTextureGetName(_chromaTexture));
-        //#else
-        //        glBindTexture(CVOpenGLTextureGetTarget(_chromaTexture), CVOpenGLTextureGetName(_chromaTexture));
-        //#endif
-        //
-        //
-        //		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        //		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        //		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        //		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        //
-		//CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
+        if (!target) {
+#if TARGET_OS_IPHONE
+            target = CVOpenGLESTextureGetTarget(_lumaTexture);
+#else
+            target = CVOpenGLTextureGetTarget(_lumaTexture);
+#endif
+        }
         
-		CFRelease(pixelBuffer);
-	}
-	
-    //    glUniform1i(uniforms[UNIFORM_Y], 0);
-    //	glUniform1i(uniforms[UNIFORM_UV], 1);
-    //	glUniform1f(uniforms[UNIFORM_LUMA_THRESHOLD], self.lumaThreshold);
-    //	glUniform1f(uniforms[UNIFORM_CHROMA_THRESHOLD], self.chromaThreshold);
-    //	glUniform1f(uniforms[UNIFORM_ROTATION_ANGLE], self.preferredRotation);
-    //	glUniformMatrix3fv(uniforms[UNIFORM_COLOR_CONVERSION_MATRIX], 1, GL_FALSE, _preferredConversion);
+        glEnable(target);
+        glActiveTexture(GL_TEXTURE0);
+        
+#if TARGET_OS_IPHONE
+        glName = CVOpenGLESTextureGetName(_lumaTexture);
+#else
+        glName = CVOpenGLTextureGetName(_lumaTexture);
+#endif
+        
+        glBindTexture(target, glName);
+        
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameterf(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
 }
 
 - (void)cleanUpTextures
 {
 	if (_lumaTexture) {
-		CFRelease(_lumaTexture);
+		CVOpenGLTextureRelease(_lumaTexture);
 		_lumaTexture = NULL;
 	}
-	
-	if (_chromaTexture) {
-		CFRelease(_chromaTexture);
-		_chromaTexture = NULL;
-	}
-	
-	// Periodic texture cache flush every frame
-#if NK_USE_GLES
-	CVOpenGLESTextureCacheFlush(_videoTextureCache, 0);
+    if  (_videoTextureCache){
+#if TARGET_OS_IPHONE
+        CVOpenGLESTextureCacheFlush(_videoTextureCache, 0);
 #else
-    CVOpenGLTextureCacheFlush(_videoTextureCache, 0);
+        CVOpenGLTextureCacheFlush(_videoTextureCache, 0);
 #endif
+    }
 }
 
 -(void)bind {
-    GLenum texTarget;
-    
-    CMTime outputItemTime = kCMTimeInvalid;
-    
-    CFTimeInterval nextVSync = CACurrentMediaTime();
-    
-	outputItemTime = [[self videoOutput] itemTimeForHostTime:nextVSync];
-	
+    CMTime outputItemTime = [[self videoOutput] itemTimeForHostTime:CACurrentMediaTime()];
+
 	if ([[self videoOutput] hasNewPixelBufferForItemTime:outputItemTime]) {
 		CVPixelBufferRef pixelBuffer = NULL;
 		pixelBuffer = [[self videoOutput] copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
 		[self loadTexturesFromPixelBuffer:pixelBuffer];
-        //NSLog(@"new vid frame");
+        CVPixelBufferRelease(pixelBuffer);
 	}
     
-    #if NK_USE_GLES
-    texTarget = CVOpenGLESTextureGetTarget(_lumaTexture);
-    glEnable(texTarget);
+    glEnable(target);
     glActiveTexture(GL_TEXTURE0);
-    
-    texture = CVOpenGLESTextureGetName(_lumaTexture);
-    glBindTexture(texTarget, texture);
-    #else
-    
-    texTarget = CVOpenGLTextureGetTarget(_lumaTexture);
-    glEnable(texTarget);
-    // BIND EXISTING TEXTURES
-    glActiveTexture(GL_TEXTURE0);
-    texture = CVOpenGLTextureGetName(_lumaTexture);
-    glBindTexture(texTarget, texture);
-    
-#endif
-    
-    glTexParameteri(texTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(texTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(texTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(texTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    
+    glBindTexture(target, glName);
+
 }
-
-
 
 @end

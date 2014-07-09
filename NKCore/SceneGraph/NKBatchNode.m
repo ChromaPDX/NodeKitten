@@ -25,6 +25,22 @@
     return self;
 }
 
+-(instancetype)initWithVertexBuffer:(NKVertexBuffer*)buffer drawMode:(GLenum)drawMode texture:(NKTexture*)texture color:(NKByteColor *)color size:(V3t)size {
+    
+    self = [super initWithVertexBuffer:buffer drawMode:drawMode texture:texture color:color size:size];
+    
+    if (self) {
+        
+        _mvStack = [[NKMatrixStack alloc]init];
+        _mvpStack = [[NKMatrixStack alloc]init];
+        _normalStack = [[NKM9Stack alloc]init];
+        _childColors = [[NKVector4Stack alloc]init];
+        
+    }
+    
+    return self;
+}
+
 -(instancetype)initWithObjNamed:(NSString *)name {
     return [self initWithObjNamed:name withSize:V3MakeF(1.) normalize:false anchor:false];
 }
@@ -66,9 +82,7 @@
 
 -(void)draw {
     
-    
-    [self pushStyle];
-    
+  
     [self customDraw];
     
     
@@ -77,6 +91,8 @@
 -(void)customDraw {
     
     self.scene.activeShader = self.shader;
+    
+    [self pushStyle];
     
     bool useColor = false;
     
@@ -101,6 +117,7 @@
 //    }
 //    
     [self bindTextures];
+    
     
     [_mvpStack reset];
     [_mvStack reset];
@@ -227,12 +244,12 @@
     }
     else {
 #if TARGET_OS_IPHONE
-        glDrawArraysInstancedEXT(_drawMode, 0, _vertexBuffer.numberOfElements, spritesInBatch);
+        glDrawArraysInstancedEXT(_drawMode, 0, _vertexBuffer.numVertices, spritesInBatch);
 #else
 #ifdef NK_USE_ARB_EXT
-        glDrawArraysInstancedARB(_drawMode, 0, _vertexBuffer.numberOfElements, spritesInBatch);
+        glDrawArraysInstancedARB(_drawMode, 0, _vertexBuffer.numVertices, spritesInBatch);
 #else
-        glDrawArraysInstanced(_drawMode, 0, _vertexBuffer.numberOfElements, spritesInBatch);
+        glDrawArraysInstanced(_drawMode, 0, _vertexBuffer.numVertices, spritesInBatch);
 #endif
 #endif
     }

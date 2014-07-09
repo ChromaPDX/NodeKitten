@@ -94,7 +94,7 @@ typedef NS_ENUM(GLuint, NKS_ENUM)
     NKS_TYPE_INT,
     NKS_TYPE_BOOL,
     NKS_TYPE_SAMPLER_2D,
-    //NKS_TYPE_SAMPLER_2D_RECT,
+    NKS_TYPE_SAMPLER_2D_RECT,
     NKS_TYPE_SAMPLER_CORE_VIDEO,
     
     NKS_STRUCT_LIGHT,
@@ -107,7 +107,6 @@ typedef NS_ENUM(GLuint, NKS_ENUM)
     
     // M9
     NKS_M9_NORMAL,
-    
 
     // V3
     NKS_V3_EYE_DIRECTION,
@@ -118,6 +117,7 @@ typedef NS_ENUM(GLuint, NKS_ENUM)
     NKS_S2D_TEXTURE,
     NKS_S2D_TEXTURE_RECT,
     NKS_TEXTURE_RECT_SCALE,
+    
     // LIGHT
     NKS_LIGHT,
     NKS_I1_NUM_LIGHTS,
@@ -129,6 +129,8 @@ typedef NS_ENUM(GLuint, NKS_ENUM)
     NKS_V3_GL_POSITION,
     NKS_V4_GL_FRAG_COLOR,
     NKS_UINT_GL_INSTANCE_ID,
+    NKS_F1_GL_LINEWIDTH,
+    NKS_F1_GL_POINTSIZE,
     
     // INT
     NKS_INT_NUM_TEXTURES,
@@ -234,6 +236,7 @@ typedef union _NKS_SCALAR NKS_SCALAR;
 
 -(void)bindI1:(int)data;
 
+-(void)bindF1:(F1t)data;
 -(void)bindV2:(V2t)data;
 -(void)bindV3:(V3t)data;
 -(void)bindV4:(V4t)data;
@@ -248,15 +251,6 @@ typedef union _NKS_SCALAR NKS_SCALAR;
 
 // GENERIC UNION FOR OTHER TYPES
 -(void)pushValue:(NKS_SCALAR)value;
-
-@end
-
-
-@interface NKLightShader : NSObject
-
-@property NKShaderVariable * position;
-@property NKShaderVariable * normal;
-@property NKShaderVariable * color;
 
 @end
 

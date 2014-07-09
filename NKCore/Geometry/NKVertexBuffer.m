@@ -25,15 +25,33 @@
     self = [super init];
     if ( self )
     {
-        _numberOfElements = numElements;
-        [self loadVertexDataWithSize:size data:data setup:geometrySetupBlock];
+        _numVertices = numElements;
+        [self loadVertexDataWithSize:size data:data bufferMode:GL_STATIC_DRAW setup:geometrySetupBlock];
         
     }
     return self;
 }
 
 -(V3t*)vertices {
-    return vertices;
+    return _vertices;
+}
+
+-(C4t*)colors {
+    return _colors;
+}
+
+-(void)setColors:(C4t *)colors {
+    if (_colors) {
+        free(_colors);
+    }
+    _colors = colors;
+}
+
+-(void)setVertices:(V3t *)vertices{
+    if (_vertices) {
+        free(_vertices);
+    }
+    _vertices = vertices;
 }
 
 +(instancetype)axes {
@@ -663,9 +681,18 @@
 
 -(void)loadVertexDataWithSize:(GLsizeiptr)size
                          data:(const GLvoid *)data
-                        setup:(void(^)())geometrySetupBlock {
+                        bufferMode:(GLenum)mode
+                        setup:(void(^)())geometrySetupBlock
+
+{
     
-    NSLog(@"load vertex buffer with: %ld vertices", _numVertices);
+    if (!mode) {
+        mode = GL_STATIC_DRAW;
+    }
+    
+    _geometrySetupBlock = geometrySetupBlock;
+    
+    NSLog(@"load vertex buffer with: %u vertices", _numVertices);
     
     //glEnable(GL_DEPTH_TEST);
 #if NK_USE_GLES
@@ -687,7 +714,7 @@
     glBufferData(GL_ARRAY_BUFFER,
                  size,
                  data,
-                 GL_STATIC_DRAW);
+                 mode);
     
     geometrySetupBlock();
     
@@ -800,7 +827,7 @@
     NKLogV3(@"my center :", _center);
     
     for (int p = 0; p < self.numVertices; p++){
-            vertices[p] = V3Subtract(V3Multiply(vertices[p], modelInverse),offsetNormalized);
+            _vertices[p] = V3Subtract(V3Multiply(_vertices[p], modelInverse),offsetNormalized);
             //vertices[p] = V3Multiply(vertices[p], modelInverse);
             //NKLogV3(@"normalized vertex", vertices[p]);
     }
@@ -847,11 +874,11 @@
 }
 
 
--(void)bufferData {
+-(void)bufferData:(GLenum)bufferModeOrNull {
     
     stride = 0;
     
-    if (vertices){
+    if (_vertices){
         verticesOffset = stride;
         stride+=3;
     }
@@ -863,7 +890,7 @@
         texCoordsOffset = stride;
         stride+=3;
     }
-    if (colors){
+    if (_colors){
         colorsOffset = stride;
         stride+=4;
     }
@@ -880,17 +907,17 @@
         stride+=1;
     }
     
-    interlacedData = (F1t*)calloc(sizeof(F1t)*stride*self.numVertices, sizeof(F1t));
+    interlacedData = (F1t*)calloc(sizeof(F1t)*stride*_numVertices, sizeof(F1t));
     
     for (int i = 0; i < self.numVertices; i++){
-        if (vertices)
-            memcpy(interlacedData+(i*stride),vertices+i, sizeof(V3t));
+        if (_vertices)
+            memcpy(interlacedData+(i*stride),_vertices+i, sizeof(V3t));
         if (normals)
-            memcpy(interlacedData+(i*stride)+normalsOffset, vertices+i, sizeof(V3t));
+            memcpy(interlacedData+(i*stride)+normalsOffset, _vertices+i, sizeof(V3t));
         if (texCoords)
             memcpy(interlacedData+(i*stride)+texCoordsOffset, texCoords+i, sizeof(V3t));
-        if (colors)
-            memcpy(interlacedData+(i*stride)+colorsOffset, colors+i, sizeof(C4t));
+        if (_colors)
+            memcpy(interlacedData+(i*stride)+colorsOffset, _colors+i, sizeof(C4t));
         if (tangents)
             memcpy(interlacedData+(i*stride)+tangentsOffset, tangents+i, sizeof(V3t));
         if (biNormals)
@@ -899,11 +926,11 @@
             memcpy(interlacedData+(i*stride)+boneWeightsOffset, boneWeights+i, sizeof(V3t));
     }
     
-    [self loadVertexDataWithSize:self.numVertices*sizeof(F1t)*stride data:interlacedData setup: newGeometrySetupBlock {
+    [self loadVertexDataWithSize:self.numVertices*sizeof(F1t)*stride data:interlacedData bufferMode:bufferModeOrNull setup: newGeometrySetupBlock  {
         
-        //NSLog(@"stride %d floats, %d bytes", stride, stride*sizeof(F1t));
+        NSLog(@"stride %d floats, %lu bytes, %lu totalBytes", stride, stride*sizeof(F1t), self.numVertices*sizeof(F1t)*stride);
         
-        if (vertices){
+        if (_vertices){
             glEnableVertexAttribArray(NKS_V4_POSITION);
             glVertexAttribPointer(NKS_V4_POSITION, 3, GL_FLOAT, GL_FALSE,
                                   sizeof(F1t)*stride, BUFFER_OFFSET(0));
@@ -920,7 +947,7 @@
                                   sizeof(F1t)*stride, BUFFER_OFFSET(sizeof(F1t)*texCoordsOffset));
         }
         
-        if (colors) {
+        if (_colors) {
             glEnableVertexAttribArray(NKS_V4_COLOR);
             glVertexAttribPointer(NKS_V4_COLOR, 4, GL_FLOAT, GL_FALSE,
                                   sizeof(F1t)*stride, BUFFER_OFFSET(sizeof(F1t)*colorsOffset));
@@ -951,6 +978,48 @@
     
 }
 
+- (void)updateBuffer {
+    
+    U1t size = sizeof(F1t)*stride*_numVertices;
+    
+    if (size) {
+        
+        interlacedData = (F1t*)calloc(size, sizeof(F1t));
+        
+        for (int i = 0; i < _numVertices; i++){
+            if (_vertices)
+                memcpy(interlacedData+(i*stride),_vertices+i, sizeof(V3t));
+            if (normals)
+                memcpy(interlacedData+(i*stride)+normalsOffset, _vertices+i, sizeof(V3t));
+            if (texCoords)
+                memcpy(interlacedData+(i*stride)+texCoordsOffset, texCoords+i, sizeof(V3t));
+            if (_colors)
+                memcpy(interlacedData+(i*stride)+colorsOffset, _colors+i, sizeof(C4t));
+            if (tangents)
+                memcpy(interlacedData+(i*stride)+tangentsOffset, tangents+i, sizeof(V3t));
+            if (biNormals)
+                memcpy(interlacedData+(i*stride)+biNormalsOffset, biNormals+i, sizeof(V3t));
+            if (boneWeights)
+                memcpy(interlacedData+(i*stride)+boneWeightsOffset, boneWeights+i, sizeof(V3t));
+        }
+        
+        glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+        
+        glBufferSubData(GL_ARRAY_BUFFER,0,
+                        size,
+                        interlacedData);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        
+        free(interlacedData);
+    }
+    else {
+        NSLog(@"attempting to buffer nil vertex data");
+    }
+    
+}
+
 - (void)bind
 {
 #if NK_USE_GLES
@@ -964,6 +1033,7 @@
 #endif
     
 }
+
 
 - (void)bind:(void(^)())drawingBlock
 {
@@ -993,18 +1063,21 @@
     GLuint _elementBuffer;
 }
 
-- (id)initWithSize:(GLsizeiptr)size
+- (id)initWithLength:(U1t)length
               data:(const GLvoid *)data
 {
     self = [super init];
     if ( self )
     {
+        _numElements = length;
+        
         glGenBuffers(1, &_elementBuffer);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _elementBuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                     size,
+                     length*sizeof(U1t),
                      data,
                      GL_STATIC_DRAW);
+        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     return self;
 }
@@ -1028,7 +1101,7 @@
 
 - (void)unbind
 {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _elementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 

@@ -22,30 +22,30 @@
     
     if  (!name) return nil;
     
-    if (![[NKTextureManager imageCache] objectForKey:name]) {
+    if (![[NKTextureManager textureCache] objectForKey:name]) {
         NKTexture *newTex = [[NKTexture alloc] initWithImageNamed:name];
         
         if (newTex){
             //NSLog(@"adding tex to atlas named:%@", name);
-            [[NKTextureManager imageCache] setObject:newTex forKey:name];
+            [[NKTextureManager textureCache] setObject:newTex forKey:name];
         }
         else {
             return nil;
         }
     }
     
-    return [[NKTextureManager imageCache] objectForKey:name];
+    return [[NKTextureManager textureCache] objectForKey:name];
     
 }
 
 +(instancetype) textureWithPVRNamed:(NSString*)name size:(S2t)size{
     
-    if (![[NKTextureManager imageCache] objectForKey:name]) {
-        [[NKTextureManager imageCache] setObject:[[NKTexture alloc] initWithPVRFile:name width:size.width height:size.height]forKey:name];
+    if (![[NKTextureManager textureCache] objectForKey:name]) {
+        [[NKTextureManager textureCache] setObject:[[NKTexture alloc] initWithPVRFile:name width:size.width height:size.height]forKey:name];
         //NSLog(@"add tex to atlas named: %@", name);
     }
     
-    return [[NKTextureManager imageCache] objectForKey:name];
+    return [[NKTextureManager textureCache] objectForKey:name];
     
 }
 
@@ -79,13 +79,25 @@
 
 +(instancetype) textureWithString:(NSString *)text fontNamed:(NSString*)name color:(NKByteColor*)textColor Size:(S2t)size fontSize:(CGFloat)fontSize completion:(void (^)())block{
     
+    NSString *textureName = [NSString stringWithFormat:@"%d_%@_%@", (int)fontSize, name, text];
+
+    if ([[NKTextureManager textureCache] objectForKey:textureName]) {
+        return [[NKTextureManager textureCache] objectForKey:textureName];
+    }
+    
     if (!textColor) {
         textColor = NKWHITE;
     }
     
     NKTexture *texture = [[NKTexture alloc] initForBackThreadWithSize:size];
     
-    [texture setGlTexLocation:[NKTextureManager defaultTextureLocation]];
+    texture.name = textureName;
+    
+    //NSLog(@"cache font texture: %@", texture.name);
+    
+    [[NKTextureManager textureCache] setObject:texture forKey:texture.name];
+    
+    [texture setGlName:[NKTextureManager defaultTextureLocation]];
     
 #if NK_USE_GLES
     dispatch_async([NKTextureManager textureThread], ^{
@@ -182,8 +194,8 @@
         
 #if NK_USE_GLES
         glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1, (GLuint *)&texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glGenTextures(1, (GLuint *)&glName);
+        glBindTexture(GL_TEXTURE_2D, glName);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // This is necessary for non-power-of-two textures
@@ -191,23 +203,27 @@
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glBindTexture(GL_TEXTURE_2D, 0);
         
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glBindTexture(GL_TEXTURE_2D, glName);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
         
-        if (!texture) {
+        if (!glName) {
             //NSLog(@"failed to allocate GLES texture ID");
             return nil;
         }
 #else
-        glGenTextures(1, (GLuint *)&texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glGenTextures(1, (GLuint *)&glName);
+        glBindTexture(GL_TEXTURE_2D, glName);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
 #endif
     }
+    
+    GetGLError();
     
     return self;
     
@@ -219,6 +235,7 @@
     
     if (self) {
         
+        _name = name;
         
         self.textureMapStyle = NKTextureMapStyleRepeat;
         
@@ -254,8 +271,8 @@
         glEnable(GL_TEXTURE_2D);
         
        // glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glGenTextures(1, &glName);
+        glBindTexture(GL_TEXTURE_2D, glName);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -397,8 +414,8 @@
     
 #if NK_USE_GLES
         glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1, (GLuint *)&texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glGenTextures(1, (GLuint *)&glName);
+        glBindTexture(GL_TEXTURE_2D, glName);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // This is necessary for non-power-of-two textures
@@ -406,17 +423,16 @@
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glBindTexture(GL_TEXTURE_2D, 0);
         
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glBindTexture(GL_TEXTURE_2D, glName);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char *)CGBitmapContextGetData(context));
         glBindTexture(GL_TEXTURE_2D, 0);
-        if (!texture) {
+        if (!glName) {
             //NSLog(@"failed to allocate GLES texture ID");
         }
 #else
-        
         // Create a texture object to apply to model
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glGenTextures(1, &glName);
+        glBindTexture(GL_TEXTURE_2D, glName);
         
         // Set up filter and wrap modes for this texture object
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -439,16 +455,16 @@
         ////NSLog(@"GL init tex: %d,%d, loc %d", w,h,texture[0]);
         
 #endif
-    
+    GetGLError();
     CGContextRelease(context);
 }
 
--(GLuint)glTexLocation {
-    return texture;
+-(GLuint)glName {
+    return glName;
 }
 
--(void)setGlTexLocation:(GLuint)loc {
-    texture = loc;
+-(void)setGlName:(GLuint)loc {
+    glName = loc;
 }
 
 //-(void)loadTexFromCGContext:(CGContextRef)context size:(S2t)size {
@@ -493,7 +509,7 @@
 -(void)bind { // GL 1
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, glName);
 }
 
 -(void)unbind { // GL 1
@@ -504,19 +520,19 @@
 - (void)enableAndBind:(int)textureLoc
 {
     glActiveTexture(GL_TEXTURE0+textureLoc);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, glName);
 }
 
 - (void)bindToUniform:(GLuint)uniform {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, glName);
     glUniform1i(uniform, 0);
 }
 
 - (void)enableAndBindToUniform:(GLuint)uniformSamplerLocation
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, glName);
     glUniform1i(uniformSamplerLocation, 0);
 }
 
@@ -524,13 +540,13 @@
 {
     assert(GL_TEXTURE1 == GL_TEXTURE0 + 1);
     glActiveTexture(GL_TEXTURE0 + textureNum);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, glName);
     glUniform1i(uniformSamplerLocation, textureNum);
 }
 
 -(void)dealloc {
 
-    glDeleteTextures(1, &texture);
+    glDeleteTextures(1, &glName);
     
 }
 

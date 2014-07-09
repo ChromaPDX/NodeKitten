@@ -99,23 +99,24 @@ static inline bool _glHasError(const char *function, int line)
 @class NKByteColor;
 
 @interface NKFrameBuffer : NSObject
+{
+    V2t _size;
+}
 
-@property (nonatomic, readonly) CGSize size;
 @property (nonatomic, readonly) GLuint frameBuffer;
 @property (nonatomic, readonly) GLuint renderBuffer;
 @property (nonatomic, readonly) GLuint depthBuffer;
 
-@property (nonatomic) GLint width;
-@property (nonatomic) GLint height;
-
 @property (nonatomic,strong) NKTexture *renderTexture;
 
-#if NK_USE_GLES
+#if TARGET_OS_IPHONE
 - (id)initWithContext:(EAGLContext *)context layer:(id <EAGLDrawable>)layer;
 #else
 #endif
 
 -(instancetype)initWithWidth:(GLuint)width height:(GLuint)height;
+
+-(V2t)size;
 
 - (void)bind;
 - (void)bind:(void(^)())drawingBlock;

@@ -24,17 +24,14 @@
         
         _vertShaderPath = [[NSBundle mainBundle] pathForResource:self.name
                                                           ofType:@"vsh"];
-        
         _fragShaderPath = [[NSBundle mainBundle] pathForResource:self.name
                                                           ofType:@"fsh"];
-        
         // NOTE: Maybe this should just return nil?
         assert( [[NSFileManager defaultManager] fileExistsAtPath:_vertShaderPath] );
         assert( [[NSFileManager defaultManager] fileExistsAtPath:_fragShaderPath] );
         
         _vertexSource =  [NSString stringWithContentsOfFile:_vertShaderPath encoding:NSUTF8StringEncoding error:nil];
         _fragmentSource = [NSString stringWithContentsOfFile:_fragShaderPath encoding:NSUTF8StringEncoding error:nil];
-
     }
     return self;
 }
@@ -163,10 +160,15 @@
         }
     }
 
-    
     if (colorMode != NKS_COLOR_MODE_NONE) {
         [shaderDict[NKS_VARYINGS] addObject:nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V4, NKS_V4_COLOR)];
     }
+    
+    // STYLE
+    
+#if NK_USE_GL3
+    [shaderDict[NKS_UNIFORMS] addObject:nksu(NKS_PRECISION_MEDIUM, NKS_TYPE_F1, NKS_F1_GL_LINEWIDTH)];
+#endif
     
     if (numLights) {
         
@@ -244,6 +246,7 @@
     if ([shaderDict uniformNamed:NKS_S2D_TEXTURE]) {
         [shaderDict[NKS_VERTEX_MAIN] addObject:shaderLineWithArray(@[[shaderDict varyingNamed:NKS_V2_TEXCOORD],@"=",[shaderDict attributeNamed:NKS_V2_TEXCOORD]])];
     }
+    
     else if ([shaderDict uniformNamed:NKS_S2D_TEXTURE_RECT]){ // VIDEO NODE
 #if NK_USE_GLES
         [shaderDict[NKS_VERTEX_MAIN] addObject:@"v_texCoord0 = vec2(a_texCoord0.x, 1. - a_texCoord0.y);"];
@@ -330,7 +333,7 @@
     [shader appendNewLine:@"//NK VERTEX SHADER"];
     [shader appendNewLine:@"//***"];
     
-#ifdef NK_USE_GL3
+#if NK_USE_GL3
     [shader appendNewLine:@"#version 330 core"];
 #else
     for (NSString* s in dict[NKS_EXTENSIONS]) {
@@ -363,6 +366,10 @@
     
     [shader appendNewLine:@"void main() {"];
     
+//    if ([dict uniformNamed:NKS_F1_GL_LINEWIDTH]) {
+//        [shader appendNewLine:@"GL_LINE_WIDTH = 
+//    }
+    
     for (NSString* s in dict[NKS_VERTEX_MAIN]) {
         [shader appendNewLine:s];
     }
@@ -383,7 +390,7 @@
     [shader appendNewLine:@"//NK FRAGMENT SHADER"];
     [shader appendNewLine:@"//***"];
     
-#ifdef NK_USE_GL3
+#if NK_USE_GL3
     [shader appendNewLine:@"#version 330 core"];
     
     [shader appendNewLine:@"layout ( location = 0 ) out vec4 FragColor;"];
@@ -417,10 +424,15 @@
         [shader appendNewLine:[v declarationStringForSection:NKS_FRAGMENT_SHADER]];
     }
     if ([dict uniformNamed:NKS_S2D_TEXTURE] || [dict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
-        #if NK_USE_GLES
-        [shader appendString:shaderStringWithDirective(@"textureProgram", @"@fragES")];
+        #if NK_USE_GL3
+        [shader appendString:shaderStringWithDirective(@"textureProgram", @"@330fragmain")];
         #else
-        [shader appendString:shaderStringWithDirective(@"textureProgram", @"@frag")];
+        if ([dict uniformNamed:NKS_S2D_TEXTURE_RECT]){
+            [shader appendString:@"texColor =  texture2DRect(u_texture,v_texCoord0);"];
+        }
+        else {
+            [shader appendString:shaderStringWithDirective(@"textureProgram", @"@fragmain")];
+        }
         #endif
     }
 //    else if ([dict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
@@ -428,7 +440,7 @@
 //    }
     
     for (NSString*s in dict[NKS_PROGRAMS]) {
-        [shader appendString:shaderStringWithDirective(s, @"@frag")];
+        [shader appendString:shaderStringWithDirective(s, @"@fragmain")];
     }
     
     for (NSString* s in dict[NKS_FRAGMENT_MAIN]) {
@@ -501,6 +513,8 @@
         numAttributes++;
     }
     
+     GetGLError();
+    
     // Link program.
     if ( ![self linkProgram:self.glPointer] )
     {
@@ -541,8 +555,10 @@
         
         #if NK_LOG_GL
         NSLog(@"Attribute location %d, string %@",v.glLocation, v.nameString);
-#endif
+        #endif
     }
+    
+     GetGLError();
     
     for (NKShaderVariable *v in uniforms) {
         int uniLoc = glGetUniformLocation(self.glPointer, [v.nameString UTF8String]);
@@ -557,28 +573,28 @@
         }
     }
     
+     GetGLError();
+    
     if ([self uniformNamed:NKS_LIGHT]) {
         
         [self uniformNamed:NKS_LIGHT].glLocation = glGetUniformLocation(self.glPointer, "u_light.position");
         
-        NSArray *members = @[@"isEnabled",@"isLocal",@"isSpot",@"ambient",@"color",@"position",@"halfVector",@"coneDirection",
-                             @"spotCosCutoff", @"spotExponent",@"constantAttenuation",@"linearAttenuation",@"quadraticAttenuation"];
-                            
-        for (NSString *member in members) {
-            
-        NSString *name = [@"u_light." stringByAppendingString:member];
-        int uniLoc = glGetUniformLocation(self.glPointer, [name UTF8String]);
-        if (uniLoc > -1)
-        {
-           // NSLog(@"Uniform location %d, %@",uniLoc, name);
-        }
-            
-        }
+//        NSArray *members = @[@"isEnabled",@"isLocal",@"isSpot",@"ambient",@"color",@"position",@"halfVector",@"coneDirection",
+//                             @"spotCosCutoff", @"spotExponent",@"constantAttenuation",@"linearAttenuation",@"quadraticAttenuation"];
+//        
+//        for (NSString *member in members) {
+//            
+//            NSString *name = [@"u_light." stringByAppendingString:member];
+//            int uniLoc = glGetUniformLocation(self.glPointer, [name UTF8String]);
+//            if (uniLoc > -1)
+//            {
+//                // NSLog(@"Uniform location %d, %@",uniLoc, name);
+//            }
+//            
+//        }
+        
     }
-    
-
     // Store the locations in an immutable collection
-    
     
     // Release vertex and fragment shaders.
     if (vertShader)
@@ -592,6 +608,8 @@
         glDetachShader(self.glPointer, fragShader);
         glDeleteShader(fragShader);
     }
+    
+    GetGLError();
     
     return YES;
     

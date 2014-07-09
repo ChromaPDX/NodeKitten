@@ -392,12 +392,10 @@
 }
 
 -(void)draw {
-    [self.scene setDepthTest:false];
     [super draw];
 }
 
 -(void)drawWithHitShader {
-    [self.scene setDepthTest:false];
     [super drawWithHitShader];
 }
 
