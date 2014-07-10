@@ -55,6 +55,8 @@ typedef NS_OPTIONS(UInt8, NKTextureMapStyle) {
 +(NKTexture*)blankTexture;
 
 -(GLuint)glName;
+-(GLuint)glTarget;
+
 -(void)setGlName:(GLuint)loc;
 
 -(void)unload;

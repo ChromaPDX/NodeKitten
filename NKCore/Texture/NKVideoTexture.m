@@ -436,14 +436,18 @@
 		}
 #endif
         
-        if (!target) {
+    if (!target) {
 #if TARGET_OS_IPHONE
-            target = CVOpenGLESTextureGetTarget(_lumaTexture);
+        target = CVOpenGLESTextureGetTarget(_lumaTexture);
 #else
-            target = CVOpenGLTextureGetTarget(_lumaTexture);
+        target = CVOpenGLTextureGetTarget(_lumaTexture);
 #endif
+        if (!target) {
+            target = GL_TEXTURE_2D;
+            NSLog(@"Core Video: invalid texture target");
         }
-        
+    }
+    
         glEnable(target);
         glActiveTexture(GL_TEXTURE0);
         
@@ -454,7 +458,7 @@
 #endif
         
         glBindTexture(target, glName);
-        
+    
         glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameterf(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -485,7 +489,7 @@
     CMTime outputItemTime = [[self videoOutput] itemTimeForHostTime:CACurrentMediaTime()];
     
     if (isCameraSource) {
-            NSLog(@"target %d", target);
+           // NSLog(@"target %d", target);
         // TEXTURE LOADING PROVIDED BY DELEGATE CALLBACK
     }
     else {

@@ -58,12 +58,7 @@ NSString* nksString(NKS_ENUM string) {
             return @"sampler2D";
         case NKS_TYPE_SAMPLER_2D_RECT:
             return @"sampler2DRect";
-        case NKS_TYPE_SAMPLER_CORE_VIDEO:
-#if TARGET_OS_IPHONE
-            return @"sampler2D";
-#else
-            return @"sampler2DRect";
-#endif
+            
         case NKS_STRUCT_LIGHT:
             return @"LightProperties";
         case NKS_STRUCT_MATERIAL:
@@ -211,15 +206,6 @@ NSString* operatorString(NSArray* variables, NSString *operator) {
         [mult appendString:[nksf:@" %@ %@", operator, [variables[i] nameString]]];
     }
     return mult;
-}
-
-
-NSString *textureFragmentFunction(NSDictionary *shaderDict){
-#if NK_USE_GL3
-        return shaderLineWithArray(@[[shaderDict fragVarNamed:NKS_V4_TEX_COLOR], @" = ", @"texture(",[shaderDict uniformNamed:NKS_S2D_TEXTURE], @",",[shaderDict varyingNamed:NKS_V2_TEXCOORD],@") + vec4(.2)"]);
-#else
-    return shaderLineWithArray(@[[shaderDict fragVarNamed:NKS_V4_TEX_COLOR], @" = ", @"texture2D(",[shaderDict uniformNamed:NKS_S2D_TEXTURE], @",",[shaderDict varyingNamed:NKS_V2_TEXCOORD],@")"]);
-#endif
 }
 
 @implementation NKShaderVariable

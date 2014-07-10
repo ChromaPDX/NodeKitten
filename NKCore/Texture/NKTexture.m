@@ -192,20 +192,22 @@
         int w = size.width;
         int h = size.height;
         
+        target = GL_TEXTURE_2D;
+        
 #if NK_USE_GLES
         glActiveTexture(GL_TEXTURE0);
         glGenTextures(1, (GLuint *)&glName);
-        glBindTexture(GL_TEXTURE_2D, glName);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(target, glName);
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // This is necessary for non-power-of-two textures
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glBindTexture(target, 0);
         
-        glBindTexture(GL_TEXTURE_2D, glName);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(target, glName);
+        glTexImage2D(target, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glBindTexture(target, 0);
         
         if (!glName) {
             NSLog(@"failed to allocate GLES texture ID");
@@ -213,13 +215,13 @@
         }
 #else
         glGenTextures(1, (GLuint *)&glName);
-        glBindTexture(GL_TEXTURE_2D, glName);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+        glBindTexture(target, glName);
+        glTexImage2D(target, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
 #endif
     }
     
@@ -268,16 +270,16 @@
 {
     if ((self = [super init]))
     {
-        glEnable(GL_TEXTURE_2D);
+        glEnable(target);
         
        // glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
         glGenTextures(1, &glName);
-        glBindTexture(GL_TEXTURE_2D, glName);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glBindTexture(target, glName);
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(target,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+        glTexParameteri(target,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glBlendFunc(GL_ONE, GL_SRC_COLOR);
         NSString *extension = [inFilename pathExtension];
         NSString *base = [[inFilename componentsSeparatedByString:@"."] objectAtIndex:0];
@@ -286,9 +288,9 @@
         
         // Assumes pvr4 is RGB not RGBA, which is how texturetool generates them
         if ([extension isEqualToString:@"pvr4"])
-            glCompressedTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG, inWidth, inHeight, 0, (inWidth * inHeight) / 2, [texData bytes]);
+            glCompressedTexImage2D(target, 0, GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG, inWidth, inHeight, 0, (inWidth * inHeight) / 2, [texData bytes]);
         else if ([extension isEqualToString:@"pvr2"])
-            glCompressedTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG, inWidth, inHeight, 0, (inWidth * inHeight) / 2, [texData bytes]);
+            glCompressedTexImage2D(target, 0, GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG, inWidth, inHeight, 0, (inWidth * inHeight) / 2, [texData bytes]);
         else
         {
             NKImage *image = [[NKImage alloc] initWithData:texData];
@@ -309,7 +311,7 @@
             
             CGContextDrawImage( context, CGRectMake( 0, 0, width, height ), image.getCGImage);
             
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+            glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
             GLuint errorcode = glGetError();
             CGContextRelease(context);
             
@@ -411,34 +413,38 @@
     int glFormat = GL_RGBA;
     int glType = GL_UNSIGNED_BYTE;
 
+   
+    target = GL_TEXTURE_2D;
     
 #if NK_USE_GLES
+
         glActiveTexture(GL_TEXTURE0);
         glGenTextures(1, (GLuint *)&glName);
-        glBindTexture(GL_TEXTURE_2D, glName);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(target, glName);
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // This is necessary for non-power-of-two textures
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glBindTexture(target, 0);
         
-        glBindTexture(GL_TEXTURE_2D, glName);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char *)CGBitmapContextGetData(context));
-        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(target, glName);
+        glTexImage2D(target, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char *)CGBitmapContextGetData(context));
+        glBindTexture(target, 0);
         if (!glName) {
             //NSLog(@"failed to allocate GLES texture ID");
         }
 #else
+    
         // Create a texture object to apply to model
         glGenTextures(1, &glName);
-        glBindTexture(GL_TEXTURE_2D, glName);
+        glBindTexture(target, glName);
         
         // Set up filter and wrap modes for this texture object
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         
         // Indicate that pixel rows are tightly packed
         //  (defaults to stride of 4 which is kind of only good for
@@ -446,11 +452,11 @@
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         
         // Allocate and load image data into texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+        glTexImage2D(target, 0, GL_RGBA, w, h, 0,
                      GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char *)CGBitmapContextGetData(context));
         
         // Create mipmaps for this texture for better image quality
-        glGenerateMipmap(GL_TEXTURE_2D);
+        glGenerateMipmap(target);
         
         ////NSLog(@"GL init tex: %d,%d, loc %d", w,h,texture[0]);
         
@@ -465,6 +471,10 @@
 
 -(void)setGlName:(GLuint)loc {
     glName = loc;
+}
+
+-(GLuint)glTarget {
+    return target;
 }
 
 //-(void)loadTexFromCGContext:(CGContextRef)context size:(S2t)size {
@@ -508,31 +518,31 @@
 
 -(void)bind { // GL 1
     glActiveTexture(GL_TEXTURE0);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, glName);
+    glEnable(target);
+    glBindTexture(target, glName);
 }
 
 -(void)unbind { // GL 1
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(target, 0);
 //    glDisable(GL_TEXTURE_2D);
 }
 
 - (void)enableAndBind:(int)textureLoc
 {
     glActiveTexture(GL_TEXTURE0+textureLoc);
-    glBindTexture(GL_TEXTURE_2D, glName);
+    glBindTexture(target, glName);
 }
 
 - (void)bindToUniform:(GLuint)uniform {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, glName);
+    glBindTexture(target, glName);
     glUniform1i(uniform, 0);
 }
 
 - (void)enableAndBindToUniform:(GLuint)uniformSamplerLocation
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, glName);
+    glBindTexture(target, glName);
     glUniform1i(uniformSamplerLocation, 0);
 }
 
@@ -540,7 +550,7 @@
 {
     assert(GL_TEXTURE1 == GL_TEXTURE0 + 1);
     glActiveTexture(GL_TEXTURE0 + textureNum);
-    glBindTexture(GL_TEXTURE_2D, glName);
+    glBindTexture(target, glName);
     glUniform1i(uniformSamplerLocation, textureNum);
 }
 

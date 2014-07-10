@@ -390,8 +390,15 @@
 -(void)chooseShader {
     if (_numTextures) {
         if (_numTextures) {
-            if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
-                self.shader = [NKShaderProgram newShaderNamed:@"videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:0];
+            NKTexture *t = _textures[0];
+            
+            if ([t isKindOfClass:[NKVideoTexture class]]) {
+                if (t.glTarget == GL_TEXTURE_2D){
+                    self.shader = [NKShaderProgram newShaderNamed:@"cameraTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-2 numLights:1 withBatchSize:0];
+                }
+                else {
+                    self.shader = [NKShaderProgram newShaderNamed:@"videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:0];
+                }
             }
             else {
                 self.shader = [NKShaderProgram newShaderNamed:@"uColorTextureLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:_numTextures numLights:1 withBatchSize:0];

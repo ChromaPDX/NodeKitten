@@ -209,10 +209,25 @@
     }
     
     if (numTex == -1){ // quick vid fix
-        [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_CORE_VIDEO, NKS_S2D_TEXTURE)];
+        if  (numTex == -2){
+            [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_2D, NKS_S2D_TEXTURE)];
+        }
+        else {
+            [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_CORE_VIDEO, NKS_S2D_TEXTURE)];
+        }
+
         [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_TEXTURE_RECT_SCALE)];
         [shaderDict[NKS_VARYINGS] addObject: nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_V2_TEXCOORD)];
         [shaderDict[NKS_FRAG_INLINE] addObject:nksi(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_V4_TEX_COLOR)];
+        
+     
+        if ([shaderDict uniformNamed:NKS_S2D_TEXTURE].type == NKS_TYPE_SAMPLER_2D) {
+            [shaderDict[NKS_VERTEX_MAIN] addObject:@"v_texCoord0 = vec2(a_texCoord0.x, 1. - a_texCoord0.y);"];
+        }
+        else {
+            [shaderDict[NKS_VERTEX_MAIN] addObject:@"v_texCoord0 = vec2(a_texCoord0.x, 1. - a_texCoord0.y) * u_textureScale;"];
+        }
+        
     }
     
     else if (numTex) {
@@ -220,6 +235,8 @@
         [shaderDict[NKS_UNIFORMS] addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_2D, NKS_S2D_TEXTURE)];
         [shaderDict[NKS_VARYINGS] addObject: nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_V2_TEXCOORD)];
         [shaderDict[NKS_FRAG_INLINE] addObject:nksi(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_V4_TEX_COLOR)];
+        
+        [shaderDict[NKS_VERTEX_MAIN] addObject:shaderLineWithArray(@[[shaderDict varyingNamed:NKS_V2_TEXCOORD],@"=",[shaderDict attributeNamed:NKS_V2_TEXCOORD]])];
     }
 
     
@@ -241,18 +258,6 @@
     
     else if (colorMode == NKS_COLOR_MODE_VERTEX){
             [shaderDict[NKS_VERTEX_MAIN] addObject:shaderLineWithArray(@[[shaderDict varyingNamed:NKS_V4_COLOR],@"=",[shaderDict attributeNamed:NKS_V4_COLOR]])];
-    }
-    
-    if ([shaderDict uniformNamed:NKS_S2D_TEXTURE]) {
-        [shaderDict[NKS_VERTEX_MAIN] addObject:shaderLineWithArray(@[[shaderDict varyingNamed:NKS_V2_TEXCOORD],@"=",[shaderDict attributeNamed:NKS_V2_TEXCOORD]])];
-    }
-    
-    else if ([shaderDict uniformNamed:NKS_S2D_TEXTURE_RECT]){ // VIDEO NODE
-#if NK_USE_GLES
-        [shaderDict[NKS_VERTEX_MAIN] addObject:@"v_texCoord0 = vec2(a_texCoord0.x, 1. - a_texCoord0.y);"];
-#else
-        [shaderDict[NKS_VERTEX_MAIN] addObject:@"v_texCoord0 = vec2(a_texCoord0.x, 1. - a_texCoord0.y) * u_textureScale;"];
-#endif
     }
     
     if ([shaderDict uniformNamed:NKS_M9_NORMAL]) {
@@ -423,17 +428,18 @@
     for (NKShaderVariable* v in dict[NKS_FRAG_INLINE]) {
         [shader appendNewLine:[v declarationStringForSection:NKS_FRAGMENT_SHADER]];
     }
-    if ([dict uniformNamed:NKS_S2D_TEXTURE] || [dict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
-        #if NK_USE_GL3
+    if ([dict uniformNamed:NKS_S2D_TEXTURE]) {
+        
+#if NK_USE_GL3
         [shader appendString:shaderStringWithDirective(@"textureProgram", @"@330fragmain")];
-        #else
-        if ([dict uniformNamed:NKS_S2D_TEXTURE_RECT]){
+#else
+        if ([dict uniformNamed:NKS_S2D_TEXTURE].type == NKS_TYPE_SAMPLER_2D_RECT) {
             [shader appendString:@"texColor =  texture2DRect(u_texture,v_texCoord0);"];
         }
         else {
-            [shader appendString:shaderStringWithDirective(@"textureProgram", @"@fragmain")];
+            [shader appendString:@"texColor =  texture2D(u_texture,v_texCoord0);"];
         }
-        #endif
+#endif
     }
 //    else if ([dict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
 //        [shader appendString:shaderStringWithDirective(@"cvTextureProgram", @"@frag")];
@@ -452,7 +458,7 @@
     if ([dict varyingNamed:NKS_V4_COLOR]) {
         [colorMults addObject:[dict varyingNamed:NKS_V4_COLOR]];
     }
-    if ([dict uniformNamed:NKS_S2D_TEXTURE] || [dict uniformNamed:NKS_S2D_TEXTURE_RECT]) {
+    if ([dict uniformNamed:NKS_S2D_TEXTURE]) {
         [colorMults addObject:[dict fragVarNamed:NKS_V4_TEX_COLOR]];
     }
     if ([dict uniformNamed:NKS_LIGHT]) {
