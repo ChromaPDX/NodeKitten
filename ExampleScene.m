@@ -8,7 +8,7 @@
 
 #import "ExampleScene.h"
 
-#define numScenes 8
+#define numScenes 9
 
 #define TEST_BATCH_DRAW
 
@@ -213,6 +213,10 @@
                         break;
                     case 7:
                         sc.name =  [NSString stringWithFormat:@"%d - MIDI", i];
+                        break;
+                        
+                    case 8:
+                        sc.name =  [NSString stringWithFormat:@"%d - KINECT", i];
                         break;
                         
                     default:
@@ -835,6 +839,16 @@
             
             [self addChild:emitter];
             
+        }
+        
+#pragma mark - 8 - KINECT
+        
+        else if (sceneChoice == 8) { // EMITTERNODE
+            
+            
+            self.camera.position = V3Make(0, 0, 4);
+            
+            [NKKinectManager sharedInstance];
         }
         
 

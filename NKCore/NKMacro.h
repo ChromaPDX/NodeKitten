@@ -37,6 +37,7 @@
 #define NK_USE_ASSIMP 1
 #define NK_USE_MIDI 1
 #define NK_LOG_MIDI 0
+#define NK_USE_KINECT 1
 
 // SYSTEM MACROS
 

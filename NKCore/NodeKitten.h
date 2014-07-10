@@ -79,6 +79,10 @@
 #import "NKMidiManager.h"
 #endif
 
+#if NK_USE_KINECT
+#import "NKKinectManager.h"
+#endif
+
 // SOUND
 
 #import "NKSoundManager.h"
