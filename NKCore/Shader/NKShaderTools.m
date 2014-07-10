@@ -113,8 +113,6 @@ NSString* nksString(NKS_ENUM string) {
             
         case NKS_S2D_TEXTURE:
             return @"texture";
-        case NKS_S2D_TEXTURE_RECT:
-            return @"texture";
         case NKS_TEXTURE_RECT_SCALE:
             return @"textureScale";
             // GL BUILT IN

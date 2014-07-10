@@ -520,7 +520,6 @@ inline F1t logAverage (F1t src, F1t dst, F1t d){
         
         if (action.frameCount == 0) {
             
-
             action.startPos = V3Make(node.longitude, node.latitude, node.radius);
             action.endPos = V3Add(action.startPos, V3Make(deltaLongitude, deltaLatitude, deltaRadius));
             

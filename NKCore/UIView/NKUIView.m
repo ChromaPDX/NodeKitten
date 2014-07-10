@@ -117,10 +117,10 @@
 {
     [super layoutSubviews];
     
-	[EAGLContext setCurrentContext:context];
-	[self destroyFramebuffer];
-    NSLog(@"rebuilding framebuffer");
-	[self createFramebuffer];
+//	[EAGLContext setCurrentContext:context];
+//	[self destroyFramebuffer];
+//    NSLog(@"rebuilding framebuffer");
+//	[self createFramebuffer];
     
 	[self drawView];
 }

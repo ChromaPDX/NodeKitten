@@ -815,7 +815,7 @@
             
             [self addChild:videoNode2];
             
-            NKMeshNode *videoNode3 = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveSphere texture:[NKVideoTexture textureWithVideoNamed:@"carousel1_640-360.mov"] color:NKWHITE size:V3MakeF(3.)];
+            NKMeshNode *videoNode3 = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveSphere texture:[NKVideoTexture textureWithCameraSource:nil] color:NKWHITE size:V3MakeF(3.)];
             
             [videoNode3 repeatAction:[NKAction rotateByAngles:V3Make(0, 20, 0) duration:1.]];
             [videoNode3 setPosition:V3Make(0, 0, 0)];

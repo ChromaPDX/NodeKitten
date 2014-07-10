@@ -112,6 +112,7 @@
     
     glLineWidth(1.0f);
     
+#if !TARGET_OS_IPHONE
     glEnable( GL_POLYGON_SMOOTH );
     glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
     glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
@@ -122,7 +123,7 @@
     float gran;
     glGetFloatv(GL_SMOOTH_LINE_WIDTH_GRANULARITY, &gran);
     NSLog(@"smooth line gran: %f",gran);
-    
+#endif
     GetGLError();
 }
 

@@ -32,6 +32,49 @@
     
 }
 
++(instancetype) textureWithCameraSource:(id)source {
+    
+    //if  (!source) return nil;
+    
+    NKVideoTexture *cachedObject = [[NKTextureManager textureCache] objectForKey:@"camera"];
+    
+    if (!cachedObject) {
+        cachedObject = [[NKVideoTexture alloc] initWithCameraSource];
+        
+        if (cachedObject){
+            [[NKTextureManager textureCache] setObject:cachedObject forKey:@"camera"];
+        }
+    }
+    
+    return cachedObject;
+}
+
+-(instancetype)initWithCameraSource {
+    
+    if (TARGET_IPHONE_SIMULATOR) {
+        return [NKTexture textureWithImageNamed:@"error"];
+    }
+    
+    self = [super init];
+    
+    if (self) {
+        
+        self.name = @"camera";
+        
+        self.textureMapStyle = NKTextureMapStyleRepeat;
+        
+        isCameraSource = true;
+        
+        _videoTextureCache = [NKTextureManager videoTextureCache];
+        
+        [self setupAVCapture];
+    }
+    
+    return self;
+}
+
+
+
 -(instancetype)initWithVideoNamed:(NSString*)name {
     
     self = [super init];
@@ -134,20 +177,75 @@
 	
 }
 
+- (void)setupAVCapture
+{
+    
+    //-- Setup Capture Session.
+    _session = [[AVCaptureSession alloc] init];
+    [_session beginConfiguration];
+    
+    //-- Set preset session size.
+    [_session setSessionPreset:AVCaptureSessionPreset1280x720];
+    
+    //-- Creata a video device and input from that Device.  Add the input to the capture session.
+    AVCaptureDevice * videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if(videoDevice == nil)
+        assert(0);
+    
+    //-- Add the device to the session.
+    NSError *error;
+    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
+    if(error)
+        assert(0);
+    
+    [_session addInput:input];
+    
+    //-- Create the output for the capture session.
+    AVCaptureVideoDataOutput * dataOutput = [[AVCaptureVideoDataOutput alloc] init];
+    [dataOutput setAlwaysDiscardsLateVideoFrames:YES]; // Probably want to set this to NO when recording
+    
+    //    //-- Set to YUV420.
+    //    [dataOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange]
+    //                                                             forKey:(id)kCVPixelBufferPixelFormatTypeKey]]; // Necessary for manual preview
+    
+    [dataOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA]
+                                                             forKey:(id)kCVPixelBufferPixelFormatTypeKey]]; // Necessary for manual preview
+    
+    // Set dispatch to be on the main thread so OpenGL can do things with the data
+    [dataOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    
+    [_session addOutput:dataOutput];
+    [_session commitConfiguration];
+    
+    //[_session startRunning];
+    
+    NSLog(@"AVCaptureSession loaded");
+}
+
+
 -(void)unload {
-    [self stop];
-    [[_player currentItem] removeOutput:self.videoOutput];
+    if (isCameraSource) {
+    }
+    else {
+        [self stop];
+        [[_player currentItem] removeOutput:self.videoOutput];
+    }
 }
 
 -(void)dealloc {
-    if (_notificationToken) {
-        [[NSNotificationCenter defaultCenter] removeObserver:_notificationToken name:AVPlayerItemDidPlayToEndTimeNotification object:_player.currentItem];
+    if  (isCameraSource){
         
-        [self removeObserver:self forKeyPath:@"player.currentItem.status" context:AVPlayerItemStatusContext];
     }
-    
-    if (_timeObserver){
-        [self removeTimeObserverFromPlayer];
+    else {
+        if (_notificationToken) {
+            [[NSNotificationCenter defaultCenter] removeObserver:_notificationToken name:AVPlayerItemDidPlayToEndTimeNotification object:_player.currentItem];
+            
+            [self removeObserver:self forKeyPath:@"player.currentItem.status" context:AVPlayerItemStatusContext];
+        }
+        
+        if (_timeObserver){
+            [self removeTimeObserverFromPlayer];
+        }
     }
     
     NSLog(@"finished unloading");
@@ -157,22 +255,35 @@
     if (playing) return;
     
     playing = true;
-
-	if ([_player currentItem]) {
-		[self addDidPlayToEndTimeNotificationForPlayerItem:[_player currentItem]];
-	}
-	[[self videoOutput] requestNotificationOfMediaDataChangeWithAdvanceInterval:ONE_FRAME_DURATION];
     
-	[_player play];
+    if (isCameraSource) {
+        NSLog(@"START AV CAPTURE");
+        [_session startRunning];
+    }
+    else {
+        if ([_player currentItem]) {
+            [self addDidPlayToEndTimeNotificationForPlayerItem:[_player currentItem]];
+        }
+        [[self videoOutput] requestNotificationOfMediaDataChangeWithAdvanceInterval:ONE_FRAME_DURATION];
+        
+        [_player play];
+    }
 }
 
 -(void)pause {
-    if (!playing)   return;
-    [_player pause];
+    [self stop];
 }
+
 -(void)stop {
     if (!playing)   return;
-    [_player pause];
+    if (isCameraSource) {
+        [_session stopRunning];
+    }
+    else {
+            [_player pause];
+    }
+    
+
 }
 
 #pragma mark - NOTIFICATIONS
@@ -269,7 +380,7 @@
     }
 }
 
-#pragma mark - OpenGL drawing
+#pragma mark - OpenGL update / drawing
 
 - (NSDictionary *)sourcePixelBufferAttributes
 {
@@ -278,6 +389,12 @@
 			  (NSString *)kCVPixelBufferIOSurfacePropertiesKey : @{}};
 }
 
+-(void)captureOutput:(AVCaptureOutput *)captureOutput didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+
+    CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    [self loadTexturesFromPixelBuffer:pixelBuffer];
+    
+}
 
 - (void)loadTexturesFromPixelBuffer:(CVPixelBufferRef)pixelBuffer
 {
@@ -348,7 +465,11 @@
 - (void)cleanUpTextures
 {
 	if (_lumaTexture) {
-		CVOpenGLTextureRelease(_lumaTexture);
+#if TARGET_OS_IPHONE
+        CFRelease(_lumaTexture);
+#else
+        CVOpenGLTextureRelease(_lumaTexture);
+#endif
 		_lumaTexture = NULL;
 	}
     if  (_videoTextureCache){
@@ -362,18 +483,27 @@
 
 -(void)bind {
     CMTime outputItemTime = [[self videoOutput] itemTimeForHostTime:CACurrentMediaTime()];
+    
+    if (isCameraSource) {
+            NSLog(@"target %d", target);
+        // TEXTURE LOADING PROVIDED BY DELEGATE CALLBACK
+    }
+    else {
+        if ([[self videoOutput] hasNewPixelBufferForItemTime:outputItemTime]) {
+            CVPixelBufferRef pixelBuffer = NULL;
+            pixelBuffer = [[self videoOutput] copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
+            [self loadTexturesFromPixelBuffer:pixelBuffer];
+            CVPixelBufferRelease(pixelBuffer);
+        }
+    }
+    
 
-	if ([[self videoOutput] hasNewPixelBufferForItemTime:outputItemTime]) {
-		CVPixelBufferRef pixelBuffer = NULL;
-		pixelBuffer = [[self videoOutput] copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
-		[self loadTexturesFromPixelBuffer:pixelBuffer];
-        CVPixelBufferRelease(pixelBuffer);
-	}
     
     glEnable(target);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(target, glName);
-
+    
 }
+
 
 @end

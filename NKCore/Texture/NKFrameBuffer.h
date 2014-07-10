@@ -117,6 +117,7 @@ static inline bool _glHasError(const char *function, int line)
 -(instancetype)initWithWidth:(GLuint)width height:(GLuint)height;
 
 -(V2t)size;
+-(void)setSize:(V2t)size;
 
 - (void)bind;
 - (void)bind:(void(^)())drawingBlock;

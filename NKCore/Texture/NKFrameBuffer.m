@@ -19,6 +19,8 @@
     
     if(self){
         
+        [self destroyFBO:_frameBuffer];
+        
         //NSLog(@"GLES fb init with context %@", context);
         
         // 1 // Create the framebuffer and bind it.
@@ -26,18 +28,26 @@
         glGenFramebuffers(1, &_frameBuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
         
-        NSLog(@"allocate gl buffer, %d", _frameBuffer);
+        //NSLog(@"allocate gl buffer, %d", _frameBuffer);
         // 2 // Create a color renderbuffer, allocate storage for it, and attach it to the framebuffer’s color attachment point.
         
         glGenRenderbuffers(1, &_renderBuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
         
-        NSLog(@"allocate gl buffer, %d", _renderBuffer);
+        //NSLog(@"allocate gl buffer, %d", _renderBuffer);
         
         [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:layer];
         
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_size.width);
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_size.height);
+        GLint nw;
+        GLint nh;
+        
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &nw);
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &nh);
+        
+        _size = P2Make(nw, nh);
+        
+        
+        NSLog(@"size %d, %d", nw, nh);
         
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _renderBuffer);
         
@@ -57,6 +67,7 @@
         if(status != GL_FRAMEBUFFER_COMPLETE) {
            // NKCheckGLError(@"building frameBuffer");
             NSLog(@"failed to make complete framebuffer object %x", status);
+            NSLog(@"failed context %@", context);
             return nil;
         }
 
@@ -85,6 +96,13 @@
     
 }
 
+-(int)width {
+    return _size.width;
+}
+
+-(int)height {
+    return _size.height;
+}
 #else
 //
 //-(instancetype)initWithWidth:(GLuint)width height:(GLuint)height {
@@ -101,6 +119,7 @@
 
         _size.width = width;
         _size.height = height;
+        
 #if NK_USE_GLES
         
         // 1 // Create the framebuffer and bind it.
@@ -115,8 +134,8 @@
         
         glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB8_OES, width,height);
         
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &width);
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &height);
+        //glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &width);
+        //glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &height);
         
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _renderBuffer);
         
@@ -163,7 +182,7 @@
         
     }
 
-    NSLog(@"new framebuffer: %d size %f %f", _renderBuffer, _size.width, _size.height);
+    NSLog(@"new framebuffer: %d size %d %d", _renderBuffer, width, height);
     
     return self;
     
@@ -213,9 +232,7 @@
     
     glBindFramebuffer(GL_FRAMEBUFFER, fboName);
 	
-	
     GLint maxColorAttachments = 1;
-	
 	
 	// OpenGL ES on iOS 4 has only 1 attachment.
 	// There are many possible attachments on OpenGL
@@ -324,6 +341,10 @@
 
 -(V2t)size {
     return _size;
+}
+
+-(void)setSize:(V2t)size {
+    _size = size;
 }
 
 - (NKByteColor*)colorAtPoint:(P2t)point {

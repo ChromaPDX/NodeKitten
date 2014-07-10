@@ -16,9 +16,10 @@
 
 static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 
-@interface NKVideoTexture : NKTexture <AVPlayerItemOutputPullDelegate>
+@interface NKVideoTexture : NKTexture <AVPlayerItemOutputPullDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
 {
     AVPlayer *_player;
+    AVCaptureSession * _session;
 	dispatch_queue_t _myVideoOutputQueue;
 	id _notificationToken;
     id _timeObserver;
@@ -47,10 +48,12 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 	const GLfloat *_preferredConversion;
     
     bool playing;
+    bool isCameraSource;
 }
 
 +(instancetype) textureWithVideoNamed:(NSString*)name;
-    
++(instancetype) textureWithCameraSource:(id)source;
+
 @property AVPlayerItemVideoOutput *videoOutput;
 
 @property GLfloat preferredRotation;

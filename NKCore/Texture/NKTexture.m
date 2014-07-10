@@ -208,7 +208,7 @@
         glBindTexture(GL_TEXTURE_2D, 0);
         
         if (!glName) {
-            //NSLog(@"failed to allocate GLES texture ID");
+            NSLog(@"failed to allocate GLES texture ID");
             return nil;
         }
 #else
