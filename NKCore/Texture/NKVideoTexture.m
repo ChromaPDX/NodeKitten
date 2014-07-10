@@ -49,6 +49,12 @@
     return cachedObject;
 }
 
+-(void)sharedInit {
+     self.textureMapStyle = NKTextureMapStyleRepeat;
+     //target = GL_TEXTURE_2D;
+    _videoTextureCache = [NKTextureManager videoTextureCache];
+}
+
 -(instancetype)initWithCameraSource {
     
     if (TARGET_IPHONE_SIMULATOR) {
@@ -61,11 +67,9 @@
         
         self.name = @"camera";
         
-        self.textureMapStyle = NKTextureMapStyleRepeat;
+        [self sharedInit];
         
         isCameraSource = true;
-        
-        _videoTextureCache = [NKTextureManager videoTextureCache];
         
         [self setupAVCapture];
     }
@@ -83,7 +87,7 @@
         
         self.name = name;
         
-        self.textureMapStyle = NKTextureMapStyleRepeat;
+        [self sharedInit];
         
         NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:nil];
         
@@ -91,8 +95,6 @@
             
             NSURL *pathURL = [NSURL fileURLWithPath : path];
 
-            _videoTextureCache = [NKTextureManager videoTextureCache];
-            
             _player = [[AVPlayer alloc] init];
             
             [self setupPlaybackForURL:pathURL];
@@ -213,6 +215,8 @@
     
     // Set dispatch to be on the main thread so OpenGL can do things with the data
     [dataOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    
+    _session.sessionPreset = AVCaptureSessionPresetMedium;
     
     [_session addOutput:dataOutput];
     [_session commitConfiguration];
@@ -389,10 +393,17 @@
 			  (NSString *)kCVPixelBufferIOSurfacePropertiesKey : @{}};
 }
 
--(void)captureOutput:(AVCaptureOutput *)captureOutput didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
-
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+    
     CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     [self loadTexturesFromPixelBuffer:pixelBuffer];
+    
+}
+-(void)captureOutput:(AVCaptureOutput *)captureOutput didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+
+    
+//    CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+//    [self loadTexturesFromPixelBuffer:pixelBuffer];
     
 }
 
@@ -409,9 +420,15 @@
 		[self cleanUpTextures];
 
         CVReturn err;
-        
+    
+  
+    if (!self.size.width) {
+        self.size = P2Make(CVPixelBufferGetWidth(pixelBuffer), CVPixelBufferGetHeight(pixelBuffer));
+        NSLog(@"set capture size: %f,%f", self.size.width, self.size.height);
+    }
+    
 #if TARGET_OS_IPHONE
-        int frameWidth = CVPixelBufferGetWidth(pixelBuffer);
+    int frameWidth = CVPixelBufferGetWidth(pixelBuffer);
 		int frameHeight = CVPixelBufferGetHeight(pixelBuffer);
 
 		err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
