@@ -8,7 +8,6 @@
 
 #import "NKKinectManager.h"
 
-#include "stdafx.h"
 #import "OpenNI.h"
 #include "NiTE.h"
 
