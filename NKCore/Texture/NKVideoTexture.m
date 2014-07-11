@@ -87,11 +87,11 @@
         
         self.name = name;
         
-        [self sharedInit];
-        
         NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:nil];
         
         if (path) {
+            
+            [self sharedInit];
             
             NSURL *pathURL = [NSURL fileURLWithPath : path];
 
@@ -102,8 +102,6 @@
             self.videoOutput = [[AVPlayerItemVideoOutput alloc] initWithPixelBufferAttributes:[self sourcePixelBufferAttributes]];
             
             _myVideoOutputQueue = [NKTextureManager textureThread];
-            
-            //dispatch_queue_create("myVideoOutputQueue", DISPATCH_QUEUE_SERIAL);
             
             [[self videoOutput] setDelegate:self queue:_myVideoOutputQueue];
             
@@ -228,10 +226,12 @@
 
 
 -(void)unload {
+    [self stop];
+    
     if (isCameraSource) {
     }
     else {
-        [self stop];
+        
         [[_player currentItem] removeOutput:self.videoOutput];
     }
 }
@@ -428,8 +428,6 @@
     }
     
 #if TARGET_OS_IPHONE
-    int frameWidth = CVPixelBufferGetWidth(pixelBuffer);
-		int frameHeight = CVPixelBufferGetHeight(pixelBuffer);
 
 		err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
 														   _videoTextureCache,
@@ -437,8 +435,8 @@
 														   NULL,
 														   GL_TEXTURE_2D,
 														   GL_RGBA,
-														   frameWidth,
-														   frameHeight,
+														   (int)self.size.width,
+														   (int)self.size.height,
 														   GL_RGBA,
 														   GL_UNSIGNED_BYTE,
 														   0,
@@ -473,7 +471,8 @@
 #else
         glName = CVOpenGLTextureGetName(_lumaTexture);
 #endif
-        
+    
+        //NSLog(@"bind %d, %d", glName, target);
         glBindTexture(target, glName);
     
         glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -511,14 +510,11 @@
     }
     else {
         if ([[self videoOutput] hasNewPixelBufferForItemTime:outputItemTime]) {
-            CVPixelBufferRef pixelBuffer = NULL;
-            pixelBuffer = [[self videoOutput] copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
+            CVPixelBufferRef pixelBuffer = [[self videoOutput] copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
             [self loadTexturesFromPixelBuffer:pixelBuffer];
             CVPixelBufferRelease(pixelBuffer);
         }
     }
-    
-
     
     glEnable(target);
     glActiveTexture(GL_TEXTURE0);

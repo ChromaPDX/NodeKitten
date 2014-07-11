@@ -1032,6 +1032,7 @@
 		29744B73194B8F72009B3CD0 /* NKBulletWorld.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29744815194B8F72009B3CD0 /* NKBulletWorld.mm */; };
 		297BF6A219516F270004AFCD /* lqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */; };
 		297BF6A319516F270004AFCD /* lqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */; };
+		29AE6382196F3324003EBB4D /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 29AE6381196F3324003EBB4D /* libxml2.dylib */; };
 		29CA1FC71954CF2000B5C3AF /* MIKMIDIChannelVoiceCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F8C1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.m */; };
 		29CA1FC81954CF2000B5C3AF /* MIKMIDIChannelVoiceCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F8C1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.m */; };
 		29CA1FC91954CF2000B5C3AF /* MIKMIDICommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F8F1954CF1F00B5C3AF /* MIKMIDICommand.m */; };
@@ -1396,46 +1397,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		2945908A196E85F9009A0341 /* COPY OPENNI FRAMEWORK FILES */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 6;
-			files = (
-			);
-			name = "COPY OPENNI FRAMEWORK FILES";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		29459093196E86A5009A0341 /* COPY OPENNI DRIVERS */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = OpenNI2/Drivers;
-			dstSubfolderSpec = 6;
-			files = (
-			);
-			name = "COPY OPENNI DRIVERS";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		29459099196E86EC009A0341 /* COPY NiTE2 EXECUTABLES */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = NiTE2;
-			dstSubfolderSpec = 6;
-			files = (
-			);
-			name = "COPY NiTE2 EXECUTABLES";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2945909E196E872A009A0341 /* COPY NiTE2 DATA */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = NiTE2/Data;
-			dstSubfolderSpec = 6;
-			files = (
-			);
-			name = "COPY NiTE2 DATA";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		294590B5196E969E009A0341 /* OPENNI - copy phase 2 */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2460,6 +2421,7 @@
 		2985C298196EADD400F28F53 /* NiteCTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NiteCTypes.h; sourceTree = "<group>"; };
 		2985C299196EADD400F28F53 /* NiteEnums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NiteEnums.h; sourceTree = "<group>"; };
 		2985C29A196EADD400F28F53 /* NiteVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NiteVersion.h; sourceTree = "<group>"; };
+		29AE6381196F3324003EBB4D /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		29CA1F8A1954CF1F00B5C3AF /* MIKMIDI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDI.h; sourceTree = "<group>"; };
 		29CA1F8B1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIKMIDIChannelVoiceCommand.h; sourceTree = "<group>"; };
 		29CA1F8C1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIKMIDIChannelVoiceCommand.m; sourceTree = "<group>"; };
@@ -2876,6 +2838,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29AE6382196F3324003EBB4D /* libxml2.dylib in Frameworks */,
 				292E5D76194D4A69002B6D43 /* CoreVideo.framework in Frameworks */,
 				292E5D75194D4A39002B6D43 /* AVFoundation.framework in Frameworks */,
 				2970D525194A6D8C00EEAC2B /* CoreGraphics.framework in Frameworks */,
@@ -4020,6 +3983,7 @@
 		2970D521194A6D8C00EEAC2B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				29AE6381196F3324003EBB4D /* libxml2.dylib */,
 				29459182196EA7B4009A0341 /* openni-frameworks */,
 				2945916E196EA0B8009A0341 /* GLUT.framework */,
 				2945916C196EA0AC009A0341 /* OpenGL.framework */,
@@ -5076,11 +5040,7 @@
 			buildPhases = (
 				2970D51B194A6D8C00EEAC2B /* Sources */,
 				2970D51C194A6D8C00EEAC2B /* Frameworks */,
-				2945908A196E85F9009A0341 /* COPY OPENNI FRAMEWORK FILES */,
-				29459093196E86A5009A0341 /* COPY OPENNI DRIVERS */,
 				2970D51D194A6D8C00EEAC2B /* Resources */,
-				29459099196E86EC009A0341 /* COPY NiTE2 EXECUTABLES */,
-				2945909E196E872A009A0341 /* COPY NiTE2 DATA */,
 			);
 			buildRules = (
 			);
@@ -6748,19 +6708,13 @@
 				GCC_PREFIX_HEADER = "NodeKittenIOS/NodeKittenIOS-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"./NKCore/Dependencies/openni/include/**",
 					"$(SDKROOT)/usr/include/libxml2",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
 				INFOPLIST_FILE = "NodeKittenIOS/NodeKittenIOS-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/NKCore/Dependencies/assimp/lib/osx",
 					"$(PROJECT_DIR)/NKCore/Dependencies/assimp/lib/ios",
-					"$(PROJECT_DIR)/NKCore/Dependencies/openni/**",
-					"$(PROJECT_DIR)/NKCore/Dependencies/openni/openni-frameworks/OpenNI2/Drivers",
-					"$(PROJECT_DIR)/NKCore/Dependencies/openni/openni-frameworks",
-					"$(PROJECT_DIR)/NKCore/Dependencies/openni/include",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -6780,19 +6734,13 @@
 				GCC_PREFIX_HEADER = "NodeKittenIOS/NodeKittenIOS-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"./NKCore/Dependencies/openni/include/**",
 					"$(SDKROOT)/usr/include/libxml2",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
 				INFOPLIST_FILE = "NodeKittenIOS/NodeKittenIOS-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/NKCore/Dependencies/assimp/lib/osx",
 					"$(PROJECT_DIR)/NKCore/Dependencies/assimp/lib/ios",
-					"$(PROJECT_DIR)/NKCore/Dependencies/openni/**",
-					"$(PROJECT_DIR)/NKCore/Dependencies/openni/openni-frameworks/OpenNI2/Drivers",
-					"$(PROJECT_DIR)/NKCore/Dependencies/openni/openni-frameworks",
-					"$(PROJECT_DIR)/NKCore/Dependencies/openni/include",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -6863,7 +6811,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/NKCore/Dependencies/assimp/lib/osx",
 					"./**",
-					"$(PROJECT_DIR)/NKCore/Dependencies/assimp/lib/ios",
 					"$(PROJECT_DIR)/NKCore/Dependencies/openni/openni-frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
@@ -6895,7 +6842,6 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/NKCore/Dependencies/assimp/lib/osx",
 					"./**",
-					"$(PROJECT_DIR)/NKCore/Dependencies/assimp/lib/ios",
 					"$(PROJECT_DIR)/NKCore/Dependencies/openni/openni-frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;

@@ -146,34 +146,47 @@ static NKTextureManager *sharedObject = nil;
     return [[NKTextureManager sharedInstance] videoTextureCache];
 }
 -(CVOpenGLESTextureCacheRef)videoTextureCache {
+    
+    if (!_videoTextureCache) {
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[NKGLManager sharedInstance] context], NULL, &_videoTextureCache);
+        
+        if (err != noErr) {
+            NSLog(@"Error at CVOpenGLESTextureCacheCreate %d", err);
+            return Nil;
+        }
+        else {
+            
+            NSAssert(_videoTextureCache, @"something went wrong");
+            NSLog(@"created CVGLTextureCache successfully");
+        }
+        
+    }
+    
     return _videoTextureCache;
 }
 #else
+
 +(CVOpenGLTextureCacheRef)videoTextureCache {
     return [[NKTextureManager sharedInstance] videoTextureCache];
 }
 
 -(CVOpenGLTextureCacheRef)videoTextureCache {
     
-    if (!_videoTextureCache) {
-#if TARGET_OS_IPHONE
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[NKGLManager sharedInstance] context], NULL, &_videoTextureCache);
-#else
         CVReturn err = CVOpenGLTextureCacheCreate(kCFAllocatorDefault, NULL,
                                                   [[[NKGLManager sharedInstance] context] CGLContextObj],
                                                   [[[NKGLManager sharedInstance] pixelFormat] CGLPixelFormatObj],
                                                   NULL,
                                                   &_videoTextureCache);
-#endif
         if (err != noErr) {
             NSLog(@"Error at CVOpenGLESTextureCacheCreate %d", err);
             return Nil;
         }
         else {
+            
+            NSAssert(_videoTextureCache, @"something went wrong");
             NSLog(@"created CVGLTextureCache successfully");
         }
-    }
-    
+
     return _videoTextureCache;
 }
 #endif

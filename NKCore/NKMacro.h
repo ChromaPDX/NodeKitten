@@ -14,7 +14,7 @@
 
 //** FOR GL RELATED LOGS
 #define NK_LOG_GL 0
-#define NK_LOG_CV 0
+#define NK_LOG_CV 1
 //**
 
 //** LOG / PRINT TIME METRICS
@@ -37,7 +37,7 @@
 #define NK_USE_ASSIMP 1
 #define NK_USE_MIDI 1
 #define NK_LOG_MIDI 0
-#define NK_USE_KINECT 1
+#define NK_USE_KINECT 0
 
 // SYSTEM MACROS
 

@@ -21,6 +21,8 @@
 
 {
 
+    NKFrameBuffer *frameBuffer;
+    
 #if USE_CV_DISPLAY_LINK
     static dispatch_queue_t displayThread;
     CVDisplayLinkRef displayLink;
@@ -54,7 +56,7 @@
     NKShaderProgram *defaultShader;
     NKVertexBuffer *vertexBuffer;
     NKTexture * texture;
-    
+    NKMeshNode *rect;
     
 }
 

@@ -36,6 +36,8 @@
         
         //NSLog(@"allocate gl buffer, %d", _renderBuffer);
         
+       // glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB8_OES, width,height);
+
         [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:layer];
         
         GLint nw;
@@ -49,7 +51,18 @@
         
         NSLog(@"size %d, %d", nw, nh);
         
+        _renderTexture = [[NKTexture alloc]initWithSize:_size];
+        
+       // [_renderTexture bind];
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _renderBuffer);
+        //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _renderTexture.glName, 0);
+        
+        // Always check that our framebuffer is ok
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
+            NSLog(@"ERROR Creating framebuffer");
+            return nil;
+        }
         
         // 3 // Create a depth or depth/stencil renderbuffer, allocate storage for it, and attach it to the framebuffer’s depth attachment point.
         
@@ -59,6 +72,7 @@
         NSLog(@"allocate gl depth buffer, %d", _depthBuffer);
         
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _size.width, _size.height);
+        
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthBuffer);
         
         // 4 // Test the framebuffer for completeness. This test only needs to be performed when the framebuffer’s configuration changes.
@@ -71,24 +85,7 @@
             return nil;
         }
 
-       // _renderTexture = [[NKTexture alloc]initWithSize:S2Make(width, height)];
-//        // Offscreen position framebuffer texture target
-//        glGenTextures(1, &_locRenderTexture);
-//        glBindTexture(GL_TEXTURE_2D, _locRenderTexture);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _size.width, _size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-//        glBindTexture(GL_TEXTURE_2D, 0);
-//        
-//        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _locRenderTexture, 0);
-//        
-//        // Always check that our framebuffer is ok
-//        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-//        {
-//            NKCheckGLError(@"Creating framebuffer");
-//        }
+
         
     }
     
@@ -116,7 +113,7 @@
     self = [super init];
     
     if(self){
-
+        
         _size.width = width;
         _size.height = height;
         
@@ -147,14 +144,6 @@
         
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthBuffer);
         
-        // 4 // Test the framebuffer for completeness. This test only needs to be performed when the framebuffer’s configuration changes.
-        
-//        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER) ;
-//        if(status != GL_FRAMEBUFFER_COMPLETE) {
-//            NSLog(@"failed to make complete framebuffer object %x", status);
-//            return false;
-//        }
-        
         _renderTexture = [[NKTexture alloc]initWithSize:S2Make(width, height)];
         
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _renderTexture.glName, 0);
@@ -165,9 +154,9 @@
             NSLog(@"ERROR Creating framebuffer");
             return nil;
         }
-       
         
-        #else
+        
+#else
         
         if ([self buildFBOWithWidth:_size.width andHeight:_size.height]){
             
@@ -177,11 +166,11 @@
             return nil;
         }
         
-        #endif
+#endif
         
         
     }
-
+    
     NSLog(@"new framebuffer: %d size %d %d", _renderBuffer, width, height);
     
     return self;
@@ -190,23 +179,20 @@
 
 -(BOOL) buildFBOWithWidth:(GLuint)width andHeight:(GLuint) height
 {
-	//GLuint fboName;
-	
-	//GLuint colorTexture;
-	
+    glGenFramebuffers(1, &_frameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
+    
+    // 1 color
     _renderTexture = [[NKTexture alloc]initWithSize:_size];
     _renderBuffer = _renderTexture.glName;
     
-    // Create a texture object to apply to model
-
+    // 2 depth
 	GLuint depthRenderbuffer;
-    
 	glGenRenderbuffers(1, &depthRenderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
 	
-	glGenFramebuffers(1, &_frameBuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
+    // 3 setup
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _renderTexture.glName, 0);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
 	
@@ -294,6 +280,14 @@
 - (void)bind
 {
     glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
+}
+
+- (void)clear {
+            glViewport(0, 0, self.size.width, self.size.width);
+    
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 - (void)bind:(void(^)())drawingBlock

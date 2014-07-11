@@ -34,13 +34,20 @@ static NKGLManager *sharedObject = nil;
 
 #if TARGET_OS_IPHONE
 
+-(void)setContext:(EAGLContext *)context {
+    _context = context;
+    if (context) {
+        NSLog(@"loaded EAGL context: %@", context);
+    }
+}
 
 #else
 
 -(void)setContext:(NSOpenGLContext *)context {
     _context = context;
     if (context) {
-        NSLog(@"gl manager has valid GL Context");
+        NSLog(@"loaded context: %@", context);
+     //   NSLog(@"gl manager has valid GL Context");
     }
 }
 

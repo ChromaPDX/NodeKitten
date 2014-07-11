@@ -120,6 +120,8 @@ static inline bool _glHasError(const char *function, int line)
 -(void)setSize:(V2t)size;
 
 - (void)bind;
+- (void)clear;
+
 - (void)bind:(void(^)())drawingBlock;
 
 - (void)unbind;

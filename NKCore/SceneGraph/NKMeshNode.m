@@ -393,12 +393,7 @@
             NKTexture *t = _textures[0];
             
             if ([t isKindOfClass:[NKVideoTexture class]]) {
-                if (t.glTarget == GL_TEXTURE_2D){
-                    self.shader = [NKShaderProgram newShaderNamed:@"cameraTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-2 numLights:1 withBatchSize:0];
-                }
-                else {
                     self.shader = [NKShaderProgram newShaderNamed:@"videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:0];
-                }
             }
             else {
                 self.shader = [NKShaderProgram newShaderNamed:@"uColorTextureLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:_numTextures numLights:1 withBatchSize:0];
@@ -475,17 +470,24 @@
 
 -(void)setupViewMatrix {
     
-    M16t modelView = M16Multiply(self.scene.camera.viewMatrix,M16ScaleWithV3(self.globalTransform, _size));
+    M16t mvp;
     
-    if([self.scene.activeShader uniformNamed:NKS_M16_MV] ){
-        [[self.scene.activeShader uniformNamed:NKS_M16_MV] bindM16:modelView];
+    if (_forceOrthographic) {
+        mvp = M16Multiply(self.scene.camera.orthographicMatrix,M16ScaleWithV3(self.globalTransform, _size));
     }
-    
-    if ([self.scene.activeShader uniformNamed:NKS_M9_NORMAL]){
-        [[self.scene.activeShader uniformNamed:NKS_M9_NORMAL] bindM9:M16GetInverseNormalMatrix(modelView)];
+    else {
+        M16t modelView = M16Multiply(self.scene.camera.viewMatrix,M16ScaleWithV3(self.globalTransform, _size));
+        
+        if([self.scene.activeShader uniformNamed:NKS_M16_MV] ){
+            [[self.scene.activeShader uniformNamed:NKS_M16_MV] bindM16:modelView];
+        }
+        
+        if ([self.scene.activeShader uniformNamed:NKS_M9_NORMAL]){
+            [[self.scene.activeShader uniformNamed:NKS_M9_NORMAL] bindM9:M16GetInverseNormalMatrix(modelView)];
+        }
+        
+        mvp = M16Multiply(self.scene.camera.projectionMatrix,modelView);
     }
-    
-    M16t mvp = M16Multiply(self.scene.camera.projectionMatrix,modelView);
     
     [[self.scene.activeShader uniformNamed:NKS_M16_MVP] bindM16:mvp];
     
@@ -529,14 +531,11 @@
     
     if (self.color || _numTextures) {
         
-        
-        
         if (self.shader) {
             self.scene.activeShader = self.shader;
         }
         
         [self setupViewMatrix];
-        
         [self pushStyle];
         
         if ([self.scene.activeShader uniformNamed:NKS_V4_COLOR]){
@@ -554,19 +553,19 @@
             self.scene.boundVertexBuffer = _vertexBuffer;
         }
         
-        if (_usesLOD) {
-            int lod = [self lodForDistance];
-            glDrawArrays(_drawMode, _vertexBuffer.elementOffset[lod], _vertexBuffer.elementSize[lod]);
+        if (_vertexBuffer.indexBuffer){
+            [_vertexBuffer.indexBuffer bind];
+            glDrawElements(_drawMode, _vertexBuffer.indexBuffer.numElements, GL_UNSIGNED_INT, 0);
+            [_vertexBuffer.indexBuffer unbind];
         }
-        
-        else {
-            if (_vertexBuffer.indexBuffer){
-                [_vertexBuffer.indexBuffer bind];
-                glDrawElements(_drawMode, _vertexBuffer.indexBuffer.numElements, GL_UNSIGNED_INT, 0);
-                [_vertexBuffer.indexBuffer unbind];
+        else{
+            if (_usesLOD) {
+                int lod = [self lodForDistance];
+                glDrawArrays(_drawMode, _vertexBuffer.elementOffset[lod], _vertexBuffer.elementSize[lod]);
             }
-            else
+            else {
                 glDrawArrays(_drawMode, 0, _vertexBuffer.numVertices);
+            }
         }
         
         if (_drawBoundingBox) {
