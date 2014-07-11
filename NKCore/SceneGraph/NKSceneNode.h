@@ -87,6 +87,8 @@ typedef void (^CallBack)();
 @property (nonatomic) BOOL drawLights;
 @property (nonatomic, strong) NSMutableArray *lights;
 
+@property (nonatomic, strong) CIFilter *postProcess;
+
 // HIT DETECTION
 
 -(void)dispatchEvent:(NKEvent*)event;

@@ -17,6 +17,9 @@ static NKStaticDraw *sharedObject = nil;
     if (self) {
         meshesCache = [NSMutableDictionary dictionary];
         vertexCache = [NSMutableDictionary dictionary];
+        
+        [meshesCache setObject:[NKVertexBuffer defaultRect] forKey:[self stringForPrimitive:NKPrimitiveRect]];
+        
     }
     return self;
 }
@@ -51,6 +54,10 @@ static NKStaticDraw *sharedObject = nil;
 }
 
 +(NSString*)stringForPrimitive:(NKPrimitive)primitive {
+    return [[NKStaticDraw sharedInstance] stringForPrimitive:primitive];
+}
+
+-(NSString*)stringForPrimitive:(NKPrimitive)primitive {
     
     switch (primitive) {
         case NKPrimitiveRect:

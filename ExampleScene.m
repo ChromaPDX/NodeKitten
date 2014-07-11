@@ -804,11 +804,11 @@
 //            
 //            [self addChild:_omni];
             
-            NKMeshNode *videoNode = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:[NKVideoTexture textureWithVideoNamed:@"carousel_360-640.mov"] color:NKWHITE size:V3Make(6.,8.,1.)];
-
-            [videoNode setPosition:V3Make(0, 7, 0)];
-
-            [self addChild:videoNode];
+//            NKMeshNode *videoNode = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:[NKVideoTexture textureWithVideoNamed:@"carousel_360-640.mov"] color:NKWHITE size:V3Make(6.,8.,1.)];
+//
+//            [videoNode setPosition:V3Make(0, 7, 0)];
+//
+//            [self addChild:videoNode];
     
             
              NKMeshNode *videoNode2 = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveCube texture:[NKVideoTexture textureWithVideoNamed:@"slitscan-fall-640-360.mov"] color:NKWHITE size:V3MakeF(3.)];
@@ -819,10 +819,10 @@
             
             [self addChild:videoNode2];
             
-            NKMeshNode *videoNode3 = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveSphere texture:[NKVideoTexture textureWithCameraSource:nil] color:NKWHITE size:V3MakeF(3.)];
+            NKMeshNode *videoNode3 = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveSphere texture:[NKVideoTexture textureWithCameraSource:nil] color:NKWHITE size:V3MakeF(6.)];
             
             [videoNode3 repeatAction:[NKAction rotateByAngles:V3Make(0, 20, 0) duration:1.]];
-            [videoNode3 setPosition:V3Make(0, 0, 0)];
+            [videoNode3 setPosition:V3Make(0, 4, 0)];
             
             
             [self addChild:videoNode3];
@@ -841,16 +841,19 @@
             
         }
         
-#pragma mark - 8 - KINECT
         
-        else if (sceneChoice == 8) { // EMITTERNODE
-            
-            
-            self.camera.position = V3Make(0, 0, 4);
-            
-            [NKKinectManager sharedInstance];
-        }
         
+//#if NK_USE_KINECT
+//#pragma mark - 8 - KINECT
+//        
+//        else if (sceneChoice == 8) { // EMITTERNODE
+//            
+//            
+//            self.camera.position = V3Make(0, 0, 4);
+//            
+//            [NKKinectManager sharedInstance];
+//        }
+//#endif
 
         
     }

@@ -11,7 +11,6 @@
 @interface NKGLManager : NSObject
 
 #if TARGET_OS_IPHONE
-@property (nonatomic) CVOpenGLESTextureCacheRef videoTextureCache;
 @property (nonatomic, weak) EAGLContext *context;
 #else
 @property (nonatomic, weak) NSOpenGLContext *context;

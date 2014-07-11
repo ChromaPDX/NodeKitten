@@ -32,40 +32,60 @@
     lastTime = CFAbsoluteTimeGetCurrent();
     _events = [[NSMutableSet alloc]init];
     
+
+    
     [self startAnimation];
 }
 
 -(void)drawScene {
     
+   
+    
     if (_scene) {
         
-    if (_scene.hitQueue.count) {
-        [_scene processHitBuffer];
-    }
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        if (_scene.hitQueue.count) {
+            [_scene processHitBuffer];
+        }
         
-    glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
-       // NSLog(@"viewport %f %f", self.visibleRect.size.width, self.visibleRect.size.height);
+        if (!frameBuffer) {
+            frameBuffer = [[NKFrameBuffer alloc]initWithWidth:_scene.size.width height:_scene.size.height];
+            rect = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:nil color:NKWHITE size:V3Make(_scene.size.width, _scene.size.height, 1)];
+            
+            //[rect setScene:_scene];
+            rect.forceOrthographic = true;
+        }
         
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        [frameBuffer bind];
+        [frameBuffer clear];
         
-        //NSLog(@"draw scene");
+//        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//        glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
+//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        
         F1t dt = (CFAbsoluteTimeGetCurrent() - lastTime);
         lastTime = CFAbsoluteTimeGetCurrent();
         
         [_scene updateWithTimeSinceLast:dt];
-        //[_scene drawHitBuffer];
         [_scene draw];
     }
+    
     else {
         glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    [rect customDraw];
+    
+    glFlush();
+
     
 }
 

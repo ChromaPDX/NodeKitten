@@ -40,6 +40,7 @@ static inline float cblend(F1t col, F1t bl){
 @property (nonatomic) float pointSize;
 @property (nonatomic) float lineWidth;
 @property (nonatomic) bool usesLOD;
+@property (nonatomic) bool forceOrthographic;
 
 -(NKVertexBuffer*)vertexBuffer;
 
@@ -51,6 +52,7 @@ static inline float cblend(F1t col, F1t bl){
 -(instancetype)initWithVertexBuffer:(NKVertexBuffer*)buffer drawMode:(GLenum)drawMode texture:(NKTexture*)texture color:(NKByteColor *)color size:(V3t)size;
 
 -(void)setTexture:(NKTexture *)texture;
+-(void)chooseShader;
 -(void)bindTextures;
 -(void)setDrawMode:(GLenum)drawMode;
 

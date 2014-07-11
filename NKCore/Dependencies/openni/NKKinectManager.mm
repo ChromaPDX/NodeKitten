@@ -6,7 +6,9 @@
 //  Copyright (c) 2014 chroma. All rights reserved.
 //
 
-#import "NKKinectManager.h"
+#import "NodeKitten.h"
+
+#if !TARGET_OS_IPHONE && NK_USE_KINECT
 
 #import "OpenNI.h"
 #include "NiTE.h"
@@ -255,3 +257,5 @@ bool HandleStatus(nite::Status status)
 }
 
 @end
+
+#endif

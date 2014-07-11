@@ -68,20 +68,20 @@
 #else
     context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 #endif
-    [[NKGLManager sharedInstance] setContext:context];
     
     if(!context){
         NSLog(@"failed to create EAGL context");
         return;
     }
+    
+    [[NKGLManager sharedInstance] setContext:context];
+    
     if (![self createFramebuffer]) {
         return;
     }
     else {
         NSLog(@"GLES Context && Frame Buffer loaded!");
-        NSLog(@"context: %@", context);
     }
-    
     
     [NKTextureManager sharedInstance];
     
@@ -200,6 +200,19 @@
     [self drawScene];
     
     glBindRenderbuffer(GL_RENDERBUFFER, frameBuffer.frameBuffer);
+
+    //    CIImage * _coreImage = [CIImage imageWithTexture:frameBuffer.renderTexture.glName size:CGSizeMake(_scene.size.width, _scene.size.height) flipped:NO colorSpace:nil];
+//    
+//    CIFilter *filter = [CIFilter filterWithName:@"CISepiaTone"
+//                                  keysAndValues: kCIInputImageKey, _coreImage,
+//                        @"inputIntensity", @0.8, nil];
+//    
+//    CIImage *outputImage = [filter outputImage];
+//    
+//    CIContext *cicontext = [CIContext contextWithEAGLContext:context];
+//    
+//    [cicontext drawImage:outputImage inRect:CGRectMake(0, 0, _scene.size.width, _scene.size.height) fromRect:CGRectMake(0, 0, _scene.size.width, _scene.size.height)];
+    
 	[context presentRenderbuffer:GL_RENDERBUFFER];
     
     
