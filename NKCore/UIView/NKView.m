@@ -55,7 +55,7 @@
                 rect = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:frameBuffer.renderTexture color:NKWHITE size:V3Make(_scene.size.width*.5, _scene.size.height*.5, 1)];
                 [rect setScene:_scene];
                 rect.forceOrthographic = true;
-                rect.usesDepth = false;
+                rect.usesDepth = false; 
                 rect.cullFace = NKCullFaceNone;
                 rect.blendMode = NKBlendModeNone;
             }
