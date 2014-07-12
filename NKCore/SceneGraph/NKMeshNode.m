@@ -473,7 +473,7 @@
     M16t mvp;
     
     if (_forceOrthographic) {
-        mvp = M16Multiply(self.scene.camera.orthographicMatrix,M16ScaleWithV3(self.globalTransform, _size));
+        mvp = M16Multiply(self.scene.camera.orthographicMatrix,M16Multiply(M16MakeLookAt(V3Make(0, 0, 1), V3MakeF(0), V3Make(0, 1, 0)),M16ScaleWithV3(M16IdentityMake(), _size)));
     }
     else {
         M16t modelView = M16Multiply(self.scene.camera.viewMatrix,M16ScaleWithV3(self.globalTransform, _size));

@@ -115,12 +115,7 @@ typedef void (^CallBack)();
 @property (nonatomic, strong) MidiReceivedBlock midiReceivedBlock;
 #endif
 
-- (void)draw;
-// encompasses 3 states
-
--(void)begin;
--(void)customDraw;
--(void)end;
+-(void)clear;
 
 -(void)pushMultiplyMatrix:(M16t)matrix;
 -(void)pushScale:(V3t)scale;

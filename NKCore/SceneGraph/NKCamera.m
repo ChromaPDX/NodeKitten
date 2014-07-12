@@ -107,18 +107,23 @@
     
     [self.scene setUsesDepth:true];
     
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER, .01);
-    
+
     glLineWidth(1.0f);
     
 #if !TARGET_OS_IPHONE
+
     glEnable( GL_POLYGON_SMOOTH );
     glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
     glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
 
+#if !NK_USE_GL3
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, .01);
+    
+    
     glEnable(GL_MULTISAMPLE_ARB);
     glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+#endif
     
     float gran;
     glGetFloatv(GL_SMOOTH_LINE_WIDTH_GRANULARITY, &gran);

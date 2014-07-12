@@ -90,7 +90,7 @@
 
 #else
 
-#define NK_USE_GL3 0
+#define NK_USE_GL3 1
 
 #import <OpenGL/OpenGL.h>
 #if NK_USE_GL3

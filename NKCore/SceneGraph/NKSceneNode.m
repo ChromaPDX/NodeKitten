@@ -70,6 +70,8 @@
         _hitDetectBuffer = [[NKFrameBuffer alloc] initWithWidth:self.size.width height:self.size.height];
         _hitDetectShader = [NKShaderProgram newShaderNamed:@"hitShaderSingle" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:0 numLights:0 withBatchSize:0];
         
+       // self.framebuffer = [[NKFrameBuffer alloc] initWithWidth:self.size.width height:self.size.height];
+        
 #if NK_LOG_METRICS
         metricsTimer = [NSTimer timerWithTimeInterval:1. target:self selector:@selector(logMetricsPerSecond) userInfo:nil repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:metricsTimer forMode:NSDefaultRunLoopMode];
@@ -513,7 +515,6 @@
     }
 }
 -(void)dispatchEvent:(NKEvent*)event {
-    
     //NSLog(@"dispatch event for location %f %f",location.x, location.y);
     if (_useColorDetection) {
         
@@ -540,7 +541,6 @@
     else if (_useBulletDetection) {
         // IMPLEMENT THIS
     }
-
 }
 
 #if TARGET_OS_IPHONE

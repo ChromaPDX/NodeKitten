@@ -32,59 +32,76 @@
     lastTime = CFAbsoluteTimeGetCurrent();
     _events = [[NSMutableSet alloc]init];
     
-
-    
     [self startAnimation];
 }
 
 -(void)drawScene {
     
-   
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    int useFB = 1;
     
     if (_scene) {
         
         if (_scene.hitQueue.count) {
             [_scene processHitBuffer];
         }
-        
-        if (!frameBuffer) {
-            frameBuffer = [[NKFrameBuffer alloc]initWithWidth:_scene.size.width height:_scene.size.height];
-            rect = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:nil color:NKWHITE size:V3Make(_scene.size.width, _scene.size.height, 1)];
+
+        if (useFB) {
             
-            //[rect setScene:_scene];
-            rect.forceOrthographic = true;
+            if (!frameBuffer) {
+                frameBuffer = [[NKFrameBuffer alloc] initWithWidth:_scene.size.width height:_scene.size.height];
+                rect = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:frameBuffer.renderTexture color:NKWHITE size:V3Make(_scene.size.width*.5, _scene.size.height*.5, 1)];
+                [rect setScene:_scene];
+                rect.forceOrthographic = true;
+                rect.usesDepth = false;
+                rect.cullFace = NKCullFaceNone;
+                rect.blendMode = NKBlendModeNone;
+            }
+            
+            
+            [frameBuffer bind];
+            [frameBuffer clear];
+            
+            
         }
-        
-        [frameBuffer bind];
-        [frameBuffer clear];
-        
-//        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-//        glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
-//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        
+        else {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            //glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            
+        }
+
         F1t dt = (CFAbsoluteTimeGetCurrent() - lastTime);
         lastTime = CFAbsoluteTimeGetCurrent();
         
         [_scene updateWithTimeSinceLast:dt];
         [_scene draw];
+        
+        if (useFB) {
+            [_scene clear];
+            
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);           
+            glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+           
+            [rect customDraw];
+        }
+        
     }
     
     else {
+        // NO SCENE / DO RED SCREEN
         glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
         glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-    [rect customDraw];
     
-    glFlush();
+    //glFlush();
 
     
 }
@@ -355,6 +372,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 #if USE_CV_DISPLAY_LINK
     CGLLockContext([[self openGLContext] CGLContextObj]);
 #endif
+    
     [self drawScene];
 
     CGLFlushDrawable([[self openGLContext] CGLContextObj]);
@@ -379,44 +397,6 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     }
 #endif
 }
-
-////
-//// Mac Director has its own thread
-////
-//-(void) mainLoop
-//{
-//	while( ![[NSThread currentThread] isCancelled] ) {
-//		// There is no autorelease pool when this method is called because it will be called from a background thread
-//		// It's important to create one or you will leak objects
-//		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-//
-//		[[NSRunLoop currentRunLoop] run];
-//
-//		[pool release];
-//	}
-//}
-
-
-
-//// set the event dispatcher
-//-(void) setView:(NKView *)view
-//{
-//	[super setView:view];
-//
-//	// Enable Touches. Default no.
-//	// Only available on OS X 10.6+
-//#if MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_5
-//	[view setAcceptsTouchEvents:NO];
-//    //		[view setAcceptsTouchEvents:YES];
-//#endif
-//
-//	// Synchronize buffer swaps with vertical refresh rate
-//	[[view openGLContext] makeCurrentContext];
-//	GLint swapInt = 1;
-//	[[view openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
-//}
-
-
 
 -(void)keyDown:(NSEvent *)theEvent {
     [_scene keyDown:theEvent.keyCode];

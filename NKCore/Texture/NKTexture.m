@@ -189,15 +189,16 @@
     
     if (self) {
         
-        int w = size.width;
-        int h = size.height;
+        _size = size;
+        
+        int w = _size.width;
+        int h = _size.height;
         
         target = GL_TEXTURE_2D;
         
         [self genGlTexture:w height:h];
-        
-        glBindTexture(target, glName);
         glTexImage2D(target, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glBindTexture(target, 0);
         
 //#if NK_USE_GLES
 //        glActiveTexture(GL_TEXTURE0);
@@ -238,6 +239,7 @@
 
 
 -(instancetype) initWithImageNamed:(NSString*)name {
+    
     self = [super init];
     
     if (self) {
@@ -466,8 +468,7 @@
     target = GL_TEXTURE_2D;
     
     [self genGlTexture:w height:h];
-
-    glBindTexture(target, glName);
+    
     glTexImage2D(target, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char *)CGBitmapContextGetData(context));
     
     glGenerateMipmap(target);
