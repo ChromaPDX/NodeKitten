@@ -65,12 +65,12 @@
 
 
 - (instancetype)initWithTexture:(NKTexture*)texture {
-    return [self initWithTexture:texture color:NKWHITE size:S2Make(texture.size.width, texture.size.height)];
+    return [self initWithTexture:texture color:NKWHITE size:S2Make(texture.width, texture.height)];
 }
 
 - (instancetype)initWithImageNamed:(NSString *)name {
     NKTexture *newTex = [NKTexture textureWithImageNamed:name];
-    return [self initWithTexture:newTex color:NKWHITE size:S2Make(newTex.size.width, newTex.size.height)];
+    return [self initWithTexture:newTex color:NKWHITE size:S2Make(newTex.width, newTex.height)];
 }
 
 - (instancetype)initWithColor:(NKByteColor*)color size:(S2t)size {

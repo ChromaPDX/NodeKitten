@@ -14,11 +14,11 @@
 
 //** FOR GL RELATED LOGS
 #define NK_LOG_GL 0
-#define NK_LOG_CV 1
+#define NK_LOG_CV 0
 //**
 
 //** LOG / PRINT TIME METRICS
-#define NK_LOG_METRICS 0
+#define NK_LOG_METRICS 1
 //**
 
 // SCENE DEBUG
@@ -90,7 +90,7 @@
 
 #else
 
-#define NK_USE_GL3 1
+#define NK_USE_GL3 0
 
 #import <OpenGL/OpenGL.h>
 #if NK_USE_GL3

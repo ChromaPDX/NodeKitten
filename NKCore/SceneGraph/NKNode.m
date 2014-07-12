@@ -437,7 +437,7 @@
     if (_framebuffer) {
         [_framebuffer bind];
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glViewport(0, 0, _framebuffer.size.width, _framebuffer.size.height);
+        glViewport(0, 0, _framebuffer.width, _framebuffer.height);
         //NSLog(@"binding fb: %d, %d %d", _framebuffer.renderTexture.glName, _framebuffer.size.width, _framebuffer.size.height);
     }
     
@@ -462,13 +462,13 @@
     }
     
     if (_framebuffer) {
-        if (self.scene.framebuffer) {
-            [self.scene.framebuffer bind];
-        }
-        else {
-            [_framebuffer unbind];
-            //NSLog(@"unbinding to scene");
-        }
+        [self.scene bindMainFrameBuffer];
+//        if (self.scene.framebuffer) {
+//            [self.scene.framebuffer bind];
+//        }
+//        else {
+//            //NSLog(@"unbinding to scene");
+//        }
     }
 
 }

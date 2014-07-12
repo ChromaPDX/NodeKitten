@@ -87,8 +87,9 @@ typedef void (^CallBack)();
 @property (nonatomic) BOOL drawLights;
 @property (nonatomic, strong) NSMutableArray *lights;
 
-@property (nonatomic, strong) CIFilter *postProcess;
-
+@property (nonatomic, strong) CIImage * coreImage;
+@property (nonatomic, strong) CIFilter *ciFilter;
+@property (nonatomic, strong) NKMeshNode *fboSurface;
 // HIT DETECTION
 
 -(void)dispatchEvent:(NKEvent*)event;
@@ -115,6 +116,7 @@ typedef void (^CallBack)();
 @property (nonatomic, strong) MidiReceivedBlock midiReceivedBlock;
 #endif
 
+-(void)bindMainFrameBuffer;
 -(void)clear;
 
 -(void)pushMultiplyMatrix:(M16t)matrix;

@@ -38,16 +38,16 @@
     
 }
 
-+(instancetype) textureWithPVRNamed:(NSString*)name size:(S2t)size{
-    
-    if (![[NKTextureManager textureCache] objectForKey:name]) {
-        [[NKTextureManager textureCache] setObject:[[NKTexture alloc] initWithPVRFile:name width:size.width height:size.height]forKey:name];
-        //NSLog(@"add tex to atlas named: %@", name);
-    }
-    
-    return [[NKTextureManager textureCache] objectForKey:name];
-    
-}
+//+(instancetype) textureWithPVRNamed:(NSString*)name size:(S2t)size{
+//    
+//    if (![[NKTextureManager textureCache] objectForKey:name]) {
+//        [[NKTextureManager textureCache] setObject:[[NKTexture alloc] initWithPVRFile:name width:size.width height:size.height]forKey:name];
+//        //NSLog(@"add tex to atlas named: %@", name);
+//    }
+//    
+//    return [[NKTextureManager textureCache] objectForKey:name];
+//    
+//}
 
 +(instancetype) textureWithImage:(NKImage*)image {
     
@@ -89,7 +89,7 @@
         textColor = NKWHITE;
     }
     
-    NKTexture *texture = [[NKTexture alloc] initForBackThreadWithSize:size];
+    NKTexture *texture = [[NKTexture alloc] initForBackThreadWithWidth:size.width height:size.height];
     
     texture.name = textureName;
     
@@ -183,17 +183,18 @@
     
 }
 
--(instancetype)initWithSize:(I2t)size {
+-(instancetype)initWithWidth:(I1t)width height:(I1t)height {
     
     self = [super init];
     
     if (self) {
         
-        _size = size;
+        _width = width;
+        _height = height;
 
-        [self genGlTexture:_size.width height:_size.height];
+        [self genGlTexture:_width height:_height];
 
-        glTexImage2D(target, 0, GL_RGBA, _size.width, _size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(target, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
         
     }
     
@@ -202,6 +203,14 @@
     return self;
     
 }
+
+-(I1t)width {
+    return _width;
+}
+-(I1t)height {
+    return _height;
+}
+
 
 
 -(instancetype) initWithImageNamed:(NSString*)name {
@@ -225,7 +234,8 @@
         
         [self loadTexFromCGContext:[NKTexture contextFromImage:request] size:I2Make(request.size.width, request.size.height)];
         
-        self.size = I2Make(request.size.width, request.size.height);
+        _width = request.size.width;
+        _height = request.size.height;
 
         self.shouldResizeToTexture = false;
 
@@ -310,8 +320,9 @@
         
         [self loadTexFromCGContext:[NKTexture contextFromImage:image] size:I2Make(image.size.width, image.size.height)];
         
-        self.size = I2Make(image.size.width, image.size.height);
-
+        _width = image.size.width;
+        _height = image.size.height;
+    
         self.shouldResizeToTexture = false;
     }
     
@@ -325,19 +336,19 @@
     if (self) {
         self.textureMapStyle = NKTextureMapStyleRepeat;
         [self loadTexFromCGContext:ref size:size];
-        self.size = size;
         self.shouldResizeToTexture = false;
     }
     
     return self;
 }
 
--(instancetype) initForBackThreadWithSize:(I2t)size {
+-(instancetype) initForBackThreadWithWidth:(I1t)width height:(I1t)height {
     self = [super init];
     
     if (self) {
+        _width = width;
+        _height = height;
         self.textureMapStyle = NKTextureMapStyleRepeat;
-        self.size = size;
         self.shouldResizeToTexture = false;
     }
     
@@ -380,11 +391,8 @@
 }
 
 -(void)genGlTexture:(int)w height:(int)h {
-    
     target = GL_TEXTURE_2D;
-    
-#if NK_USE_GLES
-    
+
     glActiveTexture(GL_TEXTURE0);
     
     glGenTextures(1, (GLuint *)&glName);
@@ -394,27 +402,12 @@
     glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // glBindTexture(target, 0);
-    
-#else
-    
-    glGenTextures(1, (GLuint *)&glName);
-    glBindTexture(target, glName);
-    
-    
-    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    
- //   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    
-#endif
-    
 }
 
 -(void)loadTexFromCGContext:(CGContextRef)context size:(I2t)size {
     
+    _width = size.width;
+    _height = size.height;
     
     target = GL_TEXTURE_2D;
     
@@ -422,7 +415,9 @@
     
     glTexImage2D(target, 0, GL_RGBA, size.width, size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char *)CGBitmapContextGetData(context));
     
+#if !TARGET_OS_IPHONE
     glGenerateMipmap(target);
+#endif
     
     glBindTexture(target, 0);
     
@@ -493,9 +488,7 @@
 }
 
 -(void)dealloc {
-
     glDeleteTextures(1, &glName);
-    
 }
 
 @end

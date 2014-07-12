@@ -475,6 +475,7 @@
     if (_forceOrthographic) {
         mvp = M16Multiply(self.scene.camera.orthographicMatrix,M16Multiply(M16MakeLookAt(V3Make(0, 0, 1), V3MakeF(0), V3Make(0, 1, 0)),M16ScaleWithV3(M16IdentityMake(), _size)));
     }
+    
     else {
         M16t modelView = M16Multiply(self.scene.camera.viewMatrix,M16ScaleWithV3(self.globalTransform, _size));
         
@@ -499,9 +500,9 @@
             [_textures[0] bind];
             if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
                 //NSLog(@"binding tex scale: %f %f", [(NKVideoTexture*)_textures[0] size].x, [(NKVideoTexture*)_textures[0] size].y);
-                I2t s = [(NKVideoTexture*)_textures[0] size];
+                NKVideoTexture* t = _textures[0];
                 
-                [[self.scene.activeShader uniformNamed:NKS_TEXTURE_RECT_SCALE] bindV2:V2Make(s.width, s.height)];
+                [[self.scene.activeShader uniformNamed:NKS_TEXTURE_RECT_SCALE] bindV2:V2Make(t.width, t.height)];
             }
             else {
                 [[self.scene.activeShader uniformNamed:NKS_TEXTURE_RECT_SCALE] bindV2:P2Make(1, 1)];

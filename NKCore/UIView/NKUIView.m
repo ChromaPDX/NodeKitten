@@ -47,7 +47,7 @@
     // Get the layer
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
     
-
+    
     _mscale = 1.0f;
     
     drawHitEveryXFrames = 10;
@@ -62,26 +62,25 @@
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
                                     [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
     
-
+    
 #if NK_USE_GL3
     context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
 #else
     context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 #endif
+    [[NKGLManager sharedInstance] setContext:context];
     
     if(!context){
         NSLog(@"failed to create EAGL context");
         return;
     }
-    
-    [[NKGLManager sharedInstance] setContext:context];
-    
     if (![self createFramebuffer]) {
         return;
     }
     else {
         NSLog(@"GLES Context && Frame Buffer loaded!");
     }
+    
     
     [NKTextureManager sharedInstance];
     
@@ -117,10 +116,10 @@
 {
     [super layoutSubviews];
     
-//	[EAGLContext setCurrentContext:context];
-//	[self destroyFramebuffer];
-//    NSLog(@"rebuilding framebuffer");
-//	[self createFramebuffer];
+	[EAGLContext setCurrentContext:context];
+	[self destroyFramebuffer];
+    NSLog(@"rebuilding framebuffer");
+	[self createFramebuffer];
     
 	[self drawView];
 }
@@ -129,7 +128,6 @@
 -(void)setScene:(NKSceneNode *)scene {
     _scene = scene;
     scene.nkView = self;
-    scene.framebuffer = frameBuffer;
     
     w = self.bounds.size.width;
     h = self.bounds.size.height;
@@ -146,8 +144,8 @@
     if (_scene.hitQueue.count) {
         [_scene processHitBuffer];
     }
-    
-    [frameBuffer bind];
+
+    [_framebuffer bind];
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, _scene.size.width, _scene.size.height);
     
@@ -155,7 +153,7 @@
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
         //NSLog(@"draw scene");
-        F1t dt = (CFAbsoluteTimeGetCurrent() - lastTime);
+        F1t dt = (CFAbsoluteTimeGetCurrent() - lastTime) * 1000.;
         lastTime = CFAbsoluteTimeGetCurrent();
         
         [_scene updateWithTimeSinceLast:dt];
@@ -165,6 +163,7 @@
     else {
         glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     }
+
     
 }
 
@@ -199,34 +198,22 @@
     
     [self drawScene];
     
-    glBindRenderbuffer(GL_RENDERBUFFER, frameBuffer.frameBuffer);
-
-    //    CIImage * _coreImage = [CIImage imageWithTexture:frameBuffer.renderTexture.glName size:CGSizeMake(_scene.size.width, _scene.size.height) flipped:NO colorSpace:nil];
-//    
-//    CIFilter *filter = [CIFilter filterWithName:@"CISepiaTone"
-//                                  keysAndValues: kCIInputImageKey, _coreImage,
-//                        @"inputIntensity", @0.8, nil];
-//    
-//    CIImage *outputImage = [filter outputImage];
-//    
-//    CIContext *cicontext = [CIContext contextWithEAGLContext:context];
-//    
-//    [cicontext drawImage:outputImage inRect:CGRectMake(0, 0, _scene.size.width, _scene.size.height) fromRect:CGRectMake(0, 0, _scene.size.width, _scene.size.height)];
-    
+    glBindRenderbuffer(GL_RENDERBUFFER, _framebuffer.frameBuffer);
 	[context presentRenderbuffer:GL_RENDERBUFFER];
     
     
 }
 
 -(void)destroyFramebuffer {
-    frameBuffer = nil;
+    _framebuffer = nil;
 }
 
 -(BOOL) createFramebuffer {
     [EAGLContext setCurrentContext:context];
-    frameBuffer = [[NKFrameBuffer alloc ]initWithContext:context layer:(id<EAGLDrawable>)self.layer];
     
-    if (frameBuffer) {
+    _framebuffer = [[NKFrameBuffer alloc ]initWithContext:context layer:(id<EAGLDrawable>)self.layer];
+    
+    if (_framebuffer) {
         return true;
     }
     

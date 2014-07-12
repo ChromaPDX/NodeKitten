@@ -16,12 +16,13 @@
 @class NKShaderProgram;
 @class NKTexture;
 @class NKFrameBuffer;
+@class NKMeshNode;
 
 @interface NKUIView : UIView
 {
     EAGLContext *context;
     CADisplayLink *displayLink;
-    NKFrameBuffer *frameBuffer;
+    
     
     NSTimeInterval lastTime;
     
@@ -49,7 +50,11 @@
     NKShaderProgram *defaultShader;
     NKVertexBuffer *vertexBuffer;
     NKTexture * texture;
+    NKMeshNode *rect;
 }
+
+@property NKFrameBuffer *framebuffer;
+
 
 @property (nonatomic, strong) NSMutableSet *events;
 @property (nonatomic, strong) NKSceneNode *scene;

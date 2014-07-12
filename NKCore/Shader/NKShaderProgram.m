@@ -497,20 +497,26 @@
         return NO;
     }
     
+    GetGLError();
+    
     // Attach vertex shader to program.
     glAttachShader(self.glPointer, vertShader);
     
     // Attach fragment shader to program.
     glAttachShader(self.glPointer, fragShader);
     
+    GetGLError();
+    
     numAttributes = 0;
     
+//#if TARGET_OS_IPHONE
     for (NKShaderVariable *v in attributes) {
         NSString *attrName = v.nameString;
         glEnableVertexAttribArray(numAttributes);
         glBindAttribLocation(self.glPointer, numAttributes, [attrName UTF8String]);
         numAttributes++;
     }
+//#endif
     
      GetGLError();
     
@@ -539,6 +545,8 @@
         return NO;
     }
     
+    GetGLError();
+    
     for (NKShaderVariable *v in attributes) {
 
 //        switch (v.name) {
@@ -550,7 +558,9 @@
 //                break;
 //        }
         v.glLocation = glGetAttribLocation(self.glPointer, [v.nameString UTF8String]);
-        glEnableVertexAttribArray(v.glLocation);
+        if (v.glLocation) {
+            //glEnableVertexAttribArray(v.glLocation);
+        }
         
         #if NK_LOG_GL
         NSLog(@"Attribute location %d, string %@",v.glLocation, v.nameString);

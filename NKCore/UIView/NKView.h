@@ -21,8 +21,6 @@
 @interface NKView : NSOpenGLView
 
 {
-
-    NKFrameBuffer *frameBuffer;
     
 #if USE_CV_DISPLAY_LINK
     static dispatch_queue_t displayThread;
@@ -61,6 +59,7 @@
     
 }
 
+@property NKFrameBuffer *framebuffer;
 @property (nonatomic, weak) NKViewController *controller;
 @property (nonatomic, strong) NKSceneNode *scene;
 @property (nonatomic) float mscale;

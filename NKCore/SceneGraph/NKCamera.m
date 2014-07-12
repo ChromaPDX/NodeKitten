@@ -103,12 +103,18 @@
 }
 
 -(void)initGL {
+    GetGLError();
+    
     glEnable(GL_BLEND);
     
     [self.scene setUsesDepth:true];
     
-
     glLineWidth(1.0f);
+    
+#if !NK_USE_GL3
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, .01);
+#endif
     
 #if !TARGET_OS_IPHONE
 
@@ -117,10 +123,6 @@
     glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
 
 #if !NK_USE_GL3
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER, .01);
-    
-    
     glEnable(GL_MULTISAMPLE_ARB);
     glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
 #endif
@@ -129,6 +131,7 @@
     glGetFloatv(GL_SMOOTH_LINE_WIDTH_GRANULARITY, &gran);
     NSLog(@"smooth line gran: %f",gran);
 #endif
+    
     GetGLError();
 }
 

@@ -70,7 +70,7 @@
         _hitDetectBuffer = [[NKFrameBuffer alloc] initWithWidth:self.size.width height:self.size.height];
         _hitDetectShader = [NKShaderProgram newShaderNamed:@"hitShaderSingle" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:0 numLights:0 withBatchSize:0];
         
-       // self.framebuffer = [[NKFrameBuffer alloc] initWithWidth:self.size.width height:self.size.height];
+        self.framebuffer = [[NKFrameBuffer alloc] initWithWidth:self.size.width height:self.size.height];
         
 #if NK_LOG_METRICS
         metricsTimer = [NSTimer timerWithTimeInterval:1. target:self selector:@selector(logMetricsPerSecond) userInfo:nil repeats:YES];
@@ -192,18 +192,72 @@
                 [[_activeShader uniformNamed:NKS_I1_NUM_LIGHTS] bindI1:0];
             }
         }
-       
     }
+}
+
+-(void)bindMainFrameBuffer {
+#if TARGET_OS_IPHONE
+    NKUIView* view = self.nkView;
+        [view.framebuffer bind];
+#else
+    NKView* view = self.nkView;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
+
     
+    //NSLog(@"bind fb %@ %@", view, view.framebuffer);
 }
 
 -(void)draw {
-        [self clear];
+    [self clear];
 #if DRAW_HIT_BUFFER
-        [self drawHitBuffer];
+    [self drawHitBuffer];
 #else
-        [super draw];
-        [_camera draw];
+    [super draw];
+    [_camera draw];
+    
+    if (!_ciFilter) {
+        _ciFilter = [CIFilter filterWithName:@"CISepiaTone"
+                                      keysAndValues: kCIInputImageKey, _coreImage,
+                            @"inputIntensity", @1.0, nil];
+    }
+    if (_ciFilter) {
+    
+        _coreImage = [CIImage imageWithTexture:self.framebuffer.renderTexture.glName size:CGSizeMake(_size.width, _size.height) flipped:NO colorSpace:nil];
+        
+        [_ciFilter setValue:_coreImage forKey:kCIInputImageKey];
+        
+#if TARGET_OS_IPHONE
+        CIImage *outputImage = [_ciFilter outputImage];
+#else
+        CIImage *outputImage = [_ciFilter valueForKey:kCIOutputImageKey];
+#endif
+        //NSLog(@"draw CI Image: %@", outputImage);
+        
+        [[NKGLManager ciContext] drawImage:outputImage inRect:CGRectMake(0, 0, _size.width, _size.height) fromRect:CGRectMake(0, 0, _size.width, _size.height)];
+    }
+    #if TARGET_OS_IPHONE
+    else if (self.framebuffer) {
+#else
+        if (self.framebuffer) {
+
+#endif
+        if (!_fboSurface) {
+            _fboSurface = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:self.framebuffer.renderTexture color:NKWHITE size:V3Make(_scene.size.width, _scene.size.height, 1)];
+            
+            _fboSurface.shader = [NKShaderProgram newShaderNamed:@"fboDraw" colorMode:NKS_COLOR_MODE_NONE numTextures:1 numLights:0 withBatchSize:0];
+            
+            _fboSurface.forceOrthographic = true;
+            _fboSurface.usesDepth = false;
+            _fboSurface.cullFace = NKCullFaceFront;
+            _fboSurface.blendMode = NKBlendModeNone;
+            
+            [_fboSurface setScene:self];
+        }
+        
+        [_fboSurface customDraw];
+        
+    }
 #endif
 }
 
@@ -379,60 +433,6 @@
 -(V3t)globalPosition {
     return V3Make(0, 0, 0);
 }
-
-//-(void)end {
-//    
-//    if (!self.isHidden && (!_shouldRasterize || (_shouldRasterize && dirty)))
-//    {
-//        
-//        if (useShader){
-//            [self.shader end];
-//        }
-//        
-//        if (_shouldRasterize) {
-//            
-//            if (!self.parent) {
-//                [_camera end];
-//            }
-//            
-//            fbo->end();
-//            dirty = false;
-//            
-//        }
-//        
-//        else {
-//            glPopMatrix();
-//            //self.node->restoreTransformGL();
-//            
-//            if (!self.parent) {
-//                [_camera end];
-//            }
-//         
-//        }
-//        
-//    }
-//    
-//    else if (_shouldRasterize && !dirty) {
-//        
-//        R4t d = [self getDrawFrame];
-//        
-//        glPushMatrix();
-//        ofMultMatrix( self.node->getlocalTransform() );
-//        
-//        fbo->draw(d.x, d.y);
-//        
-//        glPopMatrix();
-//    }
-//    
-//    if  (debugUI){
-//        string stats = "nodes :" + ofToString([self numNodes]) + " draws: " + ofToString([self numVisibleNodes]) + " fps: " + ofToString(fps);
-//        ofDrawBitmapStringHighlight(stats, V3Makeself.size.width - 230, self.size.height - 7, _camera.get3dPosition.z));
-//    }
-//    
-//    
-//}
-
-
 
 -(void)alertDidSelectOption:(int)option {
     if (option == 0) {

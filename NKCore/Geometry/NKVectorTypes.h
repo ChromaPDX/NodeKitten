@@ -11,7 +11,7 @@
 #define DEGREES_TO_RADIANS(__ANGLE__) ((__ANGLE__) / 180.0 * M_PI)
 #define CONVERT_UV_U_TO_ST_S(u) ((2*u) / M_PI)
 
-typedef GLuint U1t;
+typedef uint32_t U1t;
 typedef int32_t I1t;
 typedef GLfloat F1t;
 

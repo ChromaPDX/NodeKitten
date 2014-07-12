@@ -25,12 +25,16 @@ typedef NS_OPTIONS(UInt8, NKTextureMapStyle) {
 {
     GLuint		glName;
     GLenum      target;
+    I1t _width;
+    I1t _height;
 }
 
 @property (nonatomic, strong) NSString *name;
-@property (nonatomic) I2t size;
 @property (nonatomic) bool shouldResizeToTexture;
 @property (nonatomic) NKTextureMapStyle textureMapStyle;
+
+-(I1t)width;
+-(I1t)height;
 
 +(instancetype) textureWithImageNamed:(NSString*)name;
 +(instancetype) textureWithImage:(NKImage*)image;
@@ -39,9 +43,7 @@ typedef NS_OPTIONS(UInt8, NKTextureMapStyle) {
 +(instancetype) textureWithString:(NSString *)string ForLabelNode:(NKLabelNode*)node;
 +(instancetype) textureWithString:(NSString *)string ForLabelNode:(NKLabelNode *)node inBackGroundWithCompletionBlock:(void (^)())block;
 
-+(instancetype) textureWithPVRNamed:(NSString*)name size:(S2t)size;
-
--(instancetype)initWithSize:(I2t)size;
+-(instancetype)initWithWidth:(I1t)width height:(I1t)height;
 
 -(void)updateWithTimeSinceLast:(F1t) dt;
 

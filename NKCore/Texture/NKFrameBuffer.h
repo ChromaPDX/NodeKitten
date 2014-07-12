@@ -100,14 +100,19 @@ static inline bool _glHasError(const char *function, int line)
 
 @interface NKFrameBuffer : NSObject
 {
-    I2t _size;
+    I1t _width;
+    I1t _height;
+    
+    GLuint _renderBuffer;
+    GLuint _depthBuffer;
 }
 
-@property (nonatomic, readonly) GLuint frameBuffer;
-//@property (nonatomic, readonly) GLuint renderBuffer;
-@property (nonatomic, readonly) GLuint depthBuffer;
+-(I1t)width;
+-(I1t)height;
 
+@property (nonatomic) GLuint frameBuffer;
 @property (nonatomic,strong) NKTexture *renderTexture;
+@property (nonatomic,strong) NKTexture *depthTexture;
 
 #if TARGET_OS_IPHONE
 - (id)initWithContext:(EAGLContext *)context layer:(id <EAGLDrawable>)layer;
@@ -115,9 +120,6 @@ static inline bool _glHasError(const char *function, int line)
 #endif
 
 -(instancetype)initWithWidth:(GLuint)width height:(GLuint)height;
-
--(I2t)size;
--(void)setSize:(I2t)size;
 
 - (void)bind;
 - (void)clear;

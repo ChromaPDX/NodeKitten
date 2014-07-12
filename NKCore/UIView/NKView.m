@@ -36,11 +36,8 @@
 }
 
 -(void)drawScene {
-    
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
-    int useFB = 1;
+
+    int useFB = 0;
     
     if (_scene) {
         
@@ -50,19 +47,20 @@
 
         if (useFB) {
             
-            if (!frameBuffer) {
-                frameBuffer = [[NKFrameBuffer alloc] initWithWidth:_scene.size.width height:_scene.size.height];
-                rect = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:frameBuffer.renderTexture color:NKWHITE size:V3Make(_scene.size.width*.5, _scene.size.height*.5, 1)];
-                [rect setScene:_scene];
+            if (!_framebuffer) {
+                _framebuffer = [[NKFrameBuffer alloc] initWithWidth:_scene.size.width height:_scene.size.height];
+                rect = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:_framebuffer.renderTexture color:NKWHITE size:V3Make(_scene.size.width, _scene.size.height, 1)];
+                
+                rect.shader = [NKShaderProgram newShaderNamed:@"fboDraw" colorMode:NKS_COLOR_MODE_NONE numTextures:1 numLights:0 withBatchSize:0];
+                
                 rect.forceOrthographic = true;
                 rect.usesDepth = false;
-                rect.cullFace = NKCullFaceNone;
+                rect.cullFace = NKCullFaceFront;
                 rect.blendMode = NKBlendModeNone;
             }
             
-            
-            [frameBuffer bind];
-            [frameBuffer clear];
+            [_framebuffer bind];
+            [_framebuffer clear];
             
             
         }
@@ -81,13 +79,14 @@
         [_scene draw];
         
         if (useFB) {
-            [_scene clear];
             
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);           
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            
             glViewport(0, 0, self.visibleRect.size.width, self.visibleRect.size.height);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
            
+            [rect setScene:_scene];
             [rect customDraw];
         }
         
@@ -100,8 +99,7 @@
         glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     }
 
-    
-    //glFlush();
+    glFlush();
 
     
 }
@@ -167,7 +165,6 @@
     
 
     
-    
     NSOpenGLContext* context = [[NSOpenGLContext alloc] initWithFormat:pf shareContext:nil];
     
     
@@ -181,11 +178,13 @@
 #endif
 	
     [self setPixelFormat:pf];
-    
     [self setOpenGLContext:context];
+    [context setView:self];
     
-    [[NKGLManager sharedInstance]setContext:context];
     [[NKGLManager sharedInstance]setPixelFormat:pf];
+    [[NKGLManager sharedInstance]setContext:context];
+    
+    
 #if SUPPORT_RETINA_RESOLUTION
     // Opt-In to Retina resolution
     [self setWantsBestResolutionOpenGLSurface:YES];

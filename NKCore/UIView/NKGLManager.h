@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 
 @interface NKGLManager : NSObject
+{
+    CIContext* _ciContext;
+}
 
 #if TARGET_OS_IPHONE
 @property (nonatomic, weak) EAGLContext *context;
@@ -19,5 +22,6 @@
 
 + (NKGLManager *)sharedInstance;
 + (void)updateWithTimeSinceLast:(F1t) dt;
++ (CIContext*)ciContext;
 
 @end
