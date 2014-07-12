@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger, NKImageOrientation) {
 
 @interface NKImage (CGContext)
 
-+(CGContextRef)newRGBAContext:(S2t)size;
++(CGContextRef)newRGBAContext:(I2t)size;
 +(CGContextRef)newBitmapRGBA8ContextFromImage:(NKImage*) image;
 
 + (NKImage *) imageWithBitmapRGBA8:(unsigned char *) buffer

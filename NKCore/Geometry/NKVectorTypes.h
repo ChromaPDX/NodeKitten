@@ -15,6 +15,7 @@ typedef GLuint U1t;
 typedef int32_t I1t;
 typedef GLfloat F1t;
 
+
 union _V2t {
     struct { F1t x, y; };
     struct { F1t min, max; };
@@ -23,6 +24,15 @@ union _V2t {
     F1t v[2];
 };
 typedef union _V2t V2t;
+
+union _I2t {
+    struct { I1t x, y; };
+    struct { I1t min, max; };
+    struct { I1t s, t; };
+    struct { I1t width, height; };
+    I1t i[2];
+};
+typedef union _I2t I2t;
 
 typedef V2t P2t;
 typedef V2t S2t;
@@ -291,6 +301,12 @@ static inline M16t M16IdentityMake(){
 
 #pragma mark - Point 2 Type
 
+static inline I2t I2Make(I1t x, I1t y) {
+    I2t ret;
+    ret.x = x;
+    ret.y = y;
+    return ret;
+}
 
 static inline P2t P2Make(F1t x, F1t y) {
     P2t ret;
@@ -298,6 +314,8 @@ static inline P2t P2Make(F1t x, F1t y) {
     ret.y = y;
     return ret;
 }
+
+#define V2Make P2Make
 
 static inline P2t P2MakeF(F1t x){
     return P2Make(x, x);

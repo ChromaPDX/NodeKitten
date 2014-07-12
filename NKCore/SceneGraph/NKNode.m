@@ -438,7 +438,7 @@
         [_framebuffer bind];
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glViewport(0, 0, _framebuffer.size.width, _framebuffer.size.height);
-        //NSLog(@"binding fb: %f %f", _framebuffer.size.width, _framebuffer.size.height);
+        //NSLog(@"binding fb: %d, %d %d", _framebuffer.renderTexture.glName, _framebuffer.size.width, _framebuffer.size.height);
     }
     
     [self customDraw];

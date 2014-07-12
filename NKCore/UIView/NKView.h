@@ -12,6 +12,7 @@
 @class NKShaderProgram;
 @class NKTexture;
 @class NKFrameBuffer;
+@class NKMeshNode;
 
 // Attribute index.
 

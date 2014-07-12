@@ -19,7 +19,7 @@
     
     if(self){
         
-        [self destroyFBO:_frameBuffer];
+       // [self destroyFBO:_frameBuffer];
         
         //NSLog(@"GLES fb init with context %@", context);
         
@@ -153,7 +153,7 @@
         // 1 color
 
         _renderTexture = [[NKTexture alloc]initWithSize:_size];
-        _renderBuffer = _renderTexture.glName;
+        //_renderBuffer = _renderTexture.glName;
         
         // 2 depth
         GLuint depthRenderbuffer;
@@ -164,6 +164,12 @@
         
         // 3 setup
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _renderTexture.glName, 0);
+        
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
+            NSLog(@"ERROR Creating framebuffer");
+            return nil;
+        }
         
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
         
@@ -181,7 +187,7 @@
     
     //glBindFramebuffer(GL_FRAMEBUFFER, 0);
     NSLog(@"new framebuffer");
-    NSLog(@"col tex is: %d size %f %f", _renderBuffer, _renderTexture.size.width, _renderTexture.size.height);
+    NSLog(@"col tex is: %d size %d %d", _renderTexture.glName, _renderTexture.size.width, _renderTexture.size.height);
     return self;
     
 }
@@ -288,9 +294,6 @@
     if (_frameBuffer) {
         glDeleteFramebuffers(1, &_frameBuffer);
     }
-    if (_renderBuffer) {
-        glDeleteRenderbuffers(1, &_renderBuffer);
-    }
     if(_depthBuffer)
     {
         glDeleteRenderbuffers(1, &_depthBuffer);
@@ -311,11 +314,11 @@
 
 #pragma mark - Accessing Data
 
--(V2t)size {
+-(I2t)size {
     return _size;
 }
 
--(void)setSize:(V2t)size {
+-(void)setSize:(I2t)size {
     _size = size;
 }
 

@@ -461,7 +461,7 @@ static CGRect clipRectToPath(CGRect rect, CGPathRef path)
 }
 
 
-+(CGContextRef)newRGBAContext:(S2t)size {
++(CGContextRef)newRGBAContext:(I2t)size {
     
     CGContextRef context = NULL;
 	CGColorSpaceRef colorSpace;
