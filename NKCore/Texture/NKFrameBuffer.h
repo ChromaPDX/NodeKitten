@@ -100,11 +100,11 @@ static inline bool _glHasError(const char *function, int line)
 
 @interface NKFrameBuffer : NSObject
 {
-    V2t _size;
+    I2t _size;
 }
 
 @property (nonatomic, readonly) GLuint frameBuffer;
-@property (nonatomic, readonly) GLuint renderBuffer;
+//@property (nonatomic, readonly) GLuint renderBuffer;
 @property (nonatomic, readonly) GLuint depthBuffer;
 
 @property (nonatomic,strong) NKTexture *renderTexture;
@@ -116,8 +116,8 @@ static inline bool _glHasError(const char *function, int line)
 
 -(instancetype)initWithWidth:(GLuint)width height:(GLuint)height;
 
--(V2t)size;
--(void)setSize:(V2t)size;
+-(I2t)size;
+-(void)setSize:(I2t)size;
 
 - (void)bind;
 - (void)clear;

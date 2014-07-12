@@ -499,7 +499,9 @@
             [_textures[0] bind];
             if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
                 //NSLog(@"binding tex scale: %f %f", [(NKVideoTexture*)_textures[0] size].x, [(NKVideoTexture*)_textures[0] size].y);
-                [[self.scene.activeShader uniformNamed:NKS_TEXTURE_RECT_SCALE] bindV2:[(NKVideoTexture*)_textures[0] size]];
+                I2t s = [(NKVideoTexture*)_textures[0] size];
+                
+                [[self.scene.activeShader uniformNamed:NKS_TEXTURE_RECT_SCALE] bindV2:V2Make(s.width, s.height)];
             }
             else {
                 [[self.scene.activeShader uniformNamed:NKS_TEXTURE_RECT_SCALE] bindV2:P2Make(1, 1)];

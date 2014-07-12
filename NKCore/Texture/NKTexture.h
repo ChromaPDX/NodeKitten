@@ -24,11 +24,11 @@ typedef NS_OPTIONS(UInt8, NKTextureMapStyle) {
 @interface NKTexture : NSObject
 {
     GLuint		glName;
-    GLuint      target;
+    GLenum      target;
 }
 
 @property (nonatomic, strong) NSString *name;
-@property (nonatomic) S2t size;
+@property (nonatomic) I2t size;
 @property (nonatomic) bool shouldResizeToTexture;
 @property (nonatomic) NKTextureMapStyle textureMapStyle;
 
@@ -41,7 +41,7 @@ typedef NS_OPTIONS(UInt8, NKTextureMapStyle) {
 
 +(instancetype) textureWithPVRNamed:(NSString*)name size:(S2t)size;
 
--(instancetype)initWithSize:(S2t)size;
+-(instancetype)initWithSize:(I2t)size;
 
 -(void)updateWithTimeSinceLast:(F1t) dt;
 

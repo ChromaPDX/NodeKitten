@@ -60,7 +60,7 @@
 +(instancetype) textureWithString:(NSString *)string ForLabelNode:(NKLabelNode*)node {
     
     if (![[NKTextureManager labelCache] objectForKey:string]) {
-        [[NKTextureManager labelCache] setObject:[self textureWithString:string fontNamed:node.fontName color:node.fontColor Size:node.size2d fontSize:node.fontSize completion:nil] forKey:string];
+        [[NKTextureManager labelCache] setObject:[self textureWithString:string fontNamed:node.fontName color:node.fontColor Size:I2Make(node.size.width, node.size.height) fontSize:node.fontSize completion:nil] forKey:string];
         //NSLog(@"add tex to atlas for label node named: %@", string);
     }
     return [[NKTextureManager labelCache] objectForKey:string];
@@ -68,7 +68,7 @@
 
 +(instancetype) textureWithString:(NSString *)string ForLabelNode:(NKLabelNode *)node inBackGroundWithCompletionBlock:(void (^)())block {
     if (![[NKTextureManager labelCache] objectForKey:string]) {
-        [[NKTextureManager labelCache] setObject:[self textureWithString:string fontNamed:node.fontName color:node.fontColor Size:node.size2d fontSize:node.fontSize completion:^{block();}] forKey:string];
+        [[NKTextureManager labelCache] setObject:[self textureWithString:string fontNamed:node.fontName color:node.fontColor Size:I2Make(node.size.width, node.size.height) fontSize:node.fontSize completion:^{block();}] forKey:string];
         //NSLog(@"add tex to atlas for label node named: %@", string);
     }
     else {
@@ -77,7 +77,7 @@
     return [[NKTextureManager labelCache] objectForKey:string];
 }
 
-+(instancetype) textureWithString:(NSString *)text fontNamed:(NSString*)name color:(NKByteColor*)textColor Size:(S2t)size fontSize:(CGFloat)fontSize completion:(void (^)())block{
++(instancetype) textureWithString:(NSString *)text fontNamed:(NSString*)name color:(NKByteColor*)textColor Size:(I2t)size fontSize:(CGFloat)fontSize completion:(void (^)())block{
     
     NSString *textureName = [NSString stringWithFormat:@"%d_%@_%@", (int)fontSize, name, text];
 
@@ -183,56 +183,22 @@
     
 }
 
--(instancetype)initWithSize:(S2t)size {
+-(instancetype)initWithSize:(I2t)size {
     
     self = [super init];
     
     if (self) {
         
         _size = size;
+
+        [self genGlTexture:_size.width height:_size.height];
+
+        glTexImage2D(target, 0, GL_RGBA, _size.width, _size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
         
-        int w = _size.width;
-        int h = _size.height;
-        
-        target = GL_TEXTURE_2D;
-        
-        [self genGlTexture:w height:h];
-        glTexImage2D(target, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        glBindTexture(target, 0);
-        
-//#if NK_USE_GLES
-//        glActiveTexture(GL_TEXTURE0);
-//        glGenTextures(1, (GLuint *)&glName);
-//        glBindTexture(target, glName);
-//        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//        // This is necessary for non-power-of-two textures
-//        glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//        glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//        glBindTexture(target, 0);
-//        
-//        glBindTexture(target, glName);
-//        glTexImage2D(target, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-//        glBindTexture(target, 0);
-//        
-//        if (!glName) {
-//            NSLog(@"failed to allocate GLES texture ID");
-//            return nil;
-//        }
-//#else
-//        glGenTextures(1, (GLuint *)&glName);
-//        glBindTexture(target, glName);
-//        glTexImage2D(target, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-//        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//        glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//        glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//        glTexParameteri(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-//#endif
     }
     
     GetGLError();
-    
+
     return self;
     
 }
@@ -257,9 +223,9 @@
         
         NSAssert(request != nil, @"MISSING DEFAULT TEX IMAGE OR SOMETHING ELSE BROKE !!");
         
-        [self loadTexFromCGContext:[NKTexture contextFromImage:request] size:S2MakeCG(request.size)];
+        [self loadTexFromCGContext:[NKTexture contextFromImage:request] size:I2Make(request.size.width, request.size.height)];
         
-        self.size = S2MakeCG(request.size);
+        self.size = I2Make(request.size.width, request.size.height);
 
         self.shouldResizeToTexture = false;
 
@@ -342,9 +308,9 @@
             image = [NKImage imageNamed:@"chromeKitten.png"];
         }
         
-        [self loadTexFromCGContext:[NKTexture contextFromImage:image] size:S2Make(image.size.width, image.size.height)];
+        [self loadTexFromCGContext:[NKTexture contextFromImage:image] size:I2Make(image.size.width, image.size.height)];
         
-        self.size = S2MakeCG(image.size);
+        self.size = I2Make(image.size.width, image.size.height);
 
         self.shouldResizeToTexture = false;
     }
@@ -353,7 +319,7 @@
 }
 
 
--(instancetype) initWithCGContext:(CGContextRef)ref size:(S2t)size{
+-(instancetype) initWithCGContext:(CGContextRef)ref size:(I2t)size{
     self = [super init];
     
     if (self) {
@@ -366,7 +332,7 @@
     return self;
 }
 
--(instancetype) initForBackThreadWithSize:(S2t)size {
+-(instancetype) initForBackThreadWithSize:(I2t)size {
     self = [super init];
     
     if (self) {
@@ -415,61 +381,46 @@
 
 -(void)genGlTexture:(int)w height:(int)h {
     
+    target = GL_TEXTURE_2D;
+    
 #if NK_USE_GLES
     
     glActiveTexture(GL_TEXTURE0);
     
     glGenTextures(1, (GLuint *)&glName);
     glBindTexture(target, glName);
-
+    
     glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-   // glBindTexture(target, 0);
+    // glBindTexture(target, 0);
     
-   #else
-    
-//    // Create a texture object to apply to model
-//    glGenTextures(1, &glName);
-//    glBindTexture(target, glName);
-//    
-//    // Set up filter and wrap modes for this texture object
-//    glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//    glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-//    
-//    // Indicate that pixel rows are tightly packed
-//    //  (defaults to stride of 4 which is kind of only good for
-//    //  RGBA or FLOAT data types)
-
+#else
     
     glGenTextures(1, (GLuint *)&glName);
     glBindTexture(target, glName);
-    //glTexImage2D(target, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-    glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    
     glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    //glTexParameteri(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+ //   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     
 #endif
     
 }
 
--(void)loadTexFromCGContext:(CGContextRef)context size:(S2t)size {
+-(void)loadTexFromCGContext:(CGContextRef)context size:(I2t)size {
     
-    int w = size.width;
-    int h = size.height;
     
     target = GL_TEXTURE_2D;
     
-    [self genGlTexture:w height:h];
+    [self genGlTexture:size.width height:size.height];
     
-    glTexImage2D(target, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char *)CGBitmapContextGetData(context));
+    glTexImage2D(target, 0, GL_RGBA, size.width, size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char *)CGBitmapContextGetData(context));
     
     glGenerateMipmap(target);
     

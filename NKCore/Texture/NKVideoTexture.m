@@ -153,7 +153,7 @@
 						
                         videoSize = CGSizeApplyAffineTransform([videoTrack naturalSize], preferredTransform);
                         
-                        self.size = P2Make(videoSize.width, videoSize.height);
+                        self.size = I2Make(videoSize.width, videoSize.height);
 #if !TARGET_OS_IPHONE
                         bufferAttributes = @{ (NSString *)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32RGBA), (NSString *)kCVPixelBufferWidthKey : @(videoSize.width), (NSString *)kCVPixelBufferHeightKey : @(videoSize.height), (NSString *)kCVPixelBufferIOSurfacePropertiesKey : @{ } };
 #endif
@@ -423,8 +423,8 @@
     
   
     if (!self.size.width) {
-        self.size = P2Make(CVPixelBufferGetWidth(pixelBuffer), CVPixelBufferGetHeight(pixelBuffer));
-        NSLog(@"set capture size: %f,%f", self.size.width, self.size.height);
+        self.size = I2Make(CVPixelBufferGetWidth(pixelBuffer), CVPixelBufferGetHeight(pixelBuffer));
+        NSLog(@"set capture size: %d,%d", self.size.width, self.size.height);
     }
     
 #if TARGET_OS_IPHONE
