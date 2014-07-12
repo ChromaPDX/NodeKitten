@@ -451,8 +451,11 @@ NSString* operatorString(NSArray* variables, NSString *operator) {
 }
 
 -(NKShaderVariable*)fragVarNamed:(NKS_ENUM)name {
-    for (NKShaderVariable *v in self[NKS_FRAG_INLINE]){
-        if (v.name == name) return v;
+    for (NKShaderVariable *v in self[NKS_FRAG_MAIN]){
+        if ([v isKindOfClass:[NKShaderVariable class]]) {
+            if (v.name == name) return v;
+        }
+        
     }
     return nil;
 }

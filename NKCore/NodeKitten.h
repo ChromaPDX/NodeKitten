@@ -63,6 +63,7 @@
 
 #import "NKShaderManager.h"
 #import "NKShaderProgram.h"
+#import "NKShaderModule.h"
 #import "NKShaderTools.h"
 
 // ANIMATION

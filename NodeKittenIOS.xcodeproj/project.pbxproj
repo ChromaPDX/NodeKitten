@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		292C26251971DDD70045B490 /* NKShaderModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 292C26241971DDD70045B490 /* NKShaderModule.m */; };
+		292C26261971DDD70045B490 /* NKShaderModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 292C26241971DDD70045B490 /* NKShaderModule.m */; };
 		292E5AE3194D356D002B6D43 /* 3DSConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 292E582F194D356B002B6D43 /* 3DSConverter.cpp */; };
 		292E5AE4194D356D002B6D43 /* 3DSConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 292E582F194D356B002B6D43 /* 3DSConverter.cpp */; };
 		292E5AE5194D356D002B6D43 /* 3DSLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 292E5831194D356B002B6D43 /* 3DSLoader.cpp */; };
@@ -1471,6 +1473,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		292C26231971DDD70045B490 /* NKShaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKShaderModule.h; sourceTree = "<group>"; };
+		292C26241971DDD70045B490 /* NKShaderModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKShaderModule.m; sourceTree = "<group>"; };
 		292E582F194D356B002B6D43 /* 3DSConverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 3DSConverter.cpp; sourceTree = "<group>"; };
 		292E5830194D356B002B6D43 /* 3DSHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 3DSHelper.h; sourceTree = "<group>"; };
 		292E5831194D356B002B6D43 /* 3DSLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 3DSLoader.cpp; sourceTree = "<group>"; };
@@ -4187,6 +4191,8 @@
 				2970D711194A6DAF00EEAC2B /* NKShaderProgram.m */,
 				2970D712194A6DAF00EEAC2B /* NKShaderTools.h */,
 				2970D713194A6DAF00EEAC2B /* NKShaderTools.m */,
+				292C26231971DDD70045B490 /* NKShaderModule.h */,
+				292C26241971DDD70045B490 /* NKShaderModule.m */,
 			);
 			path = Shader;
 			sourceTree = "<group>";
@@ -6083,6 +6089,7 @@
 				292E5B0D194D356D002B6D43 /* CalcTangentsProcess.cpp in Sources */,
 				29CA2BBE195637F300B5C3AF /* btRaycastCallback.cpp in Sources */,
 				29DACA5C194B42E000F382E4 /* NKEvent.m in Sources */,
+				292C26251971DDD70045B490 /* NKShaderModule.m in Sources */,
 				29CA2B16195637F300B5C3AF /* bDNA.cpp in Sources */,
 				292E5BE7194D356D002B6D43 /* StandardShapes.cpp in Sources */,
 				292E5BD9194D356D002B6D43 /* SkeletonMeshBuilder.cpp in Sources */,
@@ -6130,6 +6137,7 @@
 				292E5B9E194D356D002B6D43 /* ObjExporter.cpp in Sources */,
 				29CA1FE01954CF2000B5C3AF /* MIKMIDIMapping.m in Sources */,
 				29CA2BC1195637F300B5C3AF /* btRaycastVehicle.cpp in Sources */,
+				292C26261971DDD70045B490 /* NKShaderModule.m in Sources */,
 				2970D885194A6DAF00EEAC2B /* NKFont+CoreText.m in Sources */,
 				2970D83D194A6DAF00EEAC2B /* NKStaticDraw.m in Sources */,
 				29CA2B31195637F300B5C3AF /* btBvhTriangleMeshShape.cpp in Sources */,

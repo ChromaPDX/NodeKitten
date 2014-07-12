@@ -26,8 +26,11 @@
     NSSet *varyings;
     NSSet *vertexVars;
     NSSet *fragmentVars;
+    NSSet *fragModules;
+    NKFrameBuffer *pongBuffer;
 }
 
++(instancetype)newShaderNamed:(NSString*)name vertModules:(NSArray*)vertModules fragModules:(NSArray*)fragModules withBatchSize:(int)batchSize;
 +(instancetype)newShaderNamed:(NSString*)name colorMode:(NKS_COLOR_MODE)colorMode numTextures:(NSUInteger)numTex numLights:(int)numLights withBatchSize:(int)batchSize;
 
 +(instancetype)shaderNamed:(NSString*)name;
