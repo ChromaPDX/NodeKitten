@@ -140,9 +140,11 @@ typedef NS_ENUM(GLuint, NKS_ENUM)
     // BOOL
     NKS_INT_USE_UNIFORM_COLOR,
     
-    // SUB-ROUTINE INLINES
-    NKS_V4_LIGHT_COLOR,
-    NKS_V4_TEX_COLOR
+    // MODULES
+    
+    NKS_FALSE_COLOR_DARK_COLOR,
+    NKS_FALSE_COLOR_LIGHT_COLOR,
+    NKS_FALSE_COLOR_INTENSITY,
     
     // FUNCTIONS
 } NS_ENUM_AVAILABLE(10_8, 5_0);
@@ -225,7 +227,8 @@ typedef union _NKS_SCALAR NKS_SCALAR;
 @property NKS_ENUM inputType;
 @property NKS_ENUM returnType;
 
-@property (nonatomic,strong) NSString *const glFunction;
+@property (nonatomic,strong) NSString *const constants;
+@property (nonatomic,strong) NSString *const function;
 
 -(NSString*)functionString;
 

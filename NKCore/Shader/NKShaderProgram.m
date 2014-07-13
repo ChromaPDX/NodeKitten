@@ -108,7 +108,7 @@
         varyings = [NSMutableSet set];
         vertMain = [NSMutableArray array];
         fragMain = [NSMutableArray array];
-        modules = [NSMutableArray array];
+        _modules = [NSMutableArray array];
         
         NSLog(@"init shader");
         
@@ -148,7 +148,7 @@
             extensions = @[nks(NKS_EXT_DRAW_INSTANCED),nks(NKS_EXT_GPU_SHADER)];
         }
         
-        modules = [nmodules mutableCopy];
+        _modules = [nmodules mutableCopy];
         
         /////// COMPILE /////////
         
@@ -190,22 +190,24 @@
         // ADD MODULES
         
         if (colorMode != NKS_COLOR_MODE_NONE) {
-            [modules addObject:[NKShaderModule colorModule:colorMode batchSize:batchSize]];
+            [_modules addObject:[NKShaderModule colorModule:colorMode batchSize:batchSize]];
         }
         
         if (numTex != 0) {
-            [modules addObject:[NKShaderModule textureModule:numTex]];
+            [_modules addObject:[NKShaderModule textureModule:numTex]];
         }
         
         if (numLights) {
 #if NK_USE_GLES
-            [modules addObject:[NKShaderModule lightModule:false batchSize:batchSize]];
+            [_modules addObject:[NKShaderModule lightModule:false batchSize:batchSize]];
 #else
-            [modules addObject:[NKShaderModule lightModule:true batchSize:batchSize]];
+            [_modules addObject:[NKShaderModule lightModule:true batchSize:batchSize]];
 #endif
+              [_modules addObject:[NKShaderModule falseColorModule:1. darkColor:NKBLUE lightColor:NKPURPLE]];
         }
         
-        
+      
+         
         [self calculateCommonVertexVaryings];
         
       //  [self serializeModules];
@@ -311,7 +313,7 @@
     
 #endif
     
-    for (NKShaderModule *module in modules){
+    for (NKShaderModule *module in _modules){
         [shader appendString:module.types];
     }
     
@@ -325,7 +327,7 @@
         [shader appendNewLine:[v declarationStringForSection:NKS_VERTEX_SHADER]];
     }
     
-    for (NKShaderModule *module in modules){
+    for (NKShaderModule *module in _modules){
         for (NKShaderVariable* v in module.uniforms){
             [shader appendNewLine:[v declarationStringForSection:NKS_VERTEX_SHADER]];
         }
@@ -340,7 +342,7 @@
         [shader appendNewLine:s];
     }
     
-    for (NKShaderModule *module in modules){
+    for (NKShaderModule *module in _modules){
         if (module.vertexMain) {
             [shader appendString:module.vertexMain];
         }
@@ -375,7 +377,7 @@
 #else
 #endif
     
-    for (NKShaderModule *module in modules){
+    for (NKShaderModule *module in _modules){
         if (module.types) {
             [shader appendString:module.types];
         }
@@ -388,7 +390,7 @@
         [shader appendNewLine:[v declarationStringForSection:NKS_FRAGMENT_SHADER]];
     }
     
-    for (NKShaderModule *module in modules){
+    for (NKShaderModule *module in _modules){
         for (NKShaderVariable* v in module.uniforms){
             [shader appendNewLine:[v declarationStringForSection:NKS_FRAGMENT_SHADER]];
         }
@@ -397,9 +399,14 @@
         }
     }
     
-     for (NKShaderModule *m in modules){
+     for (NKShaderModule *m in _modules){
          for (NKShaderFunction* f in m.fragFunctions) {
-             [shader appendNewLine:f.functionString];
+             if (f.constants) {
+                 [shader appendNewLine:f.constants];
+             }
+             if (f.function) {
+                    [shader appendNewLine:f.functionString];
+             }
          }
      }
     
@@ -413,14 +420,14 @@
     
     [shader appendString:[NSString stringWithFormat:@"%@ = ",nks(NKS_V4_GL_FRAG_COLOR)]];
                           
-    for (int i = modules.count-1; i >= 0 ; i--){
+    for (int i = _modules.count-1; i >= 0 ; i--){
         
-        NKShaderModule *module = modules[i];
+        NKShaderModule *module = _modules[i];
         NKShaderFunction *function = module.fragFunctions[0];
         
         if (i == 0) {
             [shader appendString:[NSString stringWithFormat:@"%@(inputColor", function.name ]];
-            for (int p = 0; p < modules.count; p++){
+            for (int p = 0; p < _modules.count; p++){
                 [shader appendString:@")"];
             }
             [shader appendString:@";\n"];
@@ -569,7 +576,7 @@
         }
     }
     
-    for (NKShaderModule *m in modules){
+    for (NKShaderModule *m in _modules){
         
         for (NKShaderVariable *v in m.uniforms) {
             int uniLoc = glGetUniformLocation(self.glPointer, [v.nameString UTF8String]);
@@ -743,7 +750,7 @@
 }
 
 -(void)addModule:(NKShaderModule*)module {
-    [modules addObject:module];
+    [_modules addObject:module];
 }
 
 -(NKShaderVariable*)attributeNamed:(NKS_ENUM)name {
@@ -755,7 +762,7 @@
 }
 
 -(NKShaderVariable*)uniformNamed:(NKS_ENUM)name {
-    for (NKShaderModule *module in modules) {
+    for (NKShaderModule *module in _modules) {
         for (NKShaderVariable *v in module.uniforms){
             if (v.name == name) return v;
         }
@@ -770,7 +777,7 @@
 
 -(NKShaderVariable*)varyingNamed:(NKS_ENUM)name {
     
-    for (NKShaderModule *module in modules) {
+    for (NKShaderModule *module in _modules) {
         for (NKShaderVariable *v in module.varyings){
             if (v.name == name) return v;
         }

@@ -28,8 +28,6 @@
     NSMutableSet *uniforms;
     NSMutableSet *varyings;
 
-    NSMutableArray *modules;
-    
     NSMutableArray *vertMain;
     NSMutableArray *fragMain;
     
@@ -47,7 +45,7 @@
 - (instancetype)initWithVertexShader:(NSString *)vertShaderName fragmentShader:(NSString *)fragShaderName;
 - (instancetype)initWithVertexSource:(NSString*)vertexSource fragmentSource:(NSString*)fragmentSource;
 
-#pragma mark - UTILS
+@property (nonatomic, strong) NSMutableArray *modules;
 
 @property (nonatomic, strong) NSString *vertexSource;
 @property (nonatomic, strong) NSString *fragmentSource;

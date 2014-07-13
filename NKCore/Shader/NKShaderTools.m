@@ -130,11 +130,7 @@ NSString* nksString(NKS_ENUM string) {
             return @"gl_InstanceID";
 #endif
             
-        case NKS_V4_LIGHT_COLOR:
-            return @"lightColor";
-            
-        case NKS_V4_TEX_COLOR:
-            return @"texColor";
+
             
             // EXTENSIONS
         case NKS_EXT_DRAW_INSTANCED:
@@ -152,6 +148,16 @@ NSString* nksString(NKS_ENUM string) {
 #else
             return @"#extension GL_EXT_gpu_shader4 : enable";
 #endif
+            
+        // MODULES
+            
+        case NKS_FALSE_COLOR_DARK_COLOR:
+            return @"falseColor_darkColor";
+        case NKS_FALSE_COLOR_LIGHT_COLOR:
+            return @"falseColor_lightColor";
+        case NKS_FALSE_COLOR_INTENSITY:
+            return @"falseColor_intensity";
+            
         default: return @"((NKS_STRING_ENUM_ERROR))";
     }
     
@@ -215,7 +221,7 @@ NSString* operatorString(NSArray* variables, NSString *operator) {
 
     NSMutableString *functionString = [[NSString stringWithFormat:@"%@ %@ (%@ inputColor){ \n" ,nks(_returnType),_name,nks(_inputType) ] mutableCopy];
     
-    [functionString appendString:_glFunction];
+    [functionString appendString:_function];
     
     [functionString appendString:@"}\n"];
     

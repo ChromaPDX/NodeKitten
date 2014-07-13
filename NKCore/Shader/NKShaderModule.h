@@ -27,7 +27,7 @@ typedef void (^UniformUpdateBlock)();
 @property (nonatomic,strong) NSString *const vertexMain;
 @property (nonatomic,strong) NSString *const fragmentMain;
 
-@property (nonatomic, strong) UniformUpdateBlock updateBlock;
+@property (nonatomic, strong) UniformUpdateBlock uniformUpdateBlock;
 
 -(NKShaderVariable*)uniformNamed:(NKS_ENUM)name;
 -(NKShaderVariable*)varyingNamed:(NKS_ENUM)name;
@@ -38,5 +38,9 @@ typedef void (^UniformUpdateBlock)();
 +(NKShaderModule*) colorModule:(NKS_COLOR_MODE)colorMode batchSize:(int)batchSize;
 +(NKShaderModule*) textureModule:(int)numTex;
 +(NKShaderModule*) lightModule:(bool)highQuality batchSize:(int)batchSize;
+
+// POST PROCESS (FRAGMENT ONLY) MODULES
+
++(NKShaderModule*) falseColorModule:(F1t)intensity darkColor:(NKByteColor*)darkColor lightColor:(NKByteColor*)lightColor;
 
 @end

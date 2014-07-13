@@ -192,6 +192,12 @@
                 [[_activeShader uniformNamed:NKS_I1_NUM_LIGHTS] bindI1:0];
             }
         }
+        
+        for (NKShaderModule *m in _activeShader.modules) {
+            if (m.uniformUpdateBlock) {
+                  m.uniformUpdateBlock();
+            }
+        }
     }
 }
 

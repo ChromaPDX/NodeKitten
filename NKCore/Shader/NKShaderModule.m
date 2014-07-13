@@ -70,7 +70,7 @@
     colorFunction.inputType = NKS_TYPE_V4;
     colorFunction.returnType = NKS_TYPE_V4;
     
-    colorFunction.glFunction = SHADER_STRING
+    colorFunction.function = SHADER_STRING
     (
      return inputColor * v_color;
      );
@@ -138,13 +138,13 @@
     if ([module uniformNamed:NKS_S2D_TEXTURE]) {
         
 #if NK_USE_GL3
-        texFunction.glFunction = @"return inputColor * texture(u_texture,v_texCoord0);";
+        texFunction.function = @"return inputColor * texture(u_texture,v_texCoord0);";
 #else
         if ([module uniformNamed:NKS_S2D_TEXTURE].type == NKS_TYPE_SAMPLER_2D_RECT) {
-            texFunction.glFunction = @"return inputColor * texture2DRect(u_texture,v_texCoord0);";
+            texFunction.function = @"return inputColor * texture2DRect(u_texture,v_texCoord0);";
         }
         else {
-            texFunction.glFunction = @"return inputColor * texture2D(u_texture,v_texCoord0);";
+            texFunction.function = @"return inputColor * texture2D(u_texture,v_texCoord0);";
         }
 #endif
     }
@@ -238,7 +238,7 @@
          v_eyeDirection = v_position.xyz;
          );
         
-        lightFunction.glFunction = SHADER_STRING
+        lightFunction.function = SHADER_STRING
         (
          // HQ LIGHT MODULE
          
@@ -319,7 +319,7 @@
          }
          );
         
-        lightFunction.glFunction = SHADER_STRING
+        lightFunction.function = SHADER_STRING
         (
          // LQ LIGHT PROGRAM
          
@@ -357,6 +357,48 @@
     return module;
     
 }
+
+#pragma mark - POST PROCESS MODULES
+
++(NKShaderModule*) falseColorModule:(F1t)intensity darkColor:(NKByteColor*)darkColor lightColor:(NKByteColor*)lightColor {
+    
+    NKShaderModule* module = [[NKShaderModule alloc] init];
+
+    module.name = @"FALSE COLOR";
+    
+    [module.uniforms addObject:nksu(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_FALSE_COLOR_DARK_COLOR)];
+    [module.uniforms addObject:nksu(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_FALSE_COLOR_LIGHT_COLOR)];
+    [module.uniforms addObject:nksu(NKS_PRECISION_LOW, NKS_TYPE_F1, NKS_FALSE_COLOR_INTENSITY)];
+    
+    NKShaderFunction *falseColor = [[NKShaderFunction alloc]init];
+    
+    falseColor.name = @"nkFalseColor";
+    falseColor.inputType = NKS_TYPE_V4;
+    falseColor.returnType = NKS_TYPE_V4;
+    
+    falseColor.constants = SHADER_STRING
+    (
+     const vec3 luminanceWeighting = vec3(0.2125, 0.7154, 0.0721);
+    );
+    
+    falseColor.function = SHADER_STRING
+    (
+     float luminance = dot(inputColor.rgb, luminanceWeighting);
+     return mix(inputColor,vec4( mix(u_falseColor_darkColor.rgb, u_falseColor_lightColor.rgb, luminance), inputColor.a),u_falseColor_intensity);
+     );
+    
+    module.fragFunctions = @[falseColor];
+    
+    module.uniformUpdateBlock = newUniformUpdateBlock {
+        [[module uniformNamed:NKS_FALSE_COLOR_DARK_COLOR] bindV4:darkColor.C4Color];
+        [[module uniformNamed:NKS_FALSE_COLOR_LIGHT_COLOR] bindV4:lightColor.C4Color];
+        [[module uniformNamed:NKS_FALSE_COLOR_INTENSITY] bindF1:intensity];
+    };
+    
+    return module;
+    
+}
+
 
 -(NKShaderVariable*)uniformNamed:(NKS_ENUM)name {
     
