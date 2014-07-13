@@ -21,17 +21,14 @@ struct LightProperties {
 
 @interface
 
-@vertex
+@vertmain
 
 v_eyeDirection = v_position.xyz;
 
-@vertex
+@vertmain
 
-@fragmain
-
-//
-// LIGHT PROGRAM
-//
+@fragmai
+// HQ LIGHT MODULE
 
 vec3 scatteredLight = vec3(0.0);
 vec3 reflectedLight = vec3(0.0);

@@ -235,10 +235,6 @@ NSString* operatorString(NSArray* variables, NSString *operator) {
 }
 
 -(NSString*)nameString {
-    return [self typeString];
-}
-
--(NSString*)typeString {
     switch (_variable) {
         case NKS_VARIABLE_ATTRIBUTE:
             return [nksf:@"a_%@",nks(_name)];
@@ -259,6 +255,14 @@ NSString* operatorString(NSArray* variables, NSString *operator) {
         default:
             return @"NKS_ERROR";
     }
+
+}
+
+//-(NSString*)typeString {
+// }
+
+-(NSString*)description {
+    return [self nameString];
 }
 
 -(NSString*)declarationStringForSection:(NKS_ENUM)section {
@@ -428,37 +432,6 @@ NSString* operatorString(NSArray* variables, NSString *operator) {
 @end
 
 @implementation NSDictionary (ShaderTools)
-
--(NKShaderVariable*)uniformNamed:(NKS_ENUM)name {
-    for (NKShaderVariable *v in self[NKS_UNIFORMS]){
-        if (v.name == name) return v;
-    }
-    return nil;
-}
-
--(NKShaderVariable*)varyingNamed:(NKS_ENUM)name {
-    for (NKShaderVariable *v in self[NKS_VARYINGS]){
-        if (v.name == name) return v;
-    }
-    return nil;
-}
-
--(NKShaderVariable*)attributeNamed:(NKS_ENUM)name {
-    for (NKShaderVariable *v in self[NKS_ATTRIBUTES]){
-        if (v.name == name) return v;
-    }
-    return nil;
-}
-
--(NKShaderVariable*)fragVarNamed:(NKS_ENUM)name {
-    for (NKShaderVariable *v in self[NKS_FRAG_MAIN]){
-        if ([v isKindOfClass:[NKShaderVariable class]]) {
-            if (v.name == name) return v;
-        }
-        
-    }
-    return nil;
-}
 
 -(NSString*)appendValueIfKey:(NSString*)key toShaderString:(NSString*)shader {
     NSString* value = [self valueForKey:key];

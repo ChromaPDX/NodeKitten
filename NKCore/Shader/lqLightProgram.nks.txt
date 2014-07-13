@@ -21,7 +21,7 @@ struct LightProperties {
 
 @interface
 
-@vertex
+@vertmain
 
 v_eyeDirection = v_position.xyz;
 
@@ -43,7 +43,7 @@ else {
     v_halfVector = u_light.halfVector;
 }
 
-@vertex
+@vertmain
 
 @fragmain
 //

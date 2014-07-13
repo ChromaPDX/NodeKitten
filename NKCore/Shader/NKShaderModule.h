@@ -13,9 +13,21 @@ typedef void (^UniformUpdateBlock)();
 
 @interface NKShaderModule : NSObject
 
-@property (nonatomic,strong) NSSet *uniforms;
-@property (nonatomic,strong) NSSet *varyings;
-@property (nonatomic,strong) NSString *const functionString;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic,strong) NSMutableArray *uniforms;
+@property (nonatomic,strong) NSMutableArray *varyings;
+
+@property (nonatomic, strong) NSMutableArray *outputColor;
+
+@property (nonatomic,strong) NSString *types;
+@property (nonatomic,strong) NSString *const vertexMain;
+@property (nonatomic,strong) NSString *const fragmentMain;
+
 @property (nonatomic, strong) UniformUpdateBlock updateBlock;
+
+// DEFAULT MODULES
+
++(NKShaderModule*) vertexColorModule:(NKS_COLOR_MODE)colorMode batchSize:(int)batchSize;
++(NKShaderModule*) lightModule:(bool)highQuality batchSize:(int)batchSize;
 
 @end

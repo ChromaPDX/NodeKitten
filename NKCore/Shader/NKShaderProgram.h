@@ -20,13 +20,19 @@
 
 {
     int numAttributes;
+
+    NSArray *extensions;
     
-    NSArray *attributes;
-    NSSet *uniforms;
-    NSSet *varyings;
-    NSSet *vertexVars;
-    NSSet *fragmentVars;
-    NSSet *fragModules;
+    NSMutableArray *attributes;
+    NSMutableSet *uniforms;
+    NSMutableSet *varyings;
+
+    NSMutableArray *modules;
+    NSMutableArray *extPrograms;
+    
+    NSMutableArray *vertMain;
+    NSMutableArray *fragMain;
+    
     NKFrameBuffer *pongBuffer;
 }
 
