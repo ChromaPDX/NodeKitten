@@ -20,7 +20,8 @@
 
 {
     int numAttributes;
-
+    int _batchSize;
+    
     NSArray *extensions;
     
     NSMutableArray *attributes;
@@ -28,7 +29,6 @@
     NSMutableSet *varyings;
 
     NSMutableArray *modules;
-    NSMutableArray *extPrograms;
     
     NSMutableArray *vertMain;
     NSMutableArray *fragMain;

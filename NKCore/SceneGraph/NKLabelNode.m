@@ -89,7 +89,7 @@
 }
 
 -(void)chooseShader {
-    self.shader = [NKShaderProgram newShaderNamed:@"textureShader" colorMode:NKS_COLOR_MODE_NONE numTextures:_numTextures numLights:1 withBatchSize:0];
+    self.shader = [NKShaderProgram newShaderNamed:@"textureShader" colorMode:NKS_COLOR_MODE_NONE numTextures:_numTextures numLights:0 withBatchSize:0];
 }
 
 

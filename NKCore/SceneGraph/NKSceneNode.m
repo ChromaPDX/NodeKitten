@@ -216,11 +216,11 @@
     [super draw];
     [_camera draw];
     
-    if (!_ciFilter) {
-        _ciFilter = [CIFilter filterWithName:@"CISepiaTone"
-                                      keysAndValues: kCIInputImageKey, _coreImage,
-                            @"inputIntensity", @1.0, nil];
-    }
+//    if (!_ciFilter) {
+//        _ciFilter = [CIFilter filterWithName:@"CISepiaTone"
+//                                      keysAndValues: kCIInputImageKey, _coreImage,
+//                            @"inputIntensity", @1.0, nil];
+//    }
     if (_ciFilter) {
     
         _coreImage = [CIImage imageWithTexture:self.framebuffer.renderTexture.glName size:CGSizeMake(_size.width, _size.height) flipped:NO colorSpace:nil];
@@ -239,7 +239,7 @@
     #if TARGET_OS_IPHONE
     else if (self.framebuffer) {
 #else
-        if (self.framebuffer) {
+     else if (self.framebuffer) {
 
 #endif
         if (!_fboSurface) {

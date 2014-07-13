@@ -19,12 +19,12 @@
     return self;
 }
 
-+(NKShaderModule*) vertexColorModule:(NKS_COLOR_MODE)colorMode batchSize:(int)batchSize {
++(NKShaderModule*) colorModule:(NKS_COLOR_MODE)colorMode batchSize:(int)batchSize {
     
     NKShaderModule* module = [[NKShaderModule alloc] init];
     
     module.name = @"vertex color module";
-
+    
     if (colorMode == NKS_COLOR_MODE_NONE) {
         return nil;
     }
@@ -59,45 +59,166 @@
         }
     }
     
-    module.outputColor = [module.varyings copy];
+    NKShaderFunction *colorFunction = [[NKShaderFunction alloc]init];
+    
+    colorFunction.name = @"nkColorFunc";
+    colorFunction.inputType = NKS_TYPE_V4;
+    colorFunction.returnType = NKS_TYPE_V4;
+    
+    colorFunction.glFunction = SHADER_STRING
+    (
+     return inputColor * v_color;
+     );
+    
+    module.fragFunctions = @[colorFunction];
+    
+    // module.outputColor = nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V4, NKS_V4_COLOR);
     
     return module;
 }
 
-+(NKShaderModule*) fragmentColorModule:(NKS_COLOR_MODE)colorMode batchSize:(int)batchSize {
++(NKShaderModule*) materialModule:(int)numTex {
     
     NKShaderModule* module = [[NKShaderModule alloc] init];
     
+    module.name = @"texture module";
+    
+    module.types = SHADER_STRING
+    (
+     struct MaterialProperties {
+         vec3 emission;
+         vec3 ambient;
+         vec3 diffuse;
+         vec3 specular;
+         float shininess;
+     }
+     );
+    
     return module;
+}
+
++(NKShaderModule*) textureModule:(int)numTex {
+    
+    NKShaderModule* module = [[NKShaderModule alloc] init];
+    
+    module.name = @"texture module";
+    
+    if (numTex == -1){ // quick vid fix
+        [module.uniforms addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_CORE_VIDEO, NKS_S2D_TEXTURE)];
+        [module.uniforms addObject: nksu(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_TEXTURE_RECT_SCALE)];
+        [module.varyings addObject: nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_V2_TEXCOORD)];
+        
+        if ([module uniformNamed:NKS_S2D_TEXTURE].type == NKS_TYPE_SAMPLER_2D) {
+            module.vertexMain = @"v_texCoord0 = vec2(a_texCoord0.x, 1. - a_texCoord0.y);";
+        }
+        else {
+            module.vertexMain = @"v_texCoord0 = vec2(a_texCoord0.x, 1. - a_texCoord0.y) * u_textureScale;";
+        }
+        
+    }
+    
+    else if (numTex) {
+        [module.uniforms addObject: nksu(NKS_PRECISION_LOW, NKS_TYPE_SAMPLER_2D, NKS_S2D_TEXTURE)];
+        [module.varyings addObject: nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V2, NKS_V2_TEXCOORD)];
+        
+        module.vertexMain = @"v_texCoord0 = a_texCoord0;";
+    }
+    
+    NKShaderFunction *texFunction = [[NKShaderFunction alloc]init];
+    
+    texFunction.name = @"nkTexFunc";
+    texFunction.inputType = NKS_TYPE_V4;
+    texFunction.returnType = NKS_TYPE_V4;
+    
+    if ([module uniformNamed:NKS_S2D_TEXTURE]) {
+        
+#if NK_USE_GL3
+        texFunction.glFunction = @"return inputColor * texture(u_texture,v_texCoord0);";
+#else
+        if ([module uniformNamed:NKS_S2D_TEXTURE].type == NKS_TYPE_SAMPLER_2D_RECT) {
+            texFunction.glFunction = @"return inputColor * texture2DRect(u_texture,v_texCoord0);";
+        }
+        else {
+            texFunction.glFunction = @"return inputColor * texture2D(u_texture,v_texCoord0);";
+        }
+#endif
+    }
+    
+    module.fragFunctions = @[texFunction];
+    
+    return module;
+    
 }
 
 +(NKShaderModule*) lightModule:(bool)highQuality batchSize:(int)batchSize {
     
     NKShaderModule* module = [[NKShaderModule alloc] init];
-    
+
     module.types = SHADER_STRING
     (
+     \n
      struct LightProperties {
+         \n
+#if TARGET_OS_IPHONE
+         highp vec3 position;
+         lowp vec3 ambient;
+         lowp vec3 color;
+         lowp vec3 halfVector;
+         lowp vec3 coneDirection;
+#else
          vec3 position;
          vec3 ambient;
          vec3 color;
-         
          vec3 halfVector;
          vec3 coneDirection;
-         
+#endif
          float spotCosCutoff;
          float spotExponent;
          float constantAttenuation;
          float linearAttenuation;
          float quadraticAttenuation;
-         
+
          int isEnabled;
          int isLocal;
          int isSpot;
      };
+     \n
      );
     
+    
+    [module.uniforms addObjectsFromArray:@[nksu(NKS_PRECISION_NONE, NKS_TYPE_INT, NKS_I1_NUM_LIGHTS),
+                                           nksu(NKS_PRECISION_NONE, NKS_STRUCT_LIGHT, NKS_LIGHT)
+                                           ]];
+    
+    if (batchSize) {
+        [module.uniforms addObject:nksua(NKS_PRECISION_HIGH, NKS_TYPE_M16, NKS_M16_MV, batchSize)];
+        [module.uniforms addObject:nksua(NKS_PRECISION_MEDIUM, NKS_TYPE_M9, NKS_M9_NORMAL, batchSize)];
+    }
+    else {
+        [module.uniforms addObject:nksu(NKS_PRECISION_HIGH, NKS_TYPE_M16, NKS_M16_MV)];
+        [module.uniforms addObject:nksu(NKS_PRECISION_MEDIUM, NKS_TYPE_M9, NKS_M9_NORMAL)];
+    }
+    
+    [module.varyings addObject:nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V3, NKS_V3_NORMAL)];
+    [module.varyings addObject:nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V3, NKS_V3_EYE_DIRECTION)];
+    
+    [module.varyings addObject:nksv(NKS_PRECISION_LOW, NKS_TYPE_V3, NKS_V3_LIGHT_HALF_VECTOR)];
+    [module.varyings addObject:nksv(NKS_PRECISION_LOW, NKS_TYPE_F1, NKS_F1_ATTENUATION)];
+    
+    [module.varyings addObject:nksv(NKS_PRECISION_MEDIUM, NKS_TYPE_V4, NKS_V4_POSITION)];
+    [module.varyings addObject:nksv(NKS_PRECISION_LOW, NKS_TYPE_V3, NKS_V3_LIGHT_DIRECTION)];
+    
+    //module.outputColor = nksi(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_V4_LIGHT_COLOR);
+    
+    NKShaderFunction *lightFunction = [[NKShaderFunction alloc]init];
+    
+    lightFunction.name = @"nkLightFunc";
+    lightFunction.inputType = NKS_TYPE_V4;
+    lightFunction.returnType = NKS_TYPE_V4;
+    
     if (highQuality) {
+        
+        
         module.name = @"HQ LIGHT PROGRAM";
         
         module.vertexMain = SHADER_STRING
@@ -105,9 +226,10 @@
          v_eyeDirection = v_position.xyz;
          );
         
-        module.fragmentMain = SHADER_STRING
+        lightFunction.glFunction = SHADER_STRING
         (
          // HQ LIGHT MODULE
+         
          vec3 scatteredLight = vec3(0.0);
          vec3 reflectedLight = vec3(0.0);
          
@@ -149,11 +271,10 @@
              }
              //vec3 rgb = min(Color.rgb * scatteredLight + reflectedLight, vec3(1.0));
              //FragColor = vec4(rgb, Color.a);
-             
-             lightColor = vec4(min(scatteredLight + reflectedLight,vec3(1.0)), 1.0);
+             return inputColor * vec4(min(scatteredLight + reflectedLight,vec3(1.0)), 1.0);
          }
          else {
-             lightColor = vec4(1.0);
+             return inputColor;
          }
          );
         
@@ -168,13 +289,13 @@
         (
          v_eyeDirection = v_position.xyz;
          
-         if (u_light.isLocal) {
+         if (u_light.isLocal == 1) {
              
              v_lightDirection =  u_light.position - v_position.xyz;
              float lightDistance = length(v_lightDirection);
              v_lightDirection = v_lightDirection / lightDistance; // (normalize) ? ;
              v_attenuation = 1.0 / (u_light.constantAttenuation + (u_light.linearAttenuation * lightDistance) + (u_light.quadraticAttenuation * lightDistance * lightDistance));
-             if (u_light.isSpot) {
+             if (u_light.isSpot == 1) {
                  float spotCos = dot(v_lightDirection,-u_light.coneDirection);
                  if (spotCos < u_light.spotCosCutoff) v_attenuation = 0.0;
                  else v_attenuation *= pow(spotCos,u_light.spotExponent);
@@ -187,7 +308,7 @@
          }
          );
         
-        module.fragmentMain = SHADER_STRING
+        lightFunction.glFunction = SHADER_STRING
         (
          // LQ LIGHT PROGRAM
          
@@ -211,18 +332,38 @@
                  reflectedLight += u_light.color * specular * v_attenuation;
              }
              //lightColor = vec4(min(reflectedLight,vec3(1.0)), 1.0);
-             lightColor = vec4(min(scatteredLight+reflectedLight,vec3(1.0)), 1.0);
+             return inputColor * vec4(min(scatteredLight+reflectedLight,vec3(1.0)), 1.0);
          }
          else {
-             lightColor = vec4(1.0);
+             return inputColor;
          }
+         
          );
     }
+    
+    module.fragFunctions = @[lightFunction];
     
     return module;
     
 }
 
+-(NKShaderVariable*)uniformNamed:(NKS_ENUM)name {
+    
+    for (NKShaderVariable *v in _uniforms){
+        if (v.name == name) return v;
+    }
+    
+    return nil;
+}
+
+-(NKShaderVariable*)varyingNamed:(NKS_ENUM)name {
+    
+    for (NKShaderVariable *v in _varyings){
+        if (v.name == name) return v;
+    }
+    
+    return nil;
+}
 
 -(NSString*)description {
     return [self name];

@@ -86,6 +86,7 @@ typedef NS_ENUM(GLuint, NKS_ENUM)
     NKS_PRECISION_HIGH,
 
     // GL VECTOR TYPES
+    NKS_TYPE_VOID,
     NKS_TYPE_F1,
     NKS_TYPE_V2,
     NKS_TYPE_V3,
@@ -214,6 +215,21 @@ union _NKS_SCALAR {
 };
 
 typedef union _NKS_SCALAR NKS_SCALAR;
+
+#pragma mark - NKSHADER FUNCTION
+
+@interface NKShaderFunction : NSObject
+
+@property (nonatomic, strong) NSString *name;
+
+@property NKS_ENUM inputType;
+@property NKS_ENUM returnType;
+
+@property (nonatomic,strong) NSString *const glFunction;
+
+-(NSString*)functionString;
+
+@end
 
 #pragma mark - NKSHADER VARIABLE
 

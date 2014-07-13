@@ -37,7 +37,8 @@ NSString* nksString(NKS_ENUM string) {
             return @"";
             
             // GL VECTOR TYPES
-            
+        case NKS_TYPE_VOID:
+            return @"void";
         case NKS_TYPE_F1:
             return @"float";
         case NKS_TYPE_M9:
@@ -207,6 +208,21 @@ NSString* operatorString(NSArray* variables, NSString *operator) {
     }
     return mult;
 }
+
+@implementation NKShaderFunction
+
+-(NSString*)functionString {
+
+    NSMutableString *functionString = [[NSString stringWithFormat:@"%@ %@ (%@ inputColor){ \n" ,nks(_returnType),_name,nks(_inputType) ] mutableCopy];
+    
+    [functionString appendString:_glFunction];
+    
+    [functionString appendString:@"}\n"];
+    
+    return functionString;
+}
+
+@end
 
 @implementation NKShaderVariable
 

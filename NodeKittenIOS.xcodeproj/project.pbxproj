@@ -780,12 +780,6 @@
 		2970D85F194A6DAF00EEAC2B /* NKSoundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D707194A6DAF00EEAC2B /* NKSoundManager.m */; };
 		2970D860194A6DAF00EEAC2B /* NKSpriteNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D709194A6DAF00EEAC2B /* NKSpriteNode.m */; };
 		2970D861194A6DAF00EEAC2B /* NKSpriteNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D709194A6DAF00EEAC2B /* NKSpriteNode.m */; };
-		2970D862194A6DAF00EEAC2B /* hqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70B194A6DAF00EEAC2B /* hqLightProgram.nks.txt */; };
-		2970D863194A6DAF00EEAC2B /* hqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70B194A6DAF00EEAC2B /* hqLightProgram.nks.txt */; };
-		2970D864194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70C194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt */; };
-		2970D865194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70C194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt */; };
-		2970D866194A6DAF00EEAC2B /* materialStruct.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70D194A6DAF00EEAC2B /* materialStruct.nks.txt */; };
-		2970D867194A6DAF00EEAC2B /* materialStruct.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2970D70D194A6DAF00EEAC2B /* materialStruct.nks.txt */; };
 		2970D868194A6DAF00EEAC2B /* NKShaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D70F194A6DAF00EEAC2B /* NKShaderManager.m */; };
 		2970D869194A6DAF00EEAC2B /* NKShaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D70F194A6DAF00EEAC2B /* NKShaderManager.m */; };
 		2970D86A194A6DAF00EEAC2B /* NKShaderProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = 2970D711194A6DAF00EEAC2B /* NKShaderProgram.m */; };
@@ -1032,8 +1026,6 @@
 		2971B9A2194C0521001BE97F /* trashbin.obj in Resources */ = {isa = PBXBuildFile; fileRef = 2971B8D0194C0521001BE97F /* trashbin.obj */; };
 		29744B72194B8F72009B3CD0 /* NKBulletWorld.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29744815194B8F72009B3CD0 /* NKBulletWorld.mm */; };
 		29744B73194B8F72009B3CD0 /* NKBulletWorld.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29744815194B8F72009B3CD0 /* NKBulletWorld.mm */; };
-		297BF6A219516F270004AFCD /* lqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */; };
-		297BF6A319516F270004AFCD /* lqLightProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */; };
 		29AE6382196F3324003EBB4D /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 29AE6381196F3324003EBB4D /* libxml2.dylib */; };
 		29CA1FC71954CF2000B5C3AF /* MIKMIDIChannelVoiceCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F8C1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.m */; };
 		29CA1FC81954CF2000B5C3AF /* MIKMIDIChannelVoiceCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA1F8C1954CF1F00B5C3AF /* MIKMIDIChannelVoiceCommand.m */; };
@@ -1371,12 +1363,8 @@
 		29CA2C17195637F300B5C3AF /* SphereTriangleDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29CA2B10195637F300B5C3AF /* SphereTriangleDetector.cpp */; };
 		29CA2C1C1956451B00B5C3AF /* NKVideoTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA2C1B1956451B00B5C3AF /* NKVideoTexture.m */; };
 		29CA2C1D1956451B00B5C3AF /* NKVideoTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CA2C1B1956451B00B5C3AF /* NKVideoTexture.m */; };
-		29CC5D7A194E174400614265 /* textureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D79194E174400614265 /* textureProgram.nks.txt */; };
-		29CC5D7B194E174400614265 /* textureProgram.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29CC5D79194E174400614265 /* textureProgram.nks.txt */; };
 		29D6FCD319577E8900223511 /* NKEmitterNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D6FCD219577E8900223511 /* NKEmitterNode.m */; };
 		29D6FCD419577E8900223511 /* NKEmitterNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D6FCD219577E8900223511 /* NKEmitterNode.m */; };
-		29D6FCD619577FF300223511 /* particleFountain.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29D6FCD519577FF300223511 /* particleFountain.nks.txt */; };
-		29D6FCD719577FF300223511 /* particleFountain.nks.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29D6FCD519577FF300223511 /* particleFountain.nks.txt */; };
 		29DACA5C194B42E000F382E4 /* NKEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 29DACA5B194B42E000F382E4 /* NKEvent.m */; };
 		29DACA5D194B42E000F382E4 /* NKEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 29DACA5B194B42E000F382E4 /* NKEvent.m */; };
 /* End PBXBuildFile section */
@@ -2256,9 +2244,6 @@
 		2970D707194A6DAF00EEAC2B /* NKSoundManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKSoundManager.m; sourceTree = "<group>"; };
 		2970D708194A6DAF00EEAC2B /* NKSpriteNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKSpriteNode.h; sourceTree = "<group>"; };
 		2970D709194A6DAF00EEAC2B /* NKSpriteNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKSpriteNode.m; sourceTree = "<group>"; };
-		2970D70B194A6DAF00EEAC2B /* hqLightProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hqLightProgram.nks.txt; sourceTree = "<group>"; };
-		2970D70C194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = oldlqLightProgram.nks.txt; sourceTree = "<group>"; };
-		2970D70D194A6DAF00EEAC2B /* materialStruct.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = materialStruct.nks.txt; sourceTree = "<group>"; };
 		2970D70E194A6DAF00EEAC2B /* NKShaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKShaderManager.h; sourceTree = "<group>"; };
 		2970D70F194A6DAF00EEAC2B /* NKShaderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKShaderManager.m; sourceTree = "<group>"; };
 		2970D710194A6DAF00EEAC2B /* NKShaderProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKShaderProgram.h; sourceTree = "<group>"; };
@@ -2399,7 +2384,6 @@
 		2971B8D0194C0521001BE97F /* trashbin.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = trashbin.obj; sourceTree = "<group>"; };
 		29744814194B8F71009B3CD0 /* NKBulletWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKBulletWorld.h; sourceTree = "<group>"; };
 		29744815194B8F72009B3CD0 /* NKBulletWorld.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NKBulletWorld.mm; sourceTree = "<group>"; };
-		297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lqLightProgram.nks.txt; sourceTree = "<group>"; };
 		2985C27D196EADD400F28F53 /* OniPlatformAndroid-Arm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OniPlatformAndroid-Arm.h"; sourceTree = "<group>"; };
 		2985C27F196EADD400F28F53 /* OniDriverAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OniDriverAPI.h; sourceTree = "<group>"; };
 		2985C280196EADD400F28F53 /* OniDriverTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OniDriverTypes.h; sourceTree = "<group>"; };
@@ -2829,10 +2813,8 @@
 		29CA2B11195637F300B5C3AF /* SphereTriangleDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereTriangleDetector.h; sourceTree = "<group>"; };
 		29CA2C1A1956451B00B5C3AF /* NKVideoTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKVideoTexture.h; sourceTree = "<group>"; };
 		29CA2C1B1956451B00B5C3AF /* NKVideoTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKVideoTexture.m; sourceTree = "<group>"; };
-		29CC5D79194E174400614265 /* textureProgram.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = textureProgram.nks.txt; sourceTree = "<group>"; };
 		29D6FCD119577E8900223511 /* NKEmitterNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKEmitterNode.h; sourceTree = "<group>"; };
 		29D6FCD219577E8900223511 /* NKEmitterNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKEmitterNode.m; sourceTree = "<group>"; };
-		29D6FCD519577FF300223511 /* particleFountain.nks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = particleFountain.nks.txt; sourceTree = "<group>"; };
 		29DACA5A194B42E000F382E4 /* NKEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKEvent.h; sourceTree = "<group>"; };
 		29DACA5B194B42E000F382E4 /* NKEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKEvent.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4179,20 +4161,14 @@
 		2970D70A194A6DAF00EEAC2B /* Shader */ = {
 			isa = PBXGroup;
 			children = (
-				29CC5D79194E174400614265 /* textureProgram.nks.txt */,
-				2970D70B194A6DAF00EEAC2B /* hqLightProgram.nks.txt */,
-				297BF6A119516F270004AFCD /* lqLightProgram.nks.txt */,
-				2970D70C194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt */,
-				2970D70D194A6DAF00EEAC2B /* materialStruct.nks.txt */,
-				29D6FCD519577FF300223511 /* particleFountain.nks.txt */,
 				2970D70E194A6DAF00EEAC2B /* NKShaderManager.h */,
 				2970D70F194A6DAF00EEAC2B /* NKShaderManager.m */,
+				292C26231971DDD70045B490 /* NKShaderModule.h */,
+				292C26241971DDD70045B490 /* NKShaderModule.m */,
 				2970D710194A6DAF00EEAC2B /* NKShaderProgram.h */,
 				2970D711194A6DAF00EEAC2B /* NKShaderProgram.m */,
 				2970D712194A6DAF00EEAC2B /* NKShaderTools.h */,
 				2970D713194A6DAF00EEAC2B /* NKShaderTools.m */,
-				292C26231971DDD70045B490 /* NKShaderModule.h */,
-				292C26241971DDD70045B490 /* NKShaderModule.m */,
 			);
 			path = Shader;
 			sourceTree = "<group>";
@@ -5194,7 +5170,6 @@
 				2971B99B194C0521001BE97F /* ReadMe!.txt in Resources */,
 				2971B8ED194C0521001BE97F /* earthSpherical.jpg in Resources */,
 				292E5C27194D356D002B6D43 /* ax_cxx_gcc_abi_demangle.m4 in Resources */,
-				29CC5D7A194E174400614265 /* textureProgram.nks.txt in Resources */,
 				2971B9A1194C0521001BE97F /* trashbin.obj in Resources */,
 				292E5C65194D356D002B6D43 /* Makefile.in in Resources */,
 				29462CDC194F64E8007F9652 /* mar_rifle.3ds in Resources */,
@@ -5208,7 +5183,6 @@
 				292E5C53194D356D002B6D43 /* cppunit.pc.in in Resources */,
 				292E5D63194D356E002B6D43 /* vector3.inl in Resources */,
 				2971B903194C0521001BE97F /* COLLADA.fbx in Resources */,
-				29D6FCD619577FF300223511 /* particleFountain.nks.txt in Resources */,
 				2970D539194A6D8C00EEAC2B /* Main_iPad.storyboard in Resources */,
 				292E5D61194D356E002B6D43 /* vector2.inl in Resources */,
 				292E5C71194D356D002B6D43 /* Makefile.in in Resources */,
@@ -5285,7 +5259,6 @@
 				292E5C57194D356D002B6D43 /* cppunit.spec.in in Resources */,
 				2971B911194C0521001BE97F /* jeep1a.fbx in Resources */,
 				292E5C93194D356D002B6D43 /* Makefile.am in Resources */,
-				297BF6A219516F270004AFCD /* lqLightProgram.nks.txt in Resources */,
 				292E5C13194D356D002B6D43 /* BUGS in Resources */,
 				292E5C17194D356D002B6D43 /* CodingGuideLines.txt in Resources */,
 				2971B93B194C0521001BE97F /* jeep1.fbx.readme.txt in Resources */,
@@ -5334,7 +5307,6 @@
 				2971B99D194C0521001BE97F /* rustbin.jpg in Resources */,
 				2971B993194C0521001BE97F /* sphere.obj in Resources */,
 				292E5C1B194D356D002B6D43 /* ac_cxx_have_sstream.m4 in Resources */,
-				2970D866194A6DAF00EEAC2B /* materialStruct.nks.txt in Resources */,
 				292E5D19194D356E002B6D43 /* CppUnitLibrariesVC9.sln in Resources */,
 				2970D87C194A6DAF00EEAC2B /* skysphere.png in Resources */,
 				292E5B09194D356D002B6D43 /* LICENSE_1_0.txt in Resources */,
@@ -5377,7 +5349,6 @@
 				292E5C67194D356D002B6D43 /* Money.dox in Resources */,
 				2971B977194C0521001BE97F /* guard1_body.png in Resources */,
 				292E5CB5194D356D002B6D43 /* cppunit_dll.vcproj in Resources */,
-				2970D864194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt in Resources */,
 				292E5C63194D356D002B6D43 /* Makefile.am in Resources */,
 				292E5D17194D356E002B6D43 /* CppUnitLibraries.sln in Resources */,
 				29CA20171954E67E00B5C3AF /* spark.png in Resources */,
@@ -5402,7 +5373,6 @@
 				292E5CA1194D356D002B6D43 /* NEWS in Resources */,
 				2971B8FF194C0521001BE97F /* cart_wheel.source.txt in Resources */,
 				292E5C37194D356D002B6D43 /* ltmain.sh in Resources */,
-				2970D862194A6DAF00EEAC2B /* hqLightProgram.nks.txt in Resources */,
 				292E5CC3194D356E002B6D43 /* Makefile.am in Resources */,
 				2971B90D194C0521001BE97F /* duckCM.tga in Resources */,
 				292E5D5F194D356E002B6D43 /* quaternion.inl in Resources */,
@@ -5466,7 +5436,6 @@
 				2971B99C194C0521001BE97F /* ReadMe!.txt in Resources */,
 				2971B8EE194C0521001BE97F /* earthSpherical.jpg in Resources */,
 				292E5C28194D356D002B6D43 /* ax_cxx_gcc_abi_demangle.m4 in Resources */,
-				29CC5D7B194E174400614265 /* textureProgram.nks.txt in Resources */,
 				2971B9A2194C0521001BE97F /* trashbin.obj in Resources */,
 				292E5C66194D356D002B6D43 /* Makefile.in in Resources */,
 				29462CDD194F64E8007F9652 /* mar_rifle.3ds in Resources */,
@@ -5480,7 +5449,6 @@
 				292E5C54194D356D002B6D43 /* cppunit.pc.in in Resources */,
 				292E5D64194D356E002B6D43 /* vector3.inl in Resources */,
 				2971B904194C0521001BE97F /* COLLADA.fbx in Resources */,
-				29D6FCD719577FF300223511 /* particleFountain.nks.txt in Resources */,
 				2970D56A194A6D9A00EEAC2B /* InfoPlist.strings in Resources */,
 				292E5D62194D356E002B6D43 /* vector2.inl in Resources */,
 				292E5C72194D356D002B6D43 /* Makefile.in in Resources */,
@@ -5557,7 +5525,6 @@
 				292E5C58194D356D002B6D43 /* cppunit.spec.in in Resources */,
 				2971B912194C0521001BE97F /* jeep1a.fbx in Resources */,
 				292E5C94194D356D002B6D43 /* Makefile.am in Resources */,
-				297BF6A319516F270004AFCD /* lqLightProgram.nks.txt in Resources */,
 				292E5C14194D356D002B6D43 /* BUGS in Resources */,
 				292E5C18194D356D002B6D43 /* CodingGuideLines.txt in Resources */,
 				2971B93C194C0521001BE97F /* jeep1.fbx.readme.txt in Resources */,
@@ -5606,7 +5573,6 @@
 				2971B99E194C0521001BE97F /* rustbin.jpg in Resources */,
 				2971B994194C0521001BE97F /* sphere.obj in Resources */,
 				292E5C1C194D356D002B6D43 /* ac_cxx_have_sstream.m4 in Resources */,
-				2970D867194A6DAF00EEAC2B /* materialStruct.nks.txt in Resources */,
 				292E5D1A194D356E002B6D43 /* CppUnitLibrariesVC9.sln in Resources */,
 				2970D87D194A6DAF00EEAC2B /* skysphere.png in Resources */,
 				292E5B0A194D356D002B6D43 /* LICENSE_1_0.txt in Resources */,
@@ -5649,7 +5615,6 @@
 				292E5C68194D356D002B6D43 /* Money.dox in Resources */,
 				2971B978194C0521001BE97F /* guard1_body.png in Resources */,
 				292E5CB6194D356D002B6D43 /* cppunit_dll.vcproj in Resources */,
-				2970D865194A6DAF00EEAC2B /* oldlqLightProgram.nks.txt in Resources */,
 				292E5C64194D356D002B6D43 /* Makefile.am in Resources */,
 				292E5D18194D356E002B6D43 /* CppUnitLibraries.sln in Resources */,
 				29CA20181954E67E00B5C3AF /* spark.png in Resources */,
@@ -5674,7 +5639,6 @@
 				292E5CA2194D356D002B6D43 /* NEWS in Resources */,
 				2971B900194C0521001BE97F /* cart_wheel.source.txt in Resources */,
 				292E5C38194D356D002B6D43 /* ltmain.sh in Resources */,
-				2970D863194A6DAF00EEAC2B /* hqLightProgram.nks.txt in Resources */,
 				292E5CC4194D356E002B6D43 /* Makefile.am in Resources */,
 				2971B90E194C0521001BE97F /* duckCM.tga in Resources */,
 				292E5D60194D356E002B6D43 /* quaternion.inl in Resources */,

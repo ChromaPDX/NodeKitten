@@ -157,7 +157,6 @@
         lastTime = CFAbsoluteTimeGetCurrent();
         
         [_scene updateWithTimeSinceLast:dt];
-        //[_scene drawHitBuffer];
         [_scene draw];
     }
     else {

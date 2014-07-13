@@ -858,6 +858,7 @@
         
     }
     
+    //NSAssert(0, @"read log");
 
     return self;
 }

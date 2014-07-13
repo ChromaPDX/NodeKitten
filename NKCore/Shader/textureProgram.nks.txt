@@ -1,7 +1,0 @@
-@330fragmain
-    texColor =  texture(u_texture,v_texCoord0);
-@330fragmain
-
-@fragmain
-    texColor =  texture2D(u_texture,v_texCoord0);
-@fragmain

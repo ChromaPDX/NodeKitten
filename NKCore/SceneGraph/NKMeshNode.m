@@ -379,14 +379,6 @@
     
 }
 
-//-(void)chooseShader {
-//#if NK_USE_GLES
-//    self.shader = [NKShaderProgram newShaderNamed:@"videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:1 numLights:1 withBatchSize:0];
-//#else
-//    self.shader = [NKShaderProgram newShaderNamed:@"videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:0];
-//#endif
-//}
-
 -(void)chooseShader {
     if (_numTextures) {
         if (_numTextures) {
