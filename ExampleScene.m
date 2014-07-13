@@ -8,7 +8,7 @@
 
 #import "ExampleScene.h"
 
-#define numScenes 9
+#define numScenes 7
 
 #define TEST_BATCH_DRAW
 

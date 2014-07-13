@@ -5100,8 +5100,14 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = chroma;
 				TargetAttributes = {
+					2970D51E194A6D8C00EEAC2B = {
+						DevelopmentTeam = ZJLX8USTRZ;
+					};
 					2970D542194A6D8C00EEAC2B = {
 						TestTargetID = 2970D51E194A6D8C00EEAC2B;
+					};
+					2970D55D194A6D9A00EEAC2B = {
+						DevelopmentTeam = 9G677D3XX8;
 					};
 					2970D57C194A6D9A00EEAC2B = {
 						TestTargetID = 2970D51E194A6D8C00EEAC2B;
@@ -6672,6 +6678,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -6698,6 +6705,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -6764,6 +6772,7 @@
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6798,6 +6807,7 @@
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (

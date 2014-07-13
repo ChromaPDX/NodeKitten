@@ -399,6 +399,69 @@
     
 }
 
++(NKShaderModule*) boxBlurModule:(F1t)size intNumPasses:(F1t)passes {
+    
+    NKShaderModule* module = [[NKShaderModule alloc] init];
+    
+    module.name = @"NAME";
+    
+    [module.uniforms addObject:nksu(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_FALSE_COLOR_DARK_COLOR)];
+    
+    NKShaderFunction *function = [[NKShaderFunction alloc]init];
+    
+    function.name = @"functionName";
+    function.inputType = NKS_TYPE_V4;
+    function.returnType = NKS_TYPE_V4;
+    
+    function.constants = SHADER_STRING
+    (
+    );
+    
+    function.function = SHADER_STRING
+    (
+    );
+    
+    module.fragFunctions = @[function];
+    
+    module.uniformUpdateBlock = newUniformUpdateBlock {
+    };
+    
+    return module;
+
+}
+
++(NKShaderModule*) templateModule:(F1t)size {
+    
+    NKShaderModule* module = [[NKShaderModule alloc] init];
+    
+    module.name = @"NAME";
+    
+    [module.uniforms addObject:nksu(NKS_PRECISION_LOW, NKS_TYPE_V4, NKS_FALSE_COLOR_DARK_COLOR)];
+    
+    NKShaderFunction *function = [[NKShaderFunction alloc]init];
+    
+    function.name = @"functionName";
+    function.inputType = NKS_TYPE_V4;
+    function.returnType = NKS_TYPE_V4;
+    
+    function.constants = SHADER_STRING
+    (
+    );
+    
+    function.function = SHADER_STRING
+    (
+    );
+    
+    module.fragFunctions = @[function];
+    
+    module.uniformUpdateBlock = newUniformUpdateBlock {
+    };
+    
+    return module;
+    
+}
+
+
 
 -(NKShaderVariable*)uniformNamed:(NKS_ENUM)name {
     
