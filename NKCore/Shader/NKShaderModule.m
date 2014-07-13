@@ -58,6 +58,11 @@
                                               );
         }
     }
+    else if (colorMode == NKS_COLOR_MODE_VERTEX) {
+        module.vertexMain = SHADER_STRING(
+                                          v_color = a_color;
+                                          );
+    }
     
     NKShaderFunction *colorFunction = [[NKShaderFunction alloc]init];
     
@@ -154,38 +159,45 @@
     
     NKShaderModule* module = [[NKShaderModule alloc] init];
 
-    module.types = SHADER_STRING
-    (
-     \n
-     struct LightProperties {
-         \n
 #if TARGET_OS_IPHONE
-         highp vec3 position;
-         lowp vec3 ambient;
-         lowp vec3 color;
-         lowp vec3 halfVector;
-         lowp vec3 coneDirection;
+    module.types =
+    @"struct LightProperties {\
+    \n\
+    highp vec3 position;\
+    lowp vec3 ambient;\
+    lowp vec3 color;\
+    lowp vec3 halfVector;\
+    lowp vec3 coneDirection;\
+    float spotCosCutoff;\
+    float spotExponent;\
+    float constantAttenuation;\
+    float linearAttenuation;\
+    float quadraticAttenuation;\
+    bool isEnabled;\
+    bool isLocal;\
+    bool isSpot;\
+    };";
 #else
-         vec3 position;
-         vec3 ambient;
-         vec3 color;
-         vec3 halfVector;
-         vec3 coneDirection;
+    module.types =
+    @"struct LightProperties {\
+    \n\
+    vec3 position;\
+    vec3 ambient;\
+    vec3 color;\
+    vec3 halfVector;\
+    vec3 coneDirection;\
+    float spotCosCutoff;\
+    float spotExponent;\
+    float constantAttenuation;\
+    float linearAttenuation;\
+    float quadraticAttenuation;\
+    bool isEnabled;\
+    bool isLocal;\
+    bool isSpot;\
+    };";
 #endif
-         float spotCosCutoff;
-         float spotExponent;
-         float constantAttenuation;
-         float linearAttenuation;
-         float quadraticAttenuation;
 
-         int isEnabled;
-         int isLocal;
-         int isSpot;
-     };
-     \n
-     );
-    
-    
+
     [module.uniforms addObjectsFromArray:@[nksu(NKS_PRECISION_NONE, NKS_TYPE_INT, NKS_I1_NUM_LIGHTS),
                                            nksu(NKS_PRECISION_NONE, NKS_STRUCT_LIGHT, NKS_LIGHT)
                                            ]];
@@ -240,15 +252,14 @@
              for (int i = 0; i < u_numLights; i++){
                  
                  vec3 halfVector;
-                 vec3 lightDirection;
+                 vec3 lightDirection = u_light.position - v_position.xyz;
                  
                  float attenuation = 1.0;
-                 if (u_light.isLocal == 1) {
-                     lightDirection = u_light.position - v_position.xyz;
+                 if (u_light.isLocal) { //
                      float lightDistance = length(lightDirection);
                      lightDirection = lightDirection / lightDistance; // (normalize) ? ;
                      attenuation = 1.0 / (u_light.constantAttenuation + (u_light.linearAttenuation * lightDistance) + (u_light.quadraticAttenuation * lightDistance * lightDistance));
-                     if (u_light.isSpot == 1) {
+                     if (u_light.isSpot) {
                          float spotCos = dot(lightDirection,-u_light.coneDirection);
                          if (spotCos < u_light.spotCosCutoff) attenuation = 0.0;
                          else attenuation *= pow(spotCos,u_light.spotExponent);
@@ -271,7 +282,7 @@
              }
              //vec3 rgb = min(Color.rgb * scatteredLight + reflectedLight, vec3(1.0));
              //FragColor = vec4(rgb, Color.a);
-             return inputColor * vec4(min(scatteredLight + reflectedLight,vec3(1.0)), 1.0);
+             return vec4(min(scatteredLight + reflectedLight,vec3(1.0)), 1.0) * inputColor;
          }
          else {
              return inputColor;
@@ -289,13 +300,13 @@
         (
          v_eyeDirection = v_position.xyz;
          
-         if (u_light.isLocal == 1) {
+         if (u_light.isLocal) {
              
              v_lightDirection =  u_light.position - v_position.xyz;
              float lightDistance = length(v_lightDirection);
              v_lightDirection = v_lightDirection / lightDistance; // (normalize) ? ;
              v_attenuation = 1.0 / (u_light.constantAttenuation + (u_light.linearAttenuation * lightDistance) + (u_light.quadraticAttenuation * lightDistance * lightDistance));
-             if (u_light.isSpot == 1) {
+             if (u_light.isSpot) {
                  float spotCos = dot(v_lightDirection,-u_light.coneDirection);
                  if (spotCos < u_light.spotCosCutoff) v_attenuation = 0.0;
                  else v_attenuation *= pow(spotCos,u_light.spotExponent);

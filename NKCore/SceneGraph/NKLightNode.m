@@ -26,10 +26,10 @@
     
     p.isEnabled = true;
     p.isLocal = true;
-    p.isSpot = false;
+    p.isSpot = 0;
     
-    p.ambient = V3Make(.2,.2,.2);
-    p.color = V3Make(1.,1.,1.);
+    p.ambient = V3Make(.3,.3,.3);
+    p.color = V3Make(1.,.8,.8);
     p.coneDirection = V3Make(0, 0, -1);
     p.halfVector = V3MakeF(0);
     

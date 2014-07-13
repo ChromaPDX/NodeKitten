@@ -193,6 +193,10 @@
             [modules addObject:[NKShaderModule colorModule:colorMode batchSize:batchSize]];
         }
         
+        if (numTex != 0) {
+            [modules addObject:[NKShaderModule textureModule:numTex]];
+        }
+        
         if (numLights) {
 #if NK_USE_GLES
             [modules addObject:[NKShaderModule lightModule:false batchSize:batchSize]];
@@ -201,9 +205,6 @@
 #endif
         }
         
-        if (numTex != 0) {
-            [modules addObject:[NKShaderModule textureModule:numTex]];
-        }
         
         [self calculateCommonVertexVaryings];
         
@@ -335,15 +336,17 @@
     
     [shader appendNewLine:@"void main() {"];
     
+    for (NSString* s in vertMain) {
+        [shader appendNewLine:s];
+    }
+    
     for (NKShaderModule *module in modules){
         if (module.vertexMain) {
             [shader appendString:module.vertexMain];
         }
     }
     
-    for (NSString* s in vertMain) {
-        [shader appendNewLine:s];
-    }
+
     
     [shader appendNewLine:@"}"];
     
@@ -587,21 +590,23 @@
     
     if ([self uniformNamed:NKS_LIGHT]) {
         
+        NSLog(@"getting positions for Light properties");
+        
         [self uniformNamed:NKS_LIGHT].glLocation = glGetUniformLocation(self.glPointer, "u_light.position");
         
-        //        NSArray *members = @[@"isEnabled",@"isLocal",@"isSpot",@"ambient",@"color",@"position",@"halfVector",@"coneDirection",
-        //                             @"spotCosCutoff", @"spotExponent",@"constantAttenuation",@"linearAttenuation",@"quadraticAttenuation"];
-        //
-        //        for (NSString *member in members) {
-        //
-        //            NSString *name = [@"u_light." stringByAppendingString:member];
-        //            int uniLoc = glGetUniformLocation(self.glPointer, [name UTF8String]);
-        //            if (uniLoc > -1)
-        //            {
-        //                // NSLog(@"Uniform location %d, %@",uniLoc, name);
-        //            }
-        //
-        //        }
+//                NSArray *members = @[@"isEnabled",@"isLocal",@"isSpot",@"ambient",@"color",@"position",@"halfVector",@"coneDirection",
+//                                     @"spotCosCutoff", @"spotExponent",@"constantAttenuation",@"linearAttenuation",@"quadraticAttenuation"];
+//        
+//                for (NSString *member in members) {
+//        
+//                    NSString *name = [@"u_light." stringByAppendingString:member];
+//                    int uniLoc = glGetUniformLocation(self.glPointer, [name UTF8String]);
+//                    if (uniLoc > -1)
+//                    {
+//                         NSLog(@"Uniform location %d, %@",uniLoc, name);
+//                    }
+//        
+//                }
         
     }
     // Store the locations in an immutable collection
