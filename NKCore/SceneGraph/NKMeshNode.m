@@ -421,25 +421,30 @@
 
 -(void)setTexture:(NKTexture *)texture {
     
-     NSArray *oldTex = [_textures copy];
+    NSArray *oldTex = [_textures copy];
     
     for (NKTexture *t in oldTex) {
         [NKTextureManager removeNode:self forTexture:t];
     }
     
     if (texture) {
-        _textures = [@[texture] mutableCopy];
         _numTextures = 1;
+        if (!_textures){
+            [self chooseShader];
+        }
+        _textures = [@[texture] mutableCopy];
         [NKTextureManager addNode:self forTexture:texture];
     }
     
     else {
+        if (_textures) {
+            [self chooseShader];
+        }
         [_textures removeAllObjects];
         _textures = nil;
         _numTextures = 0;
     }
-    
-    [self chooseShader];
+
 }
 
 -(int)lodForDistance {
@@ -525,10 +530,6 @@
 -(void)customDraw {
     
     if (self.color || _numTextures) {
-        
-        if (self.shader) {
-            self.scene.activeShader = self.shader;
-        }
         
         [self setupViewMatrix];
         [self pushStyle];

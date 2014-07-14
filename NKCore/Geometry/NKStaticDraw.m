@@ -98,6 +98,27 @@ static NKStaticDraw *sharedObject = nil;
     return primitiveCache[primitive];
 }
 
++(NKMeshNode*)fboSurface {
+    return [[NKStaticDraw sharedInstance] fboSurface];
+}
+
+-(NKMeshNode*)fboSurface {
+    if (!_fboSurface) {
+        _fboSurface = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:[NKTexture textureWithImageNamed:@"error"] color:NKWHITE size:V3MakeF(1)];
+        
+        NSLog(@"init fbo surface, vertexbuffer : %@", _fboSurface.vertexBuffer);
+        
+        _fboSurface.shader = [NKShaderProgram newShaderNamed:nks(NKS_PASSTHROUGH_TEXTURE_SHADER) modules:@[[NKShaderModule textureModule:1]] batchSize:0];
+                
+        _fboSurface.forceOrthographic = true;
+        _fboSurface.usesDepth = false;
+        _fboSurface.cullFace = NKCullFaceFront;
+        _fboSurface.blendMode = NKBlendModeNone;
+    }
+    
+    return _fboSurface;
+}
+
 +(void)drawBoundingBoxForNode:(NKNode*)node{
     [[NKStaticDraw sharedInstance]drawBoundingBoxForNode:node];
 }

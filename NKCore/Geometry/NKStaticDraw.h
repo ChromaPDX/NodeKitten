@@ -22,7 +22,10 @@
 
 +(NSString*)stringForPrimitive:(NKPrimitive)primitive;
 
++(NKMeshNode*)fboSurface;
+
 @property (nonatomic, strong) NKMeshNode* boundingBoxMesh;
+@property (nonatomic, strong) NKMeshNode* fboSurface;
 
 @end
 

@@ -203,7 +203,7 @@
 #else
             [_modules addObject:[NKShaderModule lightModule:true batchSize:batchSize]];
 #endif
-              [_modules addObject:[NKShaderModule falseColorModule:1. darkColor:NKBLUE lightColor:NKPURPLE]];
+            //  [_modules addObject:[NKShaderModule falseColorModule:1. darkColor:NKBLUE lightColor:NKPURPLE]];
         }
         
       

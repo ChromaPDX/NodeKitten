@@ -80,17 +80,11 @@
     }
 }
 
--(void)draw {
-    
-  
-    [self customDraw];
-    
-    
+-(void)drawChildren {
+    // handled in batch pass
 }
 
 -(void)customDraw {
-    
-    self.scene.activeShader = self.shader;
     
     [self pushStyle];
     

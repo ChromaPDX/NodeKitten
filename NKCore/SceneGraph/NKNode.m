@@ -432,21 +432,57 @@
     _scene.usesDepth = _usesDepth;
 }
 
--(void)draw {
-//    
-    if (_framebuffer) {
-        [_framebuffer bind];
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glViewport(0, 0, _framebuffer.width, _framebuffer.height);
-        //NSLog(@"binding fb: %d, %d %d", _framebuffer.renderTexture.glName, _framebuffer.size.width, _framebuffer.size.height);
+-(void)drawMultiPass:(int)passes {
+    
+    NKMeshNode* fboSurface = [NKStaticDraw fboSurface];
+    
+    if (passes % 2 == 1) { // odd number of passes
+        passes++;
     }
     
-    [self customDraw];
-    
+    for (int i = 0; i < passes;i++) {
+        
+        [[_shader uniformNamed:NKS_INT_CURRENT_PASS] bindI1:i];
+        
+        if (i == 0) { // first pass draw geometry / setupFBO
+            if (!_framebuffer) {
+                _framebuffer = [[NKFrameBuffer alloc]initWithWidth:self.size.width height:self.size.height];
+            }
+            
+            [_framebuffer bindPong];
+            [_framebuffer clear];
+            
+            [self customDraw];
+            [self drawChildren];
+            
+            fboSurface.size = self.size;
+            fboSurface.scene = self.scene;
+        }
+        else if (i%2 == 0) {
+            [_framebuffer bindPong];
+            [fboSurface setTexture:self.framebuffer.renderTexture];
+        }
+        else {
+            [_framebuffer bindPing];
+            [fboSurface setTexture:_framebuffer.renderTexture2];
+        }
+        
+        if (i != 0){ // set my shader (for scene etc)
+            if (self.postProcess) {
+                self.scene.activeShader = self.postProcess;
+            }
+            [[_shader uniformNamed:NKS_INT_CURRENT_PASS] bindI1:i];
+            
+            [fboSurface customDraw];
+        }
+    }
+}
+
+-(void)drawChildren {
     NSMutableSet *transparentChildren;
     
     for (NKNode *child in _children) {
-        if (child.alpha == 1.) {
+        if (child.alpha == 1. && child.color.alpha == 255) {
             [child draw];
         }
         else {
@@ -460,15 +496,68 @@
     for (NKNode *tc in transparentChildren){
         [tc draw];
     }
+}
+
+-(void)draw {
+    
+    if (self.shader) {
+        self.scene.activeShader = self.shader;
+    }
+    
+    if (_shader.numPasses) {
+        [self drawMultiPass:_shader.numPasses];
+    }
+    
+    else {
+        if (_framebuffer) {
+            [_framebuffer bind];
+            [_framebuffer clear];
+        }
+        
+        [self customDraw];
+        
+        [self drawChildren];
+    }
     
     if (_framebuffer) {
         [self.scene bindMainFrameBuffer];
-//        if (self.scene.framebuffer) {
-//            [self.scene.framebuffer bind];
-//        }
-//        else {
-//            //NSLog(@"unbinding to scene");
-//        }
+        
+        //    if (!_ciFilter) {
+        //        _ciFilter = [CIFilter filterWithName:@"CISepiaTone"
+        //                                      keysAndValues: kCIInputImageKey, _coreImage,
+        //                            @"inputIntensity", @1.0, nil];
+        //    }
+
+        if (_ciFilter) {
+            _coreImage = [CIImage imageWithTexture:self.framebuffer.renderTexture.glName size:CGSizeMake(_size.width, _size.height) flipped:NO colorSpace:nil];
+            
+            [_ciFilter setValue:_coreImage forKey:kCIInputImageKey];
+            
+#if TARGET_OS_IPHONE
+            CIImage *outputImage = [_ciFilter outputImage];
+#else
+            CIImage *outputImage = [_ciFilter valueForKey:kCIOutputImageKey];
+#endif
+            //NSLog(@"draw CI Image: %@", outputImage);
+            
+            [[NKGLManager ciContext] drawImage:outputImage inRect:CGRectMake(0, 0, _size.width, _size.height) fromRect:CGRectMake(0, 0, _size.width, _size.height)];
+        }
+        else {
+            NKMeshNode* fboSurface = [NKStaticDraw fboSurface];
+            
+            [fboSurface setTexture:self.framebuffer.renderTexture];
+            fboSurface.size = V3Make(_framebuffer.width, _framebuffer.height, 1);
+            fboSurface.scene = self.scene;
+           
+            if (self.postProcess) {
+                self.scene.activeShader = self.postProcess;
+            }
+            else {
+                self.scene.activeShader = fboSurface.shader;
+            }
+            
+            [fboSurface customDraw];
+        }
     }
 
 }

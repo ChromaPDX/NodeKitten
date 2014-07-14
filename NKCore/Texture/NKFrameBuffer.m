@@ -130,7 +130,6 @@
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthBuffer);
         
         _renderTexture = [[NKTexture alloc]initWithWidth:width height:height];
-        
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _renderTexture.glName, 0);
         
 #else
@@ -254,9 +253,26 @@
 
 #pragma mark - Binding
 
+-(void)addSecondRenderTexture {
+    _renderTexture = [[NKTexture alloc]initWithWidth:_width height:_height];
+}
+
 - (void)bind
 {
     glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
+}
+
+-(void)bindPing {
+    glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _renderTexture.glName, 0);
+}
+
+-(void)bindPong {
+    if (!_renderTexture2) {
+        _renderTexture2 = [[NKTexture alloc]initWithWidth:_width height:_height];
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _renderTexture2.glName, 0);
 }
 
 - (void)clear {

@@ -103,6 +103,7 @@ typedef void (^CompletionBlock)(void);
     bool _dirty;
     
     NKSceneNode* _scene;
+    
 }
 
 #pragma mark - NODE TREE
@@ -114,7 +115,10 @@ typedef void (^CompletionBlock)(void);
 @property (nonatomic) V3t positionRef;
 @property (nonatomic) V3t scalarVelocity;
 @property (nonatomic) M16t modelViewCache;
+
 @property (nonatomic, strong) NKFrameBuffer *framebuffer;
+@property (nonatomic, strong) CIImage * coreImage;
+@property (nonatomic, strong) CIFilter *ciFilter;
 
 #pragma mark - POSITION PROPERTIES
 
@@ -145,6 +149,7 @@ typedef void (^CompletionBlock)(void);
 #pragma mark - SHADER PROPERTIES
 
 @property (nonatomic, strong) NKShaderProgram *shader;
+@property (nonatomic, strong) NKShaderProgram *postProcess;
 
 #pragma mark - INIT
 
@@ -215,6 +220,7 @@ typedef void (^CompletionBlock)(void);
 - (void)updateWithTimeSinceLast:(F1t) dt;
 //**
 - (void)draw;
+-(void)drawChildren;
 //**
 // draw encompasses these 2 states
 -(void)setupViewMatrix;

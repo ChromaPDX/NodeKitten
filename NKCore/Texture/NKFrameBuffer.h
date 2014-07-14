@@ -112,6 +112,7 @@ static inline bool _glHasError(const char *function, int line)
 
 @property (nonatomic) GLuint frameBuffer;
 @property (nonatomic,strong) NKTexture *renderTexture;
+@property (nonatomic,strong) NKTexture *renderTexture2;
 @property (nonatomic,strong) NKTexture *depthTexture;
 
 #if TARGET_OS_IPHONE
@@ -122,6 +123,11 @@ static inline bool _glHasError(const char *function, int line)
 -(instancetype)initWithWidth:(GLuint)width height:(GLuint)height;
 
 - (void)bind;
+
+-(void)addSecondRenderTexture;
+-(void)bindPing;
+-(void)bindPong;
+
 - (void)clear;
 
 - (void)bind:(void(^)())drawingBlock;

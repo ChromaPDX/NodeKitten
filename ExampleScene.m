@@ -159,6 +159,11 @@
     self = [super initWithSize:size];
     
     if (self) {
+        NKShaderModule *textureModule = [NKShaderModule textureModule:1];
+        NKShaderModule *falseColor = [NKShaderModule falseColorModule:1. darkColor:NKORANGE lightColor:NKBLUE];
+        
+        //self.postProcess = [NKShaderProgram newShaderNamed:@"sceneShader" modules:@[textureModule, falseColor] batchSize:0];
+        //self.shader.numPasses = 2;
         
         #pragma mark - 0 - MENU
         
@@ -486,36 +491,16 @@
             
             AIScene* scene = [[AIScene alloc]initWithFile:@"duck.dae" normalize:.5] ;
             
-            NKMeshNode *ground = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveCube texture:nil color:[NKByteColor colorWithRed:50 green:50 blue:50 alpha:255] size:V3Make(100, .01, 100)];
-            // [self addChild:ground];
-            
-            ground.body = [[NKBulletBody alloc] initWithType:NKBulletShapeBox Size:ground.size transform:ground.localTransform mass:0];
-            
-            [ground.body setCollisionGroup:NKCollisionFilterStatic];
-            [ground.body setCollisionMask: NKCollisionFilterCharacter | NKCollisionFilterWalls];
-            
-            [[NKBulletWorld sharedInstance] addNode:ground];
-            
-            [ground runAction:[NKAction rotateXByAngle:-30 duration:3.]];
-            
             for (int i = 0; i <scene.meshes.count; i++){
                 
                 NKMeshNode *node = scene.meshes[i];
                 
                 [node setPosition:V3Add(node.position, V3Make(0, 0, 0))];
                 
+                node.postProcess = [NKShaderProgram newShaderNamed:@"falseColorShader" modules:@[textureModule, falseColor] batchSize:0];
+                node.framebuffer = [[NKFrameBuffer alloc]initWithWidth:self.size.width height:self.size.height];
+                
                 [self addChild:node];
-                if (i < 4) {
-                    //if (i == 0 || i == 1 || i == 3) [node removeFromParent];
-                    //[node repeatAction:[NKAction rotateYByAngle:-60 duration:1.]];
-                    
-                    //                    node.body = [[NKBulletBody alloc]initWithType:NKBulletShapeBox Size:node.size transform:node.globalTransform mass:1.];
-                    //                    [node.body setCollisionGroup:NKCollisionFilterCharacter];
-                    //                    [node.body setCollisionMask: NKCollisionFilterStatic | NKCollisionFilterWalls];
-                    //
-                    //                    [[NKBulletWorld sharedInstance] addNode:node];
-                    
-                }
             }
 
         }

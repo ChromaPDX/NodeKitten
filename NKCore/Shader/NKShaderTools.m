@@ -92,6 +92,10 @@ NSString* nksString(NKS_ENUM string) {
             return @"numTextures";
         case NKS_F1_INSTANCE:
             return @"instance";
+        case NKS_INT_NUM_PASSES:
+            return @"numPasses";
+        case NKS_INT_CURRENT_PASS:
+            return @"currentPass";
             
         case NKS_V4_POSITION:
             return @"position";
@@ -149,6 +153,11 @@ NSString* nksString(NKS_ENUM string) {
             return @"#extension GL_EXT_gpu_shader4 : enable";
 #endif
             
+        // DEFAULT SHADERS
+        case NKS_PASSTHROUGH_TEXTURE_SHADER:
+            return @"passThroughTextureShader";
+        case NKS_PASSTHROUGH_UNIFORM_SHADER:
+            return @"passThroughColorShader";
         // MODULES
             
         case NKS_FALSE_COLOR_DARK_COLOR:

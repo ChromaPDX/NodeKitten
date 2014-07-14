@@ -130,7 +130,6 @@
 }
 
 -(void)drawHitBuffer {
-    
     self.blendMode = NKBlendModeNone;
     glDisable(GL_BLEND);
     
@@ -209,8 +208,6 @@
     NKView* view = self.nkView;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 #endif
-
-    
     //NSLog(@"bind fb %@ %@", view, view.framebuffer);
 }
 
@@ -222,48 +219,6 @@
     [super draw];
     [_camera draw];
     
-//    if (!_ciFilter) {
-//        _ciFilter = [CIFilter filterWithName:@"CISepiaTone"
-//                                      keysAndValues: kCIInputImageKey, _coreImage,
-//                            @"inputIntensity", @1.0, nil];
-//    }
-    if (_ciFilter) {
-    
-        _coreImage = [CIImage imageWithTexture:self.framebuffer.renderTexture.glName size:CGSizeMake(_size.width, _size.height) flipped:NO colorSpace:nil];
-        
-        [_ciFilter setValue:_coreImage forKey:kCIInputImageKey];
-        
-#if TARGET_OS_IPHONE
-        CIImage *outputImage = [_ciFilter outputImage];
-#else
-        CIImage *outputImage = [_ciFilter valueForKey:kCIOutputImageKey];
-#endif
-        //NSLog(@"draw CI Image: %@", outputImage);
-        
-        [[NKGLManager ciContext] drawImage:outputImage inRect:CGRectMake(0, 0, _size.width, _size.height) fromRect:CGRectMake(0, 0, _size.width, _size.height)];
-    }
-    #if TARGET_OS_IPHONE
-    else if (self.framebuffer) {
-#else
-     else if (self.framebuffer) {
-
-#endif
-        if (!_fboSurface) {
-            _fboSurface = [[NKMeshNode alloc]initWithPrimitive:NKPrimitiveRect texture:self.framebuffer.renderTexture color:NKWHITE size:V3Make(_scene.size.width, _scene.size.height, 1)];
-            
-            _fboSurface.shader = [NKShaderProgram newShaderNamed:@"fboDraw" colorMode:NKS_COLOR_MODE_NONE numTextures:1 numLights:0 withBatchSize:0];
-            
-            _fboSurface.forceOrthographic = true;
-            _fboSurface.usesDepth = false;
-            _fboSurface.cullFace = NKCullFaceFront;
-            _fboSurface.blendMode = NKBlendModeNone;
-            
-            [_fboSurface setScene:self];
-        }
-        
-        [_fboSurface customDraw];
-        
-    }
 #endif
 }
 
