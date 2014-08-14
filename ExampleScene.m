@@ -8,7 +8,7 @@
 
 #import "ExampleScene.h"
 
-#define numScenes 7
+#define numScenes 8
 
 #define TEST_BATCH_DRAW
 
@@ -162,8 +162,8 @@
         NKShaderModule *textureModule = [NKShaderModule textureModule:1];
         NKShaderModule *falseColor = [NKShaderModule falseColorModule:1. darkColor:NKORANGE lightColor:NKBLUE];
         
-        //self.postProcess = [NKShaderProgram newShaderNamed:@"sceneShader" modules:@[textureModule, falseColor] batchSize:0];
-        //self.shader.numPasses = 2;
+//        self.postProcess = [NKShaderProgram newShaderNamed:@"sceneShader" modules:@[textureModule, falseColor] batchSize:0];
+//        self.postProcess.numPasses = 8;
         
         #pragma mark - 0 - MENU
         
@@ -321,7 +321,7 @@
 #if TARGET_OS_IPHONE
             int numSpheres = 100;
 #else
-            int numSpheres = 1000;
+            int numSpheres = 1500;
 #endif
             
             for (int i = 0; i < numSpheres ; ++i){
@@ -492,14 +492,12 @@
             AIScene* scene = [[AIScene alloc]initWithFile:@"duck.dae" normalize:.5] ;
             
             for (int i = 0; i <scene.meshes.count; i++){
-                
                 NKMeshNode *node = scene.meshes[i];
                 
                 [node setPosition:V3Add(node.position, V3Make(0, 0, 0))];
-                
-                node.postProcess = [NKShaderProgram newShaderNamed:@"falseColorShader" modules:@[textureModule, falseColor] batchSize:0];
                 node.framebuffer = [[NKFrameBuffer alloc]initWithWidth:self.size.width height:self.size.height];
-                
+                node.postProcess = [NKShaderProgram newShaderNamed:@"falseColor" modules:@[textureModule, falseColor] batchSize:0];
+
                 [self addChild:node];
             }
 
@@ -557,17 +555,22 @@
             
             NKBatchNode *batch = [[NKBatchNode alloc]initWithPrimitive:NKPrimitiveCube texture:[NKTexture textureWithImageNamed:nil] color:NKWHITE size:V3MakeF(.5)];
             
+            
             [self addChild:batch];
+            
+            batch.framebuffer = [[NKFrameBuffer alloc]initWithWidth:self.size.width height:self.size.height];
+            batch.postProcess = [NKShaderProgram newShaderNamed:@"falseColor2" modules:@[[NKShaderModule textureModule:1], [NKShaderModule falseColorModule:1. darkColor:NKGREEN lightColor:NKBLUE]] batchSize:0];
             
 #if TARGET_OS_IPHONE
             int numSpheres = 16;
 #else
-            int numSpheres = 32;
+            int numSpheres = 128;
 #endif
             
             for (int i = 0; i < numSpheres*2; i++){
                 NKNode *s = [[NKNode alloc]initWithSize:V3Make(1.,1.5,1.)];
                 s.color = NKCOLOR_RANDOM;
+                s.alpha = .9;
                 [s setPosition:V3Make((i % 8) * s.size.width * 2.25 - (s.size.width*8), (i/8) * s.size.height * 2.1 + 2.2, 0)];
                 [batch addChild:s];
                 

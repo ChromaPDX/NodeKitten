@@ -85,8 +85,9 @@
 }
 
 -(void)logMetricsPerSecond {
-    NSLog(@"fps %d : nodes: %lu : bBodies %lu : lights %lu", frames, self.allChildren.count, (unsigned long)[[NKBulletWorld sharedInstance] nodes].count, (unsigned long)_lights.count);
+    NSLog(@"fps %d : frametime: %1.3f nodes: %lu : bBodies %lu : lights %lu", frames, (frameTime / frames), self.allChildren.count, (unsigned long)[[NKBulletWorld sharedInstance] nodes].count, (unsigned long)_lights.count);
     frames = 0;
+    frameTime = 0;
 }
 
 -(void)updateWithTimeSinceLast:(F1t)dt {
@@ -95,6 +96,7 @@
     
 #if NK_LOG_METRICS
     frames++;
+    currentFrameTime = CFAbsoluteTimeGetCurrent();
 #endif
     
    
@@ -200,14 +202,18 @@
     }
 }
 
--(void)bindMainFrameBuffer {
+-(void)bindMainFrameBuffer:(NKNode*)sender {
+    if (sender != self && self.framebuffer) {
+        [self.framebuffer bind];
+    }
+    else {
 #if TARGET_OS_IPHONE
-    NKUIView* view = self.nkView;
+        NKUIView* view = self.nkView;
         [view.framebuffer bind];
 #else
-    NKView* view = self.nkView;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 #endif
+    }
     //NSLog(@"bind fb %@ %@", view, view.framebuffer);
 }
 
@@ -218,8 +224,8 @@
 #else
     [super draw];
     [_camera draw];
-    
 #endif
+    frameTime += CFAbsoluteTimeGetCurrent() - currentFrameTime;
 }
 
 -(void)clear {

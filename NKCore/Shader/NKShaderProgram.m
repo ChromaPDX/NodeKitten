@@ -41,7 +41,7 @@
     self = [super init];
     if(self)
     {
-        int dotIndex = [vertShaderName rangeOfString:@"."].location;
+        long dotIndex = [vertShaderName rangeOfString:@"."].location;
         if ( dotIndex != NSNotFound )
         {
             self.name = [vertShaderName substringToIndex:dotIndex];
@@ -192,7 +192,6 @@
         if (colorMode != NKS_COLOR_MODE_NONE) {
             [_modules addObject:[NKShaderModule colorModule:colorMode batchSize:batchSize]];
         }
-        
         if (numTex != 0) {
             [_modules addObject:[NKShaderModule textureModule:numTex]];
         }
@@ -203,14 +202,9 @@
 #else
             [_modules addObject:[NKShaderModule lightModule:true batchSize:batchSize]];
 #endif
-            //  [_modules addObject:[NKShaderModule falseColorModule:1. darkColor:NKBLUE lightColor:NKPURPLE]];
         }
-        
-      
          
         [self calculateCommonVertexVaryings];
-        
-      //  [self serializeModules];
         
         [self writeShaderStrings];
         

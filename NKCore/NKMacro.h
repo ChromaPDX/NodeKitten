@@ -18,7 +18,7 @@
 //**
 
 //** LOG / PRINT TIME METRICS
-#define NK_LOG_METRICS 0
+#define NK_LOG_METRICS 1
 //**
 
 // SCENE DEBUG
@@ -27,7 +27,7 @@
 
 // SPRITES
 #if NK_USE_GLES
-#define NK_BATCH_SIZE 16
+#define NK_BATCH_SIZE 8
 #else
 #define NK_BATCH_SIZE 64
 #endif
@@ -36,7 +36,7 @@
 
 #define NK_USE_ASSIMP 1
 #define NK_USE_MIDI 1
-#define NK_LOG_MIDI 0
+#define NK_LOG_MIDI 1
 #define NK_USE_KINECT 0
 
 // SYSTEM MACROS

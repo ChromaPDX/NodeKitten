@@ -5,34 +5,34 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>08AAFC05-7ED9-4E37-AB13-8054EB2FC740</string>
+	<string>4158868E-8D44-4D65-B09D-26D8CAC36FCE</string>
 	<key>IDESourceControlProjectName</key>
 	<string>NodeKittenIOS</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>179655B2-B144-4CDF-BA2B-8763D6C8F2AD</key>
+		<key>F27767B925E84ADC5701280B40068D3E88534524</key>
 		<string>https://github.com/ChromaPDX/NodeKitten.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>NodeKittenIOS.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>179655B2-B144-4CDF-BA2B-8763D6C8F2AD</key>
+		<key>F27767B925E84ADC5701280B40068D3E88534524</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/ChromaPDX/NodeKitten.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>179655B2-B144-4CDF-BA2B-8763D6C8F2AD</string>
+	<string>F27767B925E84ADC5701280B40068D3E88534524</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>179655B2-B144-4CDF-BA2B-8763D6C8F2AD</string>
+			<string>F27767B925E84ADC5701280B40068D3E88534524</string>
 			<key>IDESourceControlWCCName</key>
 			<string>NodeKitten</string>
 		</dict>

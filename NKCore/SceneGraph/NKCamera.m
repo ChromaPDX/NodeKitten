@@ -111,13 +111,13 @@
     
     glLineWidth(1.0f);
     
+#if !TARGET_OS_IPHONE
+
 #if !NK_USE_GL3
     glEnable(GL_ALPHA_TEST);
     glAlphaFunc(GL_GREATER, .01);
 #endif
     
-#if !TARGET_OS_IPHONE
-
     glEnable( GL_POLYGON_SMOOTH );
     glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
     glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );

@@ -58,6 +58,8 @@ typedef void (^CallBack)();
 
 {
     int frames;
+    double currentFrameTime;
+    double frameTime;
     bool loaded;
     NKVertexBuffer *axes;
     
@@ -113,7 +115,7 @@ typedef void (^CallBack)();
 @property (nonatomic, strong) MidiReceivedBlock midiReceivedBlock;
 #endif
 
--(void)bindMainFrameBuffer;
+-(void)bindMainFrameBuffer:(NKNode*)sender;
 -(void)clear;
 
 -(void)pushMultiplyMatrix:(M16t)matrix;

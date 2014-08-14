@@ -492,7 +492,6 @@
             [transparentChildren addObject:child];
         }
     }
-    
     for (NKNode *tc in transparentChildren){
         [tc draw];
     }
@@ -505,6 +504,7 @@
     }
     
     if (_shader.numPasses) {
+        // MOVE TO drawMultiStartingFBO
         [self drawMultiPass:_shader.numPasses];
     }
     
@@ -520,7 +520,7 @@
     }
     
     if (_framebuffer) {
-        [self.scene bindMainFrameBuffer];
+        [self.scene bindMainFrameBuffer:self];
         
         //    if (!_ciFilter) {
         //        _ciFilter = [CIFilter filterWithName:@"CISepiaTone"
@@ -528,21 +528,21 @@
         //                            @"inputIntensity", @1.0, nil];
         //    }
 
-        if (_ciFilter) {
-            _coreImage = [CIImage imageWithTexture:self.framebuffer.renderTexture.glName size:CGSizeMake(_size.width, _size.height) flipped:NO colorSpace:nil];
-            
-            [_ciFilter setValue:_coreImage forKey:kCIInputImageKey];
-            
-#if TARGET_OS_IPHONE
-            CIImage *outputImage = [_ciFilter outputImage];
-#else
-            CIImage *outputImage = [_ciFilter valueForKey:kCIOutputImageKey];
-#endif
-            //NSLog(@"draw CI Image: %@", outputImage);
-            
-            [[NKGLManager ciContext] drawImage:outputImage inRect:CGRectMake(0, 0, _size.width, _size.height) fromRect:CGRectMake(0, 0, _size.width, _size.height)];
-        }
-        else {
+//        if (_ciFilter) {
+//            _coreImage = [CIImage imageWithTexture:self.framebuffer.renderTexture.glName size:CGSizeMake(_size.width, _size.height) flipped:NO colorSpace:nil];
+//            
+//            [_ciFilter setValue:_coreImage forKey:kCIInputImageKey];
+//            
+//#if TARGET_OS_IPHONE
+//            CIImage *outputImage = [_ciFilter outputImage];
+//#else
+//            CIImage *outputImage = [_ciFilter valueForKey:kCIOutputImageKey];
+//#endif
+//            //NSLog(@"draw CI Image: %@", outputImage);
+//            
+//            [[NKGLManager ciContext] drawImage:outputImage inRect:CGRectMake(0, 0, _size.width, _size.height) fromRect:CGRectMake(0, 0, _size.width, _size.height)];
+//        }
+        
             NKMeshNode* fboSurface = [NKStaticDraw fboSurface];
             
             [fboSurface setTexture:self.framebuffer.renderTexture];
@@ -555,11 +555,9 @@
             else {
                 self.scene.activeShader = fboSurface.shader;
             }
-            
+        
             [fboSurface customDraw];
-        }
     }
-
 }
 
 
@@ -795,6 +793,7 @@
 
 #pragma mark - Orientation
 
+
 -(M16t)localTransform {
     return _localTransform;
 }
@@ -966,6 +965,16 @@
         [n recursiveAlpha:(_alpha)];
     }
 }
+
+#pragma mark - SHADER / FBO
+
+//-(void)setPostProcess:(NKShaderProgram *)postProcess {
+//    _postProcess = postProcess;
+//    
+//    if (!_framebuffer) {
+//        _framebuffer = [[NKFrameBuffer alloc]initWithWidth:self.size.width height:self.size.height];
+//    }
+//}
 
 #pragma mark - COLOR
 

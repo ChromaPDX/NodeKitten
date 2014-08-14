@@ -114,12 +114,15 @@
         
         // 2 // Create a color renderbuffer, allocate storage for it, and attach it to the framebuffer’s color attachment point.
         
-        glGenRenderbuffers(1, &_renderBuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
+        _renderTexture = [[NKTexture alloc]initWithWidth:width height:height];
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _renderTexture.glName, 0);
         
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB8_OES, width,height);
-        
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _renderBuffer);
+//        glGenRenderbuffers(1, &_renderBuffer);
+//        glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
+//        
+//        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, width,height);
+//        
+//        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _renderBuffer);
         
         // 3 // Create a depth or depth/stencil renderbuffer, allocate storage for it, and attach it to the framebuffer’s depth attachment point.
         
@@ -129,8 +132,7 @@
         
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthBuffer);
         
-        _renderTexture = [[NKTexture alloc]initWithWidth:width height:height];
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _renderTexture.glName, 0);
+
         
 #else
         

@@ -71,7 +71,7 @@
                 self.shader = [NKShaderProgram newShaderNamed:@"b_videoTextureShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:-1 numLights:1 withBatchSize:NK_BATCH_SIZE];
             }
             else {
-                self.shader = [NKShaderProgram newShaderNamed:@"b_ColorTextureLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:_numTextures numLights:1 withBatchSize:NK_BATCH_SIZE];
+                self.shader = [NKShaderProgram newShaderNamed:@"b_ColorTextureLightShader" colorMode:NKS_COLOR_MODE_UNIFORM numTextures:_numTextures numLights:0 withBatchSize:NK_BATCH_SIZE];
             }
         }
     }
@@ -98,20 +98,8 @@
     if ([self.scene.activeShader uniformNamed:NKS_V4_COLOR]) {
         useColor = true;
     }
-//    
-//    if (_numTextures) {
-//        if (self.scene.boundTexture != _textures[0]) {
-//            [_textures[0] bind];
-//            if ([_textures[0] isKindOfClass:[NKVideoTexture class]]) {
-//                NSLog(@"binding tex scale: %f %f", [(NKVideoTexture*)_textures[0] size].x, [(NKVideoTexture*)_textures[0] size].y);
-//                [[self.scene.activeShader uniformNamed:NKS_TEXTURE_RECT_SCALE] bindV2:[(NKVideoTexture*)_textures[0] size]];
-//            }
-//            self.scene.boundTexture = _textures[0];
-//        }
-//    }
-//    
+
     [self bindTextures];
-    
     
     [_mvpStack reset];
     [_mvStack reset];
@@ -123,11 +111,10 @@
         child.modelViewCache = M16Multiply(self.scene.camera.viewMatrix,M16ScaleWithV3(child.globalTransform, child.size));
     }
     
-    _children = [[_children sortedArrayUsingComparator:^NSComparisonResult(NKNode * a, NKNode * b) {
+    _children = [_children sortedArrayUsingComparator:^NSComparisonResult(NKNode * a, NKNode * b) {
         return a.modelViewCache.m32 > b.modelViewCache.m32;
-    }] mutableCopy];
+    }];
     
-
     for (int i = 0; i < _children.count; i++) {
         NKNode *child = _children[i];
         
@@ -147,26 +134,17 @@
         }
     }
     
-//    for (int i = 0; i < _children.count; i++) {
-//        NSLog(@"sorted children, %d ,%f", i, _mvStack.data[i].m32);
-//    }
-    
     int startingSprite = 0;
     int spritesInBatch = 0;
     
     for (int i = 0; i < _children.count; i++) {
-        
         spritesInBatch++;
-        
         if (spritesInBatch == NK_BATCH_SIZE || i == _children.count - 1) {
             [self drawGeometry:startingSprite spritesInBatch:spritesInBatch useColor:useColor];
-            
             startingSprite += spritesInBatch;
             spritesInBatch = 0;
         }
-        
     }
-    //NSLog(@"%d children, %d batches", _children.count, _children.count/NK_BATCH_SIZE);
     
 }
 

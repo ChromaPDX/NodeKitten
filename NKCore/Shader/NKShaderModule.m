@@ -141,10 +141,10 @@
         texFunction.function = @"return inputColor * texture(u_texture,v_texCoord0);";
 #else
         if ([module uniformNamed:NKS_S2D_TEXTURE].type == NKS_TYPE_SAMPLER_2D_RECT) {
-            texFunction.function = @"return inputColor * texture2DRect(u_texture,v_texCoord0);";
+            texFunction.function = @"vec4 textureColor = texture2DRect(u_texture,v_texCoord0); if (textureColor.a < .1) discard; return textureColor * inputColor;";
         }
         else {
-            texFunction.function = @"return inputColor * texture2D(u_texture,v_texCoord0);";
+            texFunction.function = @"vec4 textureColor = texture2D(u_texture,v_texCoord0); if (textureColor.a < .1) discard; return textureColor * inputColor;";
         }
 #endif
     }
@@ -229,7 +229,6 @@
     lightFunction.returnType = NKS_TYPE_V4;
     
     if (highQuality) {
-        
         
         module.name = @"HQ LIGHT PROGRAM";
         
@@ -383,6 +382,7 @@
     
     falseColor.function = SHADER_STRING
     (
+     if (inputColor.a < .1) discard;
      float luminance = dot(inputColor.rgb, luminanceWeighting);
      return mix(inputColor,vec4( mix(u_falseColor_darkColor.rgb, u_falseColor_lightColor.rgb, luminance), inputColor.a),u_falseColor_intensity);
      );
